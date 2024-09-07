@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 500;
+        }
+        .otp-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .otp-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 24px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin: 0 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        .otp-input:focus {
+            border-color: #4A90E2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+            outline: none;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background-color: #4A90E2;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #357ABD;
+        }
+        .btn-secondary {
+            background-color: #F0F0F0;
+            color: #333;
+            margin-top: 10px;
+        }
+        .btn-secondary:hover {
+            background-color: #E0E0E0;
+        }
+        .otp-timer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777;
+        }
+        #timerValue {
+            font-weight: 600;
+            color: #4A90E2;
+        }
+        .alert {
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .alert-danger {
+            background-color: #FFF3F3;
+            border: 1px solid #FFC7C7;
+            color: #FF4B4B;
+        }
+        .alert-success {
+            background-color: #F0FFF0;
+            border: 1px solid #C7FFC7;
+            color: #28A745;
+        }
+        .text-center {
+            text-align: center;
+            margin-top: 20px;
+            color: #777;
+        }
+        .text-center a {
+            color: #4A90E2;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .text-center a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Email Verification</h2>
+        <form id="otpForm" onsubmit="return validateForm()">
+            <div class="form-group">
+                <label for="otp">Enter OTP:</label>
+                <div class="otp-container">
+                    <input type="text" class="otp-input" maxlength="1" pattern="\d" required>
+                    <input type="text" class="otp-input" maxlength="1" pattern="\d" required>
+                    <input type="text" class="otp-input" maxlength="1" pattern="\d" required>
+                    <input type="text" class="otp-input" maxlength="1" pattern="\d" required>
+                    <input type="text" class="otp-input" maxlength="1" pattern="\d" required>
+                    <input type="text" class="otp-input" maxlength="1" pattern="\d" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Verify Email</button>
+            <button type="button" class="btn btn-secondary" onclick="resendOTP()">Resend OTP</button>
+        </form>
+        <div class="otp-timer">
+            Time remaining: <span id="timerValue">60</span> seconds
+        </div>
+        <div id="message" class="alert" style="display: none;"></div>
+        <div class="text-center">
+            Already verified? <a href="/login">Login now</a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        let timer = 60;
+        let timerInterval;
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timer = 60;
+            timerInterval = setInterval(() => {
+                timer--;
+                document.getElementById("timerValue").textContent = timer;
+                if (timer <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById("timerValue").textContent = "Expired";
+                }
+            }, 1000);
+        }
+
+        function validateForm() {
+            const otpInputs = document.querySelectorAll('.otp-input');
+            let otp = '';
+            otpInputs.forEach(input => {
+                otp += input.value;
+            });
+            
+            $.ajax({
+                type: "POST",
+                url: "/verify-otp",
+                data: { otp: otp },
+                success: function(response) {
+                    if (response.success) {
+                        showMessage("OTP verified successfully. Redirecting...", "success");
+                        setTimeout(() => {
+                            window.location.href = response.redirectUrl;
+                        }, 1500);
+                    } else {
+                        showMessage(response.message, "error");
+                    }
+                },
+                error: function() {
+                    showMessage("Something went wrong. Please try again.", "error");
+                }
+            });
+            return false;
+        }
+
+        function resendOTP() {
+            $.ajax({
+                type: "POST",
+                url: "/resend-otp",
+                success: function(response) {
+                    if (response.success) {
+                        showMessage("OTP resent successfully", "success");
+                        startTimer();
+                    } else {
+                        showMessage(response.message, "error");
+                    }
+                },
+                error: function() {
+                    showMessage("Failed to resend OTP. Please try again.", "error");
+                }
+            });
+        }
+
+        function showMessage(message, type) {
+            const messageElement = document.getElementById("message");
+            messageElement.textContent = message;
+            messageElement.className = type === "success" ? "alert alert-success" : "alert alert-danger";
+            messageElement.style.display = "block";
+        }
+
+        // Auto-tab functionality for OTP inputs
+        const otpInputs = document.querySelectorAll('.otp-input');
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+        });
+
+        startTimer();
+    </script>
+
+
+
+<%- include ('../../layout/footer.ejs') %>
+</body>
+</html>

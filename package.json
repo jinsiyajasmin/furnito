@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.9",
+    "env": "^0.0.2",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "init": "^0.1.2",
+    "mongoose": "^8.5.3",
+    "nodemailer": "^6.9.14",
+    "nodemon": "^3.1.4",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "pdfkit": "^0.15.0",
+    "sharp": "^0.33.5"
+  },
+  "scripts": {
+    "start": "nodemon app",
+    "dev": "nodemon index.js"
+  }
+}
