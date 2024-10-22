@@ -1,11 +1,17 @@
 const express = require("express");
 const userRouter = express();
-const user = require('../controller/userController');
+const user = require('../controller/user/userController');
+const Cart= require('../controller/user/cartController');
+const dashboard = require('../controller/user/dashboardController');
+const checkout = require('../controller/user/checkoutController');
 const passport = require("passport"); 
-const path = require('path')
+const path = require('path');
+const {userAuth,adminAuth} = require("../middlewares/auth");
+
 
 userRouter.set('view engine', 'ejs');
 userRouter.set('views', './views/user');
+
 
 userRouter.use(express.urlencoded({ extended: true }));
 
@@ -19,9 +25,40 @@ userRouter.use('/assets',express.static(path.join(__dirname,"../public/assets"))
 userRouter.get('/', user.loadHome);
 userRouter.get('/register', user.loadSignup);
 userRouter.post('/signup', user.signup);
-userRouter.post('/verify-otp', user.verifyOtp);
+userRouter.post('/verify-otp', user.verifyOtp); 
 userRouter.post('/resend-otp', user.resendOtp); 
+userRouter.get('/productList',userAuth, user.getProductList);
 
+userRouter.get('/productDetails/:id',userAuth, user.getProductDetails);
+
+
+
+
+userRouter.post('/cart/add',userAuth, Cart.addToCart);
+userRouter.get('/cart', Cart.viewCart);
+userRouter.post('/cart/remove', Cart.removeFromCart);
+userRouter.post('/api/cart/update-quantity',Cart.updateQuant)
+
+
+userRouter.get('/checkout',userAuth, checkout.loadCheckoutPage);
+userRouter.post('/addAddress', checkout.addAddress);
+userRouter.get('/order',userAuth,checkout.placeOrder);
+userRouter.get('/Address',checkout.getAddresses )
+
+
+
+userRouter.get('/userDashboard',userAuth,dashboard.getUserDashboard);
+userRouter.get('/userProfile',userAuth,dashboard.getUserProfile);
+userRouter.get('/accountDetails',dashboard.getAccountDetails);
+
+userRouter.post('/add-address', dashboard.addAddress);
+userRouter.get('/get-address/:id',userAuth,dashboard.getEditAddress);
+userRouter.put('/api/addresses/:id',dashboard.editAddress);
+userRouter.delete('/api/addresses/:id',dashboard.deleteAddress);
+userRouter.get('/userAddress',userAuth,dashboard.addresses);
+
+userRouter.post('/update-profile',dashboard.updateProfile);
+userRouter.post('/change-password', dashboard.changePassword);
 
 
 userRouter.get("/auth/google",passport.authenticate("google",{scope:['profile','email']}));

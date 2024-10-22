@@ -1,0 +1,583 @@
+<%- include ('../../layout/adminlayout/header.ejs') %>
+
+<style>
+  body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f0f0f0;
+  }
+  .form-container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .form-group {
+      margin-bottom: 20px;
+     
+  }
+  .form {
+    margin-left: 30px;
+  }
+  label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+  }
+  textarea, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+  }
+  .image-upload-container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+  }
+  .image-upload-box {
+      width: 200px;
+      height: 200px;
+      border: 2px dashed #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+  }
+  .image-upload-box img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: cover;
+  }
+  .image-upload-box input[type="file"] {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+  }
+  .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+  }
+  button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+  }
+  .replace-btn {
+      background-color: #6c5ce7;
+      color: white;
+     
+  }
+ 
+  .remove-btn {
+      background-color: #ff7675;
+      color: white;
+  }
+  .add-product-btn {
+      background-color: #00b894;
+      color: white;
+      font-size: 16px;
+      padding: 10px 20px;
+      margin-top: 20px;
+  }
+</style>
+
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5DDHKGP" height="0" width="0"
+      style="display: none; visibility: hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <!-- Layout wrapper -->
+  <div class="layout-wrapper layout-content-navbar  ">
+    <div class="layout-container">
+
+
+
+
+
+
+
+      <!-- Menu -->
+
+      <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+
+
+        <div class="app-brand demo ">
+          <a href="index.html" class="app-brand-link">
+            <span class="app-brand-logo demo me-1">
+              <span style="color:var(--bs-primary);">
+                <svg width="30" height="24" viewBox="0 0 250 196" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M12.3002 1.25469L56.655 28.6432C59.0349 30.1128 60.4839 32.711 60.4839 35.5089V160.63C60.4839 163.468 58.9941 166.097 56.5603 167.553L12.2055 194.107C8.3836 196.395 3.43136 195.15 1.14435 191.327C0.395485 190.075 0 188.643 0 187.184V8.12039C0 3.66447 3.61061 0.0522461 8.06452 0.0522461C9.56056 0.0522461 11.0271 0.468577 12.3002 1.25469Z"
+                    fill="currentColor" />
+                  <path opacity="0.077704" fill-rule="evenodd" clip-rule="evenodd"
+                    d="M0 65.2656L60.4839 99.9629V133.979L0 65.2656Z" fill="black" />
+                  <path opacity="0.077704" fill-rule="evenodd" clip-rule="evenodd"
+                    d="M0 65.2656L60.4839 99.0795V119.859L0 65.2656Z" fill="black" />
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M237.71 1.22393L193.355 28.5207C190.97 29.9889 189.516 32.5905 189.516 35.3927V160.631C189.516 163.469 191.006 166.098 193.44 167.555L237.794 194.108C241.616 196.396 246.569 195.151 248.856 191.328C249.605 190.076 250 188.644 250 187.185V8.09597C250 3.64006 246.389 0.027832 241.935 0.027832C240.444 0.027832 238.981 0.441882 237.71 1.22393Z"
+                    fill="currentColor" />
+                  <path opacity="0.077704" fill-rule="evenodd" clip-rule="evenodd"
+                    d="M250 65.2656L189.516 99.8897V135.006L250 65.2656Z" fill="black" />
+                  <path opacity="0.077704" fill-rule="evenodd" clip-rule="evenodd"
+                    d="M250 65.2656L189.516 99.0497V120.886L250 65.2656Z" fill="black" />
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M12.2787 1.18923L125 70.3075V136.87L0 65.2465V8.06814C0 3.61223 3.61061 0 8.06452 0C9.552 0 11.0105 0.411583 12.2787 1.18923Z"
+                    fill="currentColor" />
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M12.2787 1.18923L125 70.3075V136.87L0 65.2465V8.06814C0 3.61223 3.61061 0 8.06452 0C9.552 0 11.0105 0.411583 12.2787 1.18923Z"
+                    fill="white" fill-opacity="0.15" />
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M237.721 1.18923L125 70.3075V136.87L250 65.2465V8.06814C250 3.61223 246.389 0 241.935 0C240.448 0 238.99 0.411583 237.721 1.18923Z"
+                    fill="currentColor" />
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M237.721 1.18923L125 70.3075V136.87L250 65.2465V8.06814C250 3.61223 246.389 0 241.935 0C240.448 0 238.99 0.411583 237.721 1.18923Z"
+                    fill="white" fill-opacity="0.3" />
+                </svg>
+              </span>
+            </span>
+            <span class="app-brand-text demo menu-text fw-semibold ms-2">Materio</span>
+          </a>
+
+          <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
+            <i class="menu-toggle-icon d-xl-block align-middle"></i>
+          </a>
+        </div>
+
+        <div class="menu-inner-shadow"></div>
+
+
+
+        <ul class="menu-inner py-1">
+          <!-- Dashboards -->
+          <li class="menu-item">
+           
+            <ul class="menu-sub">
+              <li class="menu-item">
+                <a href="dashboards-crm.html" class="menu-link">
+                  <div data-i18n="CRM">CRM</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="index.html" class="menu-link">
+                  <div data-i18n="Analytics">Analytics</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="app-ecommerce-dashboard.html" class="menu-link">
+                  <div data-i18n="eCommerce">eCommerce</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="app-logistics-dashboard.html" class="menu-link">
+                  <div data-i18n="Logistics">Logistics</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="app-academy-dashboard.html" class="menu-link">
+                  <div data-i18n="Academy">Academy</div>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <!-- Layouts -->
+          
+
+          <!-- Front Pages -->
+          
+          <!-- e-commerce-app menu start -->
+          <li class="menu-item active open">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+              <i class='menu-icon tf-icons ri-shopping-bag-3-line'></i>
+              <div data-i18n="eCommerce">eCommerce</div>
+            </a>
+            <ul class="menu-sub">
+              <li class="menu-item">
+                <a href="app-ecommerce-dashboard.html" class="menu-link">
+                  <div data-i18n="Dashboard">Dashboard</div>
+                </a>
+              </li>
+              <li class="menu-item active open">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                  <div data-i18n="Products">Products</div>
+                </a>
+                <ul class="menu-sub">
+                  <li class="menu-item">
+                    <a href="app-ecommerce-product-list.html" class="menu-link">
+                      <div data-i18n="Product List">Product List</div>
+                    </a>
+                  </li>
+                  <li class="menu-item active">
+                    <a href="app-ecommerce-product-add.html" class="menu-link">
+                      <div data-i18n="Add Product">Add Product</div>
+                    </a>
+                  </li>
+                  <li class="menu-item">
+                    <a href="app-ecommerce-category-list.html" class="menu-link">
+                      <div data-i18n="Category List">Category List</div>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                  <div data-i18n="Order">Order</div>
+                </a>
+                <ul class="menu-sub">
+                  <li class="menu-item">
+                    <a href="app-ecommerce-order-list.html" class="menu-link">
+                      <div data-i18n="Order List">Order List</div>
+                    </a>
+                  </li>
+                  <li class="menu-item">
+                    <a href="app-ecommerce-order-details.html" class="menu-link">
+                      <div data-i18n="Order Details">Order Details</div>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                  <div data-i18n="Customer">Customer</div>
+                </a>
+                <ul class="menu-sub">
+                  <li class="menu-item">
+                    <a href="app-ecommerce-customer-all.html" class="menu-link">
+                      <div data-i18n="All Customers">All Customers</div>
+                    </a>
+                  </li>
+                  <li class="menu-item">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                      <div data-i18n="Customer Details">Customer Details</div>
+                    </a>
+                    <ul class="menu-sub">
+                      <li class="menu-item">
+                        <a href="app-ecommerce-customer-details-overview.html" class="menu-link">
+                          <div data-i18n="Overview">Overview</div>
+                        </a>
+                      </li>
+                      <li class="menu-item">
+                        <a href="app-ecommerce-customer-details-security.html" class="menu-link">
+                          <div data-i18n="Security">Security</div>
+                        </a>
+                      </li>
+                      <li class="menu-item">
+                        <a href="app-ecommerce-customer-details-billing.html" class="menu-link">
+                          <div data-i18n="Address & Billing">Address & Billing</div>
+                        </a>
+                      </li>
+                      <li class="menu-item">
+                        <a href="app-ecommerce-customer-details-notifications.html" class="menu-link">
+                          <div data-i18n="Notifications">Notifications</div>
+                        </a>
+                      </li>
+
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item">
+                <a href="app-ecommerce-manage-reviews.html" class="menu-link">
+                  <div data-i18n="Manage Reviews">Manage Reviews</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="app-ecommerce-referral.html" class="menu-link">
+                  <div data-i18n="Referrals">Referrals</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                  <div data-i18n="Settings">Settings</div>
+                </a>
+                <ul class="menu-sub">
+                  <li class="menu-item">
+                    <a href="app-ecommerce-settings-detail.html" class="menu-link">
+                      <div data-i18n="Store Details">Store Details</div>
+                    </a>
+                  </li>
+                  <li class="menu-item">
+                    <a href="app-ecommerce-settings-payments.html" class="menu-link">
+                      <div data-i18n="Payments">Payments</div>
+                    </a>
+                  </li>
+                  <li class="menu-item">
+                    <a href="app-ecommerce-settings-checkout.html" class="menu-link">
+                      <div data-i18n="Checkout">Checkout</div>
+                    </a>
+                  </li>
+                  <li class="menu-item">
+                    <a href="app-ecommerce-settings-shipping.html" class="menu-link">
+                      <div data-i18n="Shipping & Delivery">Shipping & Delivery</div>
+                    </a>
+                  </li>
+                  <li class="menu-item">
+                    <a href="app-ecommerce-settings-locations.html" class="menu-link">
+                      <div data-i18n="Locations">Locations</div>
+                    </a>
+                  </li>
+                  <li class="menu-item">
+                    <a href="app-ecommerce-settings-notifications.html" class="menu-link">
+                      <div data-i18n="Notifications">Notifications</div>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <!-- e-commerce-app menu end -->
+          <!-- Academy menu start -->
+          
+          
+
+          <!-- Components -->
+          
+          <!-- User interface -->
+          
+
+          <!-- Extended components -->
+          
+
+          <!-- Forms & Tables -->
+          
+
+          <!-- Charts & Maps -->
+          
+
+
+
+      </aside>
+      <!-- / Menu -->
+
+      <div class="layout-page">
+        <form id="editProductForm" method="POST" action="/admin/editProduct/<%= product._id %>" enctype="multipart/form-data" class="form" onsubmit="return validateForm()">
+
+            <input type="hidden" id="editProductId" name="productId" value="<%= product._id %>">
+    
+            <!-- Name Field -->
+            <div class="mb-4">
+                <label for="editProductName" class="form-label">Name</label>
+                <input type="text" id="editProductName" name="productName" value="<%= product.productName %>" class="form-control border">
+                <div id="name-error" class="error-message"></div>
+            </div>
+    
+            <!-- Description Field -->
+            <div class="mb-6">
+                <label for="editProductDescription" class="form-label">Description</label>
+                <textarea id="editProductDescription" name="productDescription" class="form-control border" rows="4"><%= product.productDescription %></textarea>
+                <div id="description-error" class="error-message"></div>
+            </div>
+    
+            <!-- Price, Stock, and Category Fields in Same Line -->
+            <div class="row mb-4">
+                <div class="col-lg-4">
+                    <label class="form-label">Price</label>
+                    <div class="input-group">
+                        <span class="input-group-text">₹</span>
+                        <input type="number" step="0.01" id="editProductPrice" name="price" value="<%= product.price %>" class="form-control border" placeholder="0.00">
+                    </div>
+                    <div id="price-error" class="error-message"></div>
+                </div>
+    
+                <div class="col-lg-4">
+                    <label class="form-label">Stock</label>
+                    <input id="editProductQuantity" name="quantity" type="number" value="<%= product.quantity %>" class="form-control border">
+                    <div id="quantity-error" class="error-message"></div>
+                </div>
+    
+                <div class="col-lg-4">
+                  <label class="form-label">Category</label>
+                  <select id="editProductCategory" class="form-select border" name="category">
+                  
+                      <% categories.forEach(category => { %>
+                          <option value="<%= category._id %>" 
+                              <% if (product.category && category._id.toString() === product.category.toString()) { %> 
+                                  selected 
+                              <% } %>
+                          ><%= category.name %></option>
+                      <% }) %>
+                  </select>
+                  <div id="category-error" class="error-message"></div>
+              </div>
+              
+                <div class="col-lg-3">
+                  <label class="form-label">Status</label>
+                  <select class="form-select border" name="status">
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
+                  </select>
+                  <div id="status-error" class="error-message"></div>
+              </div>
+            </div>
+    
+        
+            <div class="mb-4">
+                <label class="form-label">Product Images</label>
+                <div class="d-flex flex-wrap gap-3">
+                    <% product.productImage.forEach((image, index) => { %>
+                        <div class="d-flex flex-column align-items-center mb-3">
+                            <div class="image-upload-box" style="width: 480px; height: 450px; border: 2px dashed #ddd; position: relative;">
+                                <img src="/uploads/<%= image %>" alt="Preview" id="preview-<%= index %>" style="max-width: 100%; max-height: 100%; object-fit: cover;">
+                                <input type="file" name="images" accept="image/*" onchange="previewImage(this, '<%= index %>')" style="position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+                            </div>
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-primary btn-sm me-2" onclick="document.querySelector('#preview-<%= index %>').previousElementSibling.click()">Replace Image</button>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="removeImage('<%= index %>')">Remove Image</button>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+                <div id="images-error" class="error-message"></div>
+            </div>
+    
+            <div>
+                <button class="btn btn-primary" type="submit">Update Product</button>
+            </div>
+        </form>
+    </div>
+
+
+  
+  
+    
+    <script>
+      document.getElementById('editProductForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    if (validateForm()) {
+        const formData = new FormData(this); // Collect form data, including files
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData // Send formData directly
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: data.message,
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = '/admin/product'; // Redirect after success
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.message
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Something went wrong!'
+            });
+        });
+    }
+});
+
+
+    function validateForm() {
+        let isValid = true;
+        // Clear any previous errors
+        clearErrorMessages();
+    
+        // Fetch values
+        const name = document.getElementById('editProductName').value.trim();
+        const description = document.getElementById('editProductDescription').value.trim();
+        const price = document.getElementById('editProductPrice').value;
+        const quantity = document.getElementById('editProductQuantity').value;
+        const category = document.getElementById('editProductCategory').value;
+    
+        // Validate name
+        if (name === "") {
+            displayErrorMessage('name-error', 'Please enter a product name.');
+            isValid = false;
+        }
+    
+        // Validate description
+        if (description === "") {
+            displayErrorMessage('description-error', 'Please enter a product description.');
+            isValid = false;
+        }
+    
+        // Validate price
+        if (price <= 0) {
+            displayErrorMessage('price-error', 'Please enter a valid price.');
+            isValid = false;
+        }
+    
+        // Validate quantity
+        if (quantity < 0) {
+            displayErrorMessage('quantity-error', 'Quantity cannot be negative.');
+            isValid = false;
+        }
+    
+        // Validate category
+        if (category === "") {
+            displayErrorMessage('category-error', 'Please select a category.');
+            isValid = false;
+        }
+    
+        return isValid;
+    }
+    
+    function clearErrorMessages() {
+        const errorElements = document.querySelectorAll('.error-message');
+        errorElements.forEach(el => el.textContent = '');
+    }
+    
+    function displayErrorMessage(id, message) {
+        document.getElementById(id).textContent = message;
+    }
+    
+    function previewImage(input, index) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('preview-' + index).src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+    
+    function removeImage(index) {
+        document.getElementById('preview-' + index).src = ''; 
+        document.querySelector(`input[name="images"]:nth-of-type(${index + 1})`).value = '';
+    }
+   
+    
+</script>
+
+      
+      
+      
+      
+      
+
+          
+
+           
+ 
+
+
+
+
+
+
+
+
+          <%- include ('../../layout/adminlayout/footer.ejs') %>

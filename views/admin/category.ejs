@@ -1,5 +1,18 @@
 <%- include ('../../layout/adminlayout/header.ejs') %>
 
+<style>
+  .invalid-feedback {
+  display: none;
+  color: #dc3545;
+  font-size: 0.875em;
+  margin-top: 0.25rem;
+}
+
+.is-invalid {
+  border-color: #dc3545;
+}
+</style>
+
 <!-- ?PROD Only: Google Tag Manager (noscript) (Default ThemeSelection: GTM-5DDHKGP, PixInvent: GTM-5J3LMKC) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5DDHKGP" height="0" width="0" style="display: none; visibility: hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
@@ -696,423 +709,444 @@
 
 </nav>
 
-<!-- / Navbar -->
-
-    
-
-    <!-- Content wrapper -->
-    <!-- <div class="content-wrapper">
-
-      <!-- Content -->
-      
-      <div >
             
             
     
-         
-        <div class="content-wrapper">
+  
 
-          <!-- Content -->
-          
-          
-              
-              
-          <div class="app-ecommerce-category">
-            <!-- Category List Table -->
-            <div class="container-xxl flex-grow-1 container-p-y">
-              <!-- Search bar and Add Category button -->
-              <div class="d-flex justify-content-between align-items-center mb-4">
-                <div class="navbar-search-wrapper search-input-wrapper">
-                  <input type="text" class="form-control" placeholder="Search Category" aria-label="Search...">
-                </div>
-                <div>
-                  <button class="btn btn-primary" id="addCategoryBtn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCategory">+ Add Category</button>
-                </div>
-              </div>
-          
-             
-              <div class="card">
-                <div class="card-datatable table-responsive">
-                  <table class="datatables-category-list table">
-                    <thead>
-                      <tr>
-                        <th><input type="checkbox" id="selectAll"></th> <!-- Checkbox for selecting all categories -->
-                        <th>Categories</th>
-                        <th class="text-nowrap text-sm-end">Description</th>
-                        <th class="text-nowrap text-sm-end">Status</th>
-                        <th class="text-lg-center">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody id="categoryTableBody">
-                      <!-- Dynamic rows will be added here -->
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-          
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasEditCategory" aria-labelledby="offcanvasEditCategoryLabel">
-  <!-- Offcanvas Header -->
-  <div class="offcanvas-header py-6">
-    <h5 id="offcanvasEditCategoryLabel" class="offcanvas-title">Edit Category</h5>
-    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <!-- Offcanvas Body -->
-  <div class="offcanvas-body border-top">
-    <form class="pt-0" id="editCategoryForm">
-      <!-- Name -->
-      <div class="form-floating form-floating-outline mb-5">
-        <input type="text" class="form-control" id="edit-category-name" placeholder="Enter category name" name="editCategoryName" aria-label="Category name">
-        <label for="edit-category-name">Name</label>
-      </div>
+    <div class="container-xxl flex-grow-1 container-p-y">
+     
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="navbar-search-wrapper search-input-wrapper">
+                <input type="text" class="form-control" placeholder="Search Category" aria-label="Search...">
+            </div>
+            <div>
+                <button class="btn btn-primary" id="addCategoryBtn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCategory">+ Add Category</button>
+            </div>
+        </div>
 
-      <!-- Description -->
-      <div class="form-floating form-floating-outline mb-5">
-        <textarea id="edit-category-description" class="form-control" placeholder="Enter category description" aria-label="Category description" name="editDescription"></textarea>
-        <label for="edit-category-description">Description</label>
-      </div>
-
-      <!-- Status -->
-      <div class="form-floating form-floating-outline mb-5">
-        <select id="edit-category-status" class="form-select" aria-label="Category status" name="editStatus">
-          <option value="Active">Active</option>
-          <option value="Inactive">Inactive</option>
-        </select>
-        <label for="edit-category-status">Status</label>
-      </div>
-
-      <!-- Submit and reset buttons -->
-      <div class="mb-4">
-        <button type="submit" class="btn btn-primary me-2">Save</button>
-        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="offcanvas">Discard</button>
-      </div>
-    </form>
+      <!-- Category List Table -->
+<div class="card">
+  <div class="card-datatable table-responsive">
+      <table class="datatables-category-list table">
+          <thead>
+              <tr>
+                  <th><input type="checkbox" id="selectAll"></th>
+                  <th>Categories</th>
+                  <th class="text-nowrap text-sm-end">Description</th>
+                  <th class="text-nowrap text-sm-end">Status</th>
+                  <th class="text-lg-center">Actions</th>
+              </tr>
+          </thead>
+          <tbody id="categoryTableBody">
+              <% categories.forEach(category => { %>
+                  <tr data-id="<%= category._id %>">
+                      <td><input type="checkbox" class="category-checkbox" value="<%= category._id %>"></td>
+                      <td><%= category.name %></td>
+                      <td class="text-nowrap text-sm-end"><%= category.description %></td>
+                    <td class="text-nowrap text-sm-end">
+  <%= category.isListed ? 'Active' : 'Inactive' %>
+</td>
+                      <td class="text-lg-center">
+                          <button class="btn btn-primary btn-sm edit-btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasEditCategory" data-id="<%= category._id %>">Edit</button>
+                          
+                      </td>
+                  </tr>
+              <% }) %>
+          </tbody>
+      </table>
   </div>
 </div>
 
-          
-              <!-- Offcanvas to add new category -->
-              <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCategory" aria-labelledby="offcanvasCategoryLabel">
-                <!-- Offcanvas Header -->
-                <div class="offcanvas-header py-6">
-                  <h5 id="offcanvasCategoryLabel" class="offcanvas-title">Add Category</h5>
-                  <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-                <!-- Offcanvas Body -->
-                <div class="offcanvas-body border-top">
-                  <form class="pt-0" id="categoryForm">
-                    <!-- Name -->
+
+        <!-- Add Category Offcanvas -->
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCategory" aria-labelledby="offcanvasCategoryLabel">
+            <div class="offcanvas-header py-6">
+                <h5 id="offcanvasCategoryLabel" class="offcanvas-title">Add Category</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body border-top">
+                <form class="pt-0" id="categoryForm">
                     <div class="form-floating form-floating-outline mb-5">
-                      <input type="text" class="form-control" id="category-name" placeholder="Enter category name" name="categoryName" aria-label="Category name" required>
-                      <label for="category-name">Name</label>
-                      <div class="invalid-feedback" id="nameError">Category name is required and should contain only alphabets.</div>
+                        <input type="text" class="form-control" id="category-name" placeholder="Enter category name" name="categoryName" onkeyup="validatename()" aria-label="Category name" required>
+                        <label for="category-name">Name</label>
+                        <small id="name-error" style="color: red; display: none;">Please enter a valid name (letters only).</small>
+
+                        <div class="invalid-feedback" id="nameError"></div>
                     </div>
                     
                     <div class="form-floating form-floating-outline mb-5">
-                      <textarea id="category-description" class="form-control" placeholder="Enter category description" aria-label="Category description" name="description" required></textarea>
+                      <textarea id="category-description" class="form-control" placeholder="Enter category description" aria-label="Category description" name="description" onkeyup="validatedescription()" required></textarea>
                       <label for="category-description">Description</label>
-                      <div class="invalid-feedback" id="descriptionError">Description is required and should contain only alphabets.</div>
+                      <small id="description-error" style="color: red; display: none;">Please enter a valid description (letters only).</small>
+                        <div class="invalid-feedback" id="descriptionError"></div>
                     </div>
                     
-              
-                    <!-- Status -->
                     <div class="form-floating form-floating-outline mb-5">
-                      <select id="category-status" class="form-select" aria-label="Category status" name="status" required>
-                        <option value="" selected disabled>Select status</option>
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                      </select>
-                      <label for="category-status">Status</label>
-                      <div class="invalid-feedback">Please select a category status.</div>
+                        <select id="category-status" class="form-select" aria-label="Category status" name="status" >
+                            <option value="" selected disabled>Select status</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                        <label for="category-status">Status</label>
+                        <div class="invalid-feedback">Please select a category status.</div>
                     </div>
-              
-                    <!-- Submit and reset buttons -->
+                    
                     <div class="mb-4">
-                      <span class="text-danger" id="categoryExistsError" style="display:none;">Category already exists.</span>
-                      <button type="submit" class="btn btn-primary me-2">Add</button>
-                      <button type="button" class="btn btn-outline-danger" data-bs-dismiss="offcanvas">Discard</button>
+                        <span class="text-danger" id="categoryExistsError" style="display:none;">Category already exists.</span>
+                        <button type="submit" class="btn btn-primary me-2">Add</button>
+                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="offcanvas">Discard</button>
                     </div>
-                  </form>
-                </div>
-              </div>
-              
-          
-          
-              
-    
-    
-        
+                </form>
+            </div>
+        </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-  categoryForm.addEventListener('submit', async function (e) {
-  e.preventDefault();
+        <!-- Edit Category Offcanvas -->
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasEditCategory" aria-labelledby="offcanvasEditCategoryLabel">
+          <div class="offcanvas-header py-6">
+              <h5 id="offcanvasEditCategoryLabel" class="offcanvas-title">Edit Category</h5>
+              <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body border-top">
+              <form class="pt-0" id="editCategoryForm">
+                  <div class="form-floating form-floating-outline mb-5">
+                    <input type="text" class="form-control" id="edit-category-name" placeholder="Enter category name" name="editCategoryName" onkeyup="validateEditName()" aria-label="Category name">
+                    <label for="edit-category-name">Name</label>
+                    <small id="edit-name-error" style="color: red; display: none;">Please enter a valid name (letters only).</small>
+                      <div class="invalid-feedback" id="editNameError"></div>
+                  </div>
+      
+                  <div class="form-floating form-floating-outline mb-5">
+                    <textarea id="edit-category-description" class="form-control" placeholder="Enter category description" aria-label="Category description" name="editDescription" onkeyup="validateEditDescription()"></textarea>
+                    <label for="edit-category-description">Description</label>
+                    <small id="edit-description-error" style="color: red; display: none;">Please enter a valid description (letters only).</small>
+                      <div class="invalid-feedback" id="editDescriptionError"></div>
+                  </div>
+      
+                  <div class="form-floating form-floating-outline mb-5">
+                      <select id="edit-category-status" class="form-select" aria-label="Category status" name="editStatus" >
+                          <option value="Active">Active</option>
+                          <option value="Inactive">Inactive</option>
+                      </select>
+                      <label for="edit-category-status">Status</label>
+                  </div>
+      
+                  <div class="mb-4">
+                      <div id="editCategoryExistsError" style="display: none;"></div>
+                      <button type="submit" class="btn btn-primary me-2">Save</button>
+                      <button type="button" class="btn btn-outline-danger" data-bs-dismiss="offcanvas">Discard</button>
+                  </div>
+              </form>
+          </div>
+      </div>
 
-  const categoryName = nameInput.value.trim();
-  const categoryDescription = descriptionInput.value.trim();
-  const categoryStatus = document.getElementById('category-status').value;
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+           
 
-  nameError.textContent = '';
-  descriptionError.textContent = '';
-  categoryExistsError.textContent = '';
-
-  if (!validateAlphabets(categoryName)) {
-    nameError.textContent = 'Name must contain only alphabets.';
-    return;
-  }
-
-  if (!validateAlphabets(categoryDescription)) {
-    descriptionError.textContent = 'Description must contain only alphabets.';
-    return;
-  }
-
-  try {
-    const response = await fetch('/add-category', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: categoryName,
-        description: categoryDescription,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      categoryExistsError.textContent = errorMessage; // Display error
-      return;
+           document.addEventListener('DOMContentLoaded', function () {
+    const categoryTableBody = document.getElementById('categoryTableBody');
+    const categoryForm = document.getElementById('categoryForm');
+    const nameInput = document.getElementById('category-name');
+    const descriptionInput = document.getElementById('category-description');
+    const nameError = document.getElementById('nameError');
+    const descriptionError = document.getElementById('descriptionError');
+    const categoryExistsError = document.getElementById('categoryExistsError');
+    const editButtons = document.querySelectorAll('.edit-btn');
+    const editCategoryForm = document.getElementById('editCategoryForm');
+    function loadCategories() {
+        fetch('/get-categories')
+            .then(response => response.json())
+            .then(data => {
+                renderCategories(data.categories);
+            })
+            .catch(error => console.error('Error loading categories:', error));
     }
 
-    const result = await response.json();
-    console.log(result.message); // Success message
-    categories.push({
-      name: categoryName,
-      description: categoryDescription,
-      status: categoryStatus
-    });
+    function renderCategories(categories) {
+        categoryTableBody.innerHTML = '';
+        categories.forEach((category, index) => {
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><input type="checkbox" class="category-checkbox" data-index="${index}"></td>
+                <td class="category-name">${category.name}</td>
+                <td class="category-description">${category.description}</td>
+                <td class="category-status">${category.status}</td>
+                <td class="text-lg-center">
+                    <button class="btn btn-outline-secondary btn-sm edit-category" data-index="${index}">
+                        <i class="ri-edit-2-line"></i> Edit
+                    </button>
+                </td>
+            `;
+            categoryTableBody.appendChild(newRow);
+        });
+    }
 
-    localStorage.setItem('categories', JSON.stringify(categories));
     loadCategories();
-    categoryForm.reset();
-    const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasCategory'));
-    offcanvas.hide();
-  } catch (error) {
-    console.error('Error adding category:', error);
-  }
+
+    function validateInput(input, errorElement, regex, errorMessage) {
+        const value = input.value.trim();
+        if (value === '') {
+            errorElement.textContent = 'This field is required.';
+            errorElement.style.display = 'block';
+            input.classList.add('is-invalid');
+            return false;
+        } else if (!regex.test(value)) {
+            errorElement.textContent = errorMessage;
+            errorElement.style.display = 'block';
+            input.classList.add('is-invalid');
+            return false;
+        } else {
+            errorElement.style.display = 'none';
+            input.classList.remove('is-invalid');
+            return true;
+        }
+    }
+
+    nameInput.addEventListener('input', () => 
+        validateInput(nameInput, nameError, /^[A-Za-z\s]+$/, 'Please enter only alphabets and spaces.')
+    );
+
+    descriptionInput.addEventListener('input', () => 
+        validateInput(descriptionInput, descriptionError, /^[A-Za-z0-9\s.,!?-]+$/, 'Please enter a valid description.')
+    );
+
+    categoryForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const isNameValid = validateInput(nameInput, nameError, /^[A-Za-z\s]+$/, 'Please enter only alphabets and spaces.');
+        const isDescriptionValid = validateInput(descriptionInput, descriptionError, /^[A-Za-z0-9\s.,!?-]+$/, 'Please enter a valid description.');
+        const categoryStatus = document.getElementById('category-status').value;
+
+        if (isNameValid && isDescriptionValid && categoryStatus) {
+            const newCategory = {
+                name: nameInput.value.trim(),
+                description: descriptionInput.value.trim(),
+                status: categoryStatus
+            };
+
+            fetch('/admin/add-category', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newCategory),
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                return response.text().then(text => {
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        console.error('Error parsing JSON:', e);
+                        console.log('Raw response:', text);
+                        throw new Error('Invalid JSON response from server bbbbb');
+                    }
+                });
+            })
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                loadCategories();
+                categoryForm.reset();
+                const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasCategory'));
+                offcanvas.hide();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Category added successfully',
+                });
+            })
+            .catch(error => {
+                console.error('Error adding category:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: `Failed to add category: ${error.message}`,
+                });
+            });
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+    const editButtons = document.querySelectorAll('.edit-btn');
+
+    editButtons.forEach(button => {
+        button.addEventListener('click', async (event) => {
+            const categoryId = button.getAttribute('data-id');
+
+            try {
+                const response = await fetch(`/api/categories/${categoryId}`);
+                const category = await response.json();
+
+                // Populate the offcanvas form with category details
+                document.getElementById('edit-category-name').value = category.name;
+                document.getElementById('edit-category-description').value = category.description;
+                document.getElementById('edit-category-status').value = category.status;
+                
+                // Set a data attribute on the form for easy access later
+                document.getElementById('editCategoryForm').setAttribute('data-id', categoryId);
+
+                // Remove the delete button if needed
+                button.parentElement.querySelector('.delete-btn').style.display = 'none';
+            } catch (error) {
+                console.error('Error fetching category details:', error);
+            }
+        });
+    });
 });
+
+
+    
+   
+
+
+    document.getElementById('addCategoryBtn').addEventListener('click', function() {
+        categoryForm.reset();
+        categoryExistsError.style.display = 'none';
+        nameError.style.display = 'none';
+        descriptionError.style.display = 'none';
+        nameInput.classList.remove('is-invalid');
+        descriptionInput.classList.remove('is-invalid');
+    });
+});
+
+
 
 document.addEventListener('DOMContentLoaded', function () {
-  const categoryTableBody = document.getElementById('categoryTableBody');
-  const categoryForm = document.getElementById('categoryForm');
-  const editCategoryForm = document.getElementById('editCategoryForm');
-  const nameInput = document.getElementById('category-name');
-  const descriptionInput = document.getElementById('category-description');
-  const nameError = document.getElementById('nameError');
-  const descriptionError = document.getElementById('descriptionError');
-  const categoryExistsError = document.getElementById('categoryExistsError');
-  const selectAllCheckbox = document.getElementById('selectAll');
-  let categories = JSON.parse(localStorage.getItem('categories')) || [];
-  let editingCategoryIndex = -1;
+    const editButtons = document.querySelectorAll('.edit-btn');
 
-  function loadCategories() {
-    categoryTableBody.innerHTML = '';
-    categories.forEach((category, index) => {
-      const newRow = document.createElement('tr');
-      newRow.classList.add('category-row');
-      newRow.innerHTML = `
-        <td><input type="checkbox" class="category-checkbox" data-index="${index}"></td>
-        <td class="category-name">${category.name}</td>
-        <td class="category-description">${category.description}</td>
-        <td class="category-status">${category.status}</td>
-        <td class="text-lg-center">
-          <button class="btn btn-outline-secondary btn-sm edit-category" data-index="${index}">
-            <i class="ri-edit-2-line"></i> Edit
-          </button>
-        </td>
-      `;
-      categoryTableBody.appendChild(newRow);
-    });
-    updateDeleteButtonVisibility();
-  }
+    editButtons.forEach(button => {
+        button.addEventListener('click', async (event) => {
+            const categoryId = button.getAttribute('data-id');
 
-  loadCategories();
+            try {
+                const response = await fetch(`/admin/api/categories/${categoryId}`);
+                const category = await response.json();
 
- 
-  function validateAlphabets(input) {
-    const alphabetRegex = /^[A-Za-z\s]+$/;
-    return alphabetRegex.test(input.trim());
-  }
+               
+                document.getElementById('edit-category-name').value = category.name;
+                document.getElementById('edit-category-description').value = category.description;
+                document.getElementById('edit-category-status').value = category.status;
+                
+               
+                document.getElementById('editCategoryForm').setAttribute('data-id', categoryId);
 
- 
-  categoryForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const categoryName = nameInput.value.trim();
-    const categoryDescription = descriptionInput.value.trim();
-    const categoryStatus = document.getElementById('category-status').value;
-
-    nameError.textContent = '';
-    descriptionError.textContent = '';
-    categoryExistsError.textContent = '';
-
-    if (!validateAlphabets(categoryName)) {
-      nameError.textContent = 'Name must contain only alphabets.';
-      return;
-    }
-
-    if (!validateAlphabets(categoryDescription)) {
-      descriptionError.textContent = 'Description must contain only alphabets.';
-      return;
-    }
-
-    const isDuplicate = categories.some(category => category.name.toLowerCase() === categoryName.toLowerCase());
-    if (isDuplicate) {
-      categoryExistsError.textContent = 'Category already exists.';
-      return;
-    }
-
-    categories.push({
-      name: categoryName,
-      description: categoryDescription,
-      status: categoryStatus
-    });
-
-    localStorage.setItem('categories', JSON.stringify(categories));
-    loadCategories();
-
-    categoryForm.reset();
-    const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasCategory'));
-    offcanvas.hide();
-  });
-
-  // Event listener for editing a category
-  document.addEventListener('click', function (e) {
-    if (e.target.closest('.edit-category')) {
-      const index = e.target.closest('.edit-category').getAttribute('data-index');
-      openEditCategoryModal(index);
-    }
-  });
-
-  function openEditCategoryModal(index) {
-    const category = categories[index];
-    editingCategoryIndex = index;
-    document.getElementById('edit-category-name').value = category.name;
-    document.getElementById('edit-category-description').value = category.description;
-    document.getElementById('edit-category-status').value = category.status;
-
-    const editOffcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasEditCategory'));
-    editOffcanvas.show();
-  }
-
-  
-  editCategoryForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const updatedCategoryName = document.getElementById('edit-category-name').value.trim();
-    const updatedCategoryDescription = document.getElementById('edit-category-description').value.trim();
-    const updatedCategoryStatus = document.getElementById('edit-category-status').value;
-
-  
-    if (!validateAlphabets(updatedCategoryName)) {
-      alert('Name must contain only alphabets.');
-      return;
-    }
-
-    if (!validateAlphabets(updatedCategoryDescription)) {
-      alert('Description must contain only alphabets.');
-      return;
-    }
-
-
-    categories[editingCategoryIndex] = {
-      name: updatedCategoryName,
-      description: updatedCategoryDescription,
-      status: updatedCategoryStatus
-    };
-
-    
-    localStorage.setItem('categories', JSON.stringify(categories));
-
-   
-    loadCategories();
-
-   
-    const editOffcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasEditCategory'));
-    editOffcanvas.hide();
-  });
-
- 
-  function updateDeleteButtonVisibility() {
-    const checkboxes = document.querySelectorAll('.category-checkbox:checked');
-    let deleteButton = document.getElementById('deleteSelectedBtn');
-    const buttonContainer = document.querySelector('.d-flex.justify-content-between.align-items-center');
-    
-    if (checkboxes.length > 0) {
-      if (!deleteButton) {
-        deleteButton = document.createElement('button');
-        deleteButton.id = 'deleteSelectedBtn';
-        deleteButton.className = 'btn btn-danger ms-2';
-        deleteButton.textContent = 'Delete Selected';
-        deleteButton.addEventListener('click', deleteSelectedCategories);
-        buttonContainer.appendChild(deleteButton);
-      }
-    } else if (deleteButton) {
-      deleteButton.remove();
-    }
-
-   
-    selectAllCheckbox.checked = checkboxes.length === categories.length && categories.length > 0;
-  }
-
-  function deleteSelectedCategories() {
-    const selectedCheckboxes = document.querySelectorAll('.category-checkbox:checked');
-    const selectedIndices = Array.from(selectedCheckboxes).map(checkbox => parseInt(checkbox.getAttribute('data-index'))).sort((a, b) => b - a);
-
-    if (selectedIndices.length === 0) return;
-
-    Swal.fire({
-      title: 'Are you sure?',
-      text: `You are about to delete ${selectedIndices.length} category(ies). This action cannot be undone.`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        selectedIndices.forEach(index => {
-          categories.splice(index, 1);
+                
+                button.parentElement.querySelector('.delete-btn').style.display = 'none';
+            } catch (error) {
+                console.error('Error fetching category details:', error);
+            }
         });
-        localStorage.setItem('categories', JSON.stringify(categories));
-        loadCategories();
-        Swal.fire(
-          'Deleted!',
-          'The selected categories have been deleted.',
-          'success'
-        );
-      }
     });
-  }
-
- 
-  categoryTableBody.addEventListener('change', function(e) {
-    if (e.target.classList.contains('category-checkbox')) {
-      updateDeleteButtonVisibility();
-    }
-  });
-
- 
-  selectAllCheckbox.addEventListener('change', function() {
-    const checkboxes = document.querySelectorAll('.category-checkbox');
-    checkboxes.forEach(checkbox => checkbox.checked = this.checked);
-    updateDeleteButtonVisibility();
-  });
 });
 
+editCategoryForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
 
+    const categoryId = document.getElementById('editCategoryForm').getAttribute('data-id');
+    const formData = new FormData(editCategoryForm);
+    const categoryData = {
+        name: formData.get('editCategoryName'),
+        description: formData.get('editDescription'),
+        status: formData.get('editStatus')
+    };
 
+    try {
+        const response = await fetch(`/admin/api/categories/${categoryId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(categoryData)
+        });
 
+        if (response.ok) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Category updated successfully',
+            });
 
+            const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasEditCategory'));
+            offcanvas.hide();
+            
+            loadCategories(); 
+        } else {
+            const errorData = await response.json();
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Failed to update category: ${errorData.error}`,
+            });
+        }
+    } catch (error) {
+        console.error('Category already exists:', error);
+    }
+});
+function validatename() {
+    const nameInput = document.getElementById('category-name').value;
+    const errorElement = document.getElementById('name-error');
+    
+   
+    const validName = /^[A-Za-z\s]+$/i;
+    
+    if (validName.test(nameInput)) {
+       
+        errorElement.style.display = 'none';
+    } else {
+        
+        errorElement.style.display = 'block';
+    }
+}
+function validatedescription() {
+    const descriptionInput = document.getElementById('category-description').value;
+    const errorElement = document.getElementById('description-error');
+    
+    
+    const validDescription = /^[A-Za-z\s]+$/i;
+    
+    if (validDescription.test(descriptionInput)) {
+       
+        errorElement.style.display = 'none';
+    } else {
+        
+        errorElement.style.display = 'block';
+    }
+}
+
+function validateEditName() {
+    const nameInput = document.getElementById('edit-category-name').value;
+    const errorElement = document.getElementById('edit-name-error');
+    
+   
+    const validName = /^[A-Za-z\s]+$/i;
+    
+    if (validName.test(nameInput)) {
+       
+        errorElement.style.display = 'none';
+    } else {
+       
+        errorElement.style.display = 'block';
+    }
+}
+function validateEditDescription() {
+    const descriptionInput = document.getElementById('edit-category-description').value;
+    const errorElement = document.getElementById('edit-description-error');
+    
+    
+    const validDescription = /^[A-Za-z\s]+$/i;
+    
+    if (validDescription.test(descriptionInput)) {
+        
+        errorElement.style.display = 'none';
+    } else {
+       
+        errorElement.style.display = 'block';
+    }
+}
 
 
 

@@ -1,0 +1,573 @@
+<%- include ('../../layout/header.ejs') %>
+
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-top">
+                <div class="container">
+                    <div class="header-left">
+                        <div class="header-dropdown">
+                            <a href="#">eng</a>
+                            <div class="header-menu">
+                                
+                            </div><!-- End .header-menu -->
+                        </div><!-- End .header-dropdown -->
+
+                       <!-- End .header-dropdown -->
+                    </div><!-- End .header-left -->
+
+                    <div class="header-right">
+                        <ul class="top-menu">
+                            <li>
+                                <a href="#">Links</a>
+                                <ul>
+                                  
+                                    
+
+                                    <% if (locals.user) { %>
+                                        <li> <a href="/logout">Logout</a></li>
+                                        <li> </li>
+                                         
+                                        <li> <a href="#"><%=locals.user.name%></a></li>
+                                         
+                                         
+                                           
+                                           
+                                       
+                                     
+                                      <% } else { %>
+                                        <li><a href="/login"><i class="icon-user"></i>Login</a></li>
+                                      <% } %>
+
+                                   
+
+                                </ul>
+                            </li>
+                        </ul><!-- End .top-menu -->
+                    </div><!-- End .header-right -->
+                </div><!-- End .container -->
+            </div><!-- End .header-top -->
+
+            <div class="header-middle sticky-header">
+                <div class="container">
+                    <div class="header-left">
+                        <button class="mobile-menu-toggler">
+                            <span class="sr-only">Toggle mobile menu</span>
+                            <i class="icon-bars"></i>
+                        </button>
+
+                        <a href="index.html" class="logo">
+                            <img src="assets/images/wonder.png" alt="Molla Logo" width="105" height="25">
+                        </a>
+
+                        <nav class="main-nav">
+                            <ul class="menu sf-arrows">
+                                <li class="megamenu-container active">
+                                    <a href="/" class="sf-with-ul">Home</a>
+
+                                    
+                                </li>
+                                <li>
+                                    <a href="/productList" class="sf-with-ul">Shop</a>
+
+                                    
+                                </li>
+                                <li>
+                                    <a href="" class="sf-with-ul">Product</a>
+
+                                    
+                                </li>
+                              
+                           
+                                   
+
+                              
+                                   
+
+                               
+                            </ul><!-- End .menu -->
+                        </nav><!-- End .main-nav -->
+                    </div><!-- End .header-left -->
+
+                    <div class="header-right">
+                        <!-- End .header-search -->
+                       <!-- End .compare-dropdown -->
+
+                       <div class="header-right">
+                        <!-- End .header-search -->
+                        
+ 
+                         <div class="dropdown cart-dropdown">
+                           
+                           <a href="/cart"><i class="icon-shopping-cart" style="font-size: 24px;"></i></a>
+ 
+                         </div>
+                     </div>
+                    </div><!-- End .header-right -->
+                </div><!-- End .container -->
+            </div><!-- End .header-middle -->
+        </header><!-- End .header -->
+
+        <main class="main">
+        	<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+        		<div class="container">
+        			<h1 class="page-title">My Account</h1>
+        		</div><!-- End .container -->
+        	</div><!-- End .page-header -->
+            <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+                <div class="container">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                       
+                        <li class="breadcrumb-item active" aria-current="page">My Account</li>
+                    </ol>
+                </div><!-- End .container -->
+            </nav>
+
+            <div class="page-content">
+                <div class="dashboard">
+                    <div class="container">
+                        <div class="row">
+                            
+                            <aside class="col-md-4 col-lg-3">
+	                			<ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
+                                    <li class="nav-item">
+								        <a class="nav-link " href="/userDashboard" >Dashboard</a>
+								    </li>
+									<li class="nav-item">
+								        <a class="nav-link"  href="/userProfile">Account Details</a>
+								    </li>
+								    <li class="nav-item">
+								        <a class="nav-link" href="#tab-orders" >Orders</a>
+								    </li>
+								   
+								    <li class="nav-item">
+								        <a class="nav-link active"  href="#tab-address" >Adresses</a>
+								    </li>
+								    <li class="nav-item">
+								        <a class="nav-link"  href="#tab-account" >Wallet</a>
+								    </li>
+								    <li class="nav-item">
+								        <a class="nav-link" href="/logout">Sign Out</a>
+								    </li>
+								</ul>
+	                		</aside>
+            
+                          
+                            <div class="col-md-8 col-lg-9">
+                                <div class="tab-content">
+                                 
+									
+                                    <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard-link">
+                                        <div class="container">
+                                            <p>The following addresses will be used on
+                                                the checkout page
+                                                by default.</p>
+                                                <div class="container">
+                                                    <button type="button" class="btn btn-outline-primary mb-3" id="add-address-btn" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                                                        <i class="icon-plus"></i> Add New Address
+                                                    </button>
+                                                
+                                                    <div class="row">
+                                                        <% if (addresses.length > 0) { %>
+                                                            <% addresses.forEach(address => { %>
+                                                                <div class="col-lg-3 col-md-6 mb-4">
+                                                                    <div class="card card-dashboard" style="border-radius: 10px; ">
+                                                                        <div class="card-body">
+                                                                            <h3 class="card-title"><strong>Address</strong></h3>
+                                                    
+                                                                            <p>
+                                                                                <strong><%= address.name %></strong><br>
+                                                                                <%= address.address %><br>
+                                                                                <%= address.landmark ? address.landmark + ', ' : '' %>
+                                                                                <%= address.city %>, <%= address.state %> - <%= address.pincode %><br>
+                                                                                <%= address.phone %><br>
+                                                                                <a href="#" onclick="openEditModal('<%= address._id %>')">Edit <i class="icon-edit"></i></a>
+                                                                                <a href="#" class="text-danger ms-2" onclick="deleteAddress('<%= address._id %>'); return false;">Delete</a>                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            <% }); %>
+                                                        <% } else { %>
+                                                            <div class="col-lg-12">
+                                                                <div >
+                                                                    No addresses found
+                                                                </div>
+                                                            </div>
+                                                        <% } %>
+                                                    </div>
+                                                    
+                                                    
+                                                    
+                                                    
+                                                
+                                                
+                                                
+                                                <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content" style="border-radius: 10px;">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="addAddressModalLabel">Add New Address</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body" style="padding: 20px;">
+                                                                <form id="addAddressForm" style="padding-left: 15px; padding-right: 15px;">
+                                                                    <div class="mb-3">
+                                                                        <label for="name" class="form-label">Name</label>
+                                                                        <input type="text" class="form-control" id="name" name="name" required style="border-radius: 5px;">
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label for="phone" class="form-label">Phone number</label>
+                                                                        <input type="text" class="form-control" id="phone" name="phone" required style="border-radius: 5px;">
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label for="address" class="form-label">Address</label>
+                                                                        <textarea class="form-control" id="address" name="address" rows="3" required style="border-radius: 5px;"></textarea>
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label for="landmark" class="form-label">Landmark (Optional)</label>
+                                                                        <input type="text" class="form-control" id="landmark" name="landmark" style="border-radius: 5px;">
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-md-6 mb-3">
+                                                                            <label for="city" class="form-label">City</label>
+                                                                            <input type="text" class="form-control" id="city" name="city" required style="border-radius: 5px;">
+                                                                        </div>
+                                                                        <div class="col-md-6 mb-3">
+                                                                            <label for="state" class="form-label">State</label>
+                                                                            <input type="text" class="form-control" id="state" name="state" required style="border-radius: 5px;">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label for="pincode" class="form-label">Postal Code</label>
+                                                                        <input type="text" class="form-control" id="pincode" name="pincode" required style="border-radius: 5px;">
+                                                                    </div>
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Close</button>
+
+                                                                    <button type="submit" class="btn btn-primary" >Submit</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+ <!-- Edit Address Modal -->
+<div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 10px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"  style="padding: 20px;">
+                <form id="editAddressForm" style="padding-left: 15px; padding-right: 15px;">
+                    <input type="hidden" id="editAddressId" name="id">
+                    <div class="mb-3">
+                        <label for="editName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="editName" name="name" required  style="border-radius: 5px;">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPhone" class="form-label">Phone</label>
+                        <input type="text" class="form-control" id="editPhone" name="phone" required  style="border-radius: 5px;">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editAddressLine" class="form-label">Address</label>
+                        <textarea class="form-control" id="editAddress" name="address" rows="3" required  style="border-radius: 5px;"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editLandmark" class="form-label">Landmark</label>
+                        <input type="text" class="form-control" id="editLandmark" name="landmark">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editCity" class="form-label">City</label>
+                        <input type="text" class="form-control" id="editCity" name="city" required  style="border-radius: 5px;">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editState" class="form-label">State</label>
+                        <input type="text" class="form-control" id="editState" name="state" required  style="border-radius: 5px;">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPostalCode" class="form-label">Postal Code</label>
+                        <input type="text" class="form-control" id="editPostalCode" name="pincode" required  style="border-radius: 5px;">
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Close</button>
+
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+                                                   
+
+        
+        </main><!-- End .main -->
+
+        <footer class="footer">
+        	<div class="footer-middle">
+	            <div class="container">
+	            	<div class="row">
+	            		<div class="col-sm-6 col-lg-3">
+	            			<div class="widget widget-about">
+	            				
+	            				<p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. </p>
+
+	            				<div class="social-icons">
+	            					<a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
+	            					<a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
+	            					<a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
+	            					<a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
+	            					<a href="#" class="social-icon" target="_blank" title="Pinterest"><i class="icon-pinterest"></i></a>
+	            				</div><!-- End .soial-icons -->
+	            			</div><!-- End .widget about-widget -->
+	            		</div><!-- End .col-sm-6 col-lg-3 -->
+
+	            		<div class="col-sm-6 col-lg-3">
+	            			<div class="widget">
+	            				<h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
+
+	            				<ul class="widget-list">
+	            					<li><a href="about.html">About Molla</a></li>
+	            					<li><a href="#">How to shop on Molla</a></li>
+	            					<li><a href="#">FAQ</a></li>
+	            					<li><a href="contact.html">Contact us</a></li>
+	            					<li><a href="login.html">Log in</a></li>
+	            				</ul><!-- End .widget-list -->
+	            			</div><!-- End .widget -->
+	            		</div><!-- End .col-sm-6 col-lg-3 -->
+
+	            		<div class="col-sm-6 col-lg-3">
+	            			<div class="widget">
+	            				<h4 class="widget-title">Customer Service</h4><!-- End .widget-title -->
+
+	            				<ul class="widget-list">
+	            					<li><a href="#">Payment Methods</a></li>
+	            					<li><a href="#">Money-back guarantee!</a></li>
+	            					<li><a href="#">Returns</a></li>
+	            					<li><a href="#">Shipping</a></li>
+	            					<li><a href="#">Terms and conditions</a></li>
+	            					<li><a href="#">Privacy Policy</a></li>
+	            				</ul><!-- End .widget-list -->
+	            			</div><!-- End .widget -->
+	            		</div><!-- End .col-sm-6 col-lg-3 -->
+
+	            		<div class="col-sm-6 col-lg-3">
+	            			<div class="widget">
+	            				<h4 class="widget-title">My Account</h4><!-- End .widget-title -->
+
+	            				<ul class="widget-list">
+	            					<li><a href="#">Sign In</a></li>
+	            					<li><a href="cart.html">View Cart</a></li>
+	            					<li><a href="#">My Wishlist</a></li>
+	            					<li><a href="#">Track My Order</a></li>
+	            					<li><a href="#">Help</a></li>
+	            				</ul><!-- End .widget-list -->
+	            			</div><!-- End .widget -->
+	            		</div><!-- End .col-sm-6 col-lg-3 -->
+	            	</div><!-- End .row -->
+	            </div><!-- End .container -->
+	        </div><!-- End .footer-middle -->
+
+	        
+        </footer><!-- End .footer -->
+    </div><!-- End .page-wrapper -->
+   
+
+   <script>
+    
+    document.getElementById('addAddressForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+
+    // Ensure pincode is a number
+    data.pincode = parseInt(data.pincode, 10);
+
+    // Log the data being sent (for debugging)
+    console.log('Sending data:', data);
+
+    fetch('/add-address', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Added!',
+                text: 'Address added successfully',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                $('#addAddressModal').modal('hide');
+                location.reload();
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error adding address',
+                text: data.message
+            });
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'An error occurred',
+            text: 'There was an error while adding the address.'
+        });
+    });
+});
+
+
+function deleteAddress(addressId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // If confirmed, proceed with the delete request
+            fetch(`/api/addresses/${addressId}`, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => Promise.reject(err));
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'Your address has been deleted successfully.',
+                        confirmButtonText: 'OK',
+                    }).then(() => {
+                        // Optionally refresh or remove the deleted address from the UI
+                        location.reload(); 
+                    });
+                } else {
+                    throw new Error(data.message || 'Failed to delete the address.');
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'There was a problem deleting the address: ' + (error.message || 'Unknown error'),
+                    confirmButtonText: 'OK',
+                });
+            });
+        }
+    });
+}
+
+
+function openEditModal(addressId) {
+   
+    fetch(`/get-address/${addressId}`)
+        .then(response => response.json())
+        .then(data => {
+            // Pre-fill the form fields with the existing address data
+            document.getElementById('editAddressId').value = data._id;
+            document.getElementById('editName').value = data.name;
+            document.getElementById('editPhone').value = data.phone;
+            document.getElementById('editAddress').value = data.address;
+            document.getElementById('editLandmark').value = data.landmark;
+            document.getElementById('editCity').value = data.city;
+            document.getElementById('editState').value = data.state;
+            document.getElementById('editPostalCode').value = data.pincode;
+
+            // Show the modal
+            const editModal = new bootstrap.Modal(document.getElementById('editAddressModal'));
+            editModal.show();
+        })
+        .catch(error => {
+            console.error('Error fetching address:', error);
+            alert('Failed to fetch address data');
+        });
+}
+document.getElementById('editAddressForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+    
+    console.log('Form data:', data);  // Log the data being sent
+
+    fetch(`/api/addresses/${data.id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        return response.text().then(text => {
+            try {
+                return JSON.parse(text);
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                console.log('Raw response:', text);
+                throw new Error('Invalid JSON response from server');
+            }
+        });
+    })
+    .then(result => {
+        console.log('Server response:', result);
+        if (result.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Address updated successfully',
+                confirmButtonText: 'OK',
+            }).then(() => {
+                location.reload();
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error updating address: ' + result.message,
+                confirmButtonText: 'OK',
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while updating the address: ' + error.message,
+            confirmButtonText: 'OK',
+        });
+    });
+});
+
+
+
+
+
+   </script>
+    
+
+   
+    <%- include ('../../layout/footer.ejs') %>

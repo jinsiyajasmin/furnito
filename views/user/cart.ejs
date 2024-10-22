@@ -1,0 +1,564 @@
+<%- include ('../../layout/header.ejs') %>
+<style>
+    .removal-message {
+    text-align: center;
+    padding: 10px;
+    background-color: #e6f3ff;
+    color: #0066cc;
+    font-style: italic;
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    z-index: 1000;
+}
+
+.message.success {
+    background-color: #4CAF50;
+}
+
+.message.error {
+    background-color: #4CAF50;
+}
+
+.message.warning {
+    background-color: #ff9800;
+}
+</style>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-top">
+                <div class="container">
+                    <div class="header-left">
+                    
+
+                        <div class="header-dropdown">
+                            <a href="#">Eng</a>
+                            <div class="header-menu">
+                               
+                            </div><!-- End .header-menu -->
+                        </div><!-- End .header-dropdown -->
+                    </div><!-- End .header-left -->
+
+                    <div class="header-right">
+                        <ul class="top-menu">
+                            
+                        </ul>
+                    </div><!-- End .header-right -->
+                </div><!-- End .container -->
+            </div><!-- End .header-top -->
+
+            <div class="header-middle sticky-header">
+                <div class="container">
+                    <div class="header-left">
+                        <button class="mobile-menu-toggler">
+                            <span class="sr-only">Toggle mobile menu</span>
+                            <i class="icon-bars"></i>
+                        </button>
+
+                        <a href="index.html" class="logo">
+                            <img src="/assets/images/wonder.png" alt="Molla Logo" width="105" height="25">
+                        </a>
+
+                        <nav class="main-nav">
+                            <ul class="menu sf-arrows">
+                                <li class="megamenu-container active">
+                                    <a href="/" class="sf-with-ul">Home</a>
+
+                                   
+                                </li>
+                                <li>
+                                    <a href="/productList" class="sf-with-ul">Shop</a>
+
+                                  
+                                </li>
+                                <li>
+                                    <a href="product.html" class="sf-with-ul">Product</a>
+
+                                    <!-- End .megamenu megamenu-sm -->
+                                </li>
+                               
+                                
+                                
+                            </ul><!-- End .menu -->
+                        </nav><!-- End .main-nav -->
+                    </div><!-- End .header-left -->
+
+                    <div class="header-right">
+                        <div class="header-search">
+                            <a href="#" class="search-toggle" role="button" title="Search"><i class="icon-search"></i></a>
+                            <form action="#" method="get">
+                                <div class="header-search-wrapper">
+                                    <label for="q" class="sr-only">Search</label>
+                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search in..." required>
+                                </div><!-- End .header-search-wrapper -->
+                            </form>
+                        </div><!-- End .header-search -->
+                                                        <!-- End .compare-dropdown -->
+
+                        <div class="dropdown cart-dropdown">
+                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                                <i class="icon-shopping-cart"></i>
+                               
+                            </a>
+
+                            <!-- End .dropdown-menu -->
+                        </div><!-- End .cart-dropdown -->
+                    </div><!-- End .header-right -->
+                </div><!-- End .container -->
+            </div><!-- End .header-middle -->
+        </header><!-- End .header -->
+
+        <main class="main">
+        	<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+        		<div class="container">
+        			<h1 class="page-title">Shopping Cart</h1>
+        		</div><!-- End .container -->
+        	</div><!-- End .page-header -->
+            <nav aria-label="breadcrumb" class="breadcrumb-nav">
+                <div class="container">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/productList">Shop</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
+                    </ol>
+                </div><!-- End .container -->
+            </nav><!-- End .breadcrumb-nav -->
+
+            <div class="page-content">
+            	<div class="cart">
+	                <div class="container">
+	                	<div class="row">
+	                		<div class="col-lg-9">
+                               
+                            
+                            
+                                
+                                    <table class="table table-cart ">
+                                        <div class="row">
+                                            <div class="col-lg-9">
+                                                <table class="table table-cart table-mobile">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Product</th>
+                                                            <th>Price</th>
+                                                            <th>Quantity</th>
+                                                            <th>Total</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                       
+                                        <tbody>
+                                            <% if (cart && cart.length > 0) { %>
+                                                <% cart.forEach(item => { %>
+                                                    <tr>
+                                                        <td class="product-col">
+                                                            <div class="product">
+                                                                <figure class="product-media">
+                                                                    <a href="/productDetails/<%= item.product._id %>">
+                                                                        <img src="/uploads/<%= item.product.productImage[0] %>" alt="Product image" class="product-image">
+                                                                    </a>
+                                                                </figure>
+                                                                <h3 class="product-title">
+                                                                    <a href="#"><%= item.product.productName %></a>
+                                                                </h3>
+                                                            </div>
+                                                        </td>
+                                                        <td class="price-col">₹<%= item.product.price.toFixed(2) %></td>
+                                                        <td class="quantity-col">
+                                                            <div class="cart-product-quantity">
+                                                                <input type="number" class="form-control quantity-input" 
+                                                                       value="<%= item.quantity %>" 
+                                                                       min="1" max="<%= Math.min(item.product.quantity, 10) %>" step="1" required
+                                                                       data-price="<%= item.product.price %>"
+                                                                       data-item-id="<%= item._id %>"
+                                                                       data-max-quantity="<%= item.product.quantity %>">
+                                                            </div>
+                                                            <!-- Add a unique id for each item's error message -->
+                                                            <div id="error-message-<%= item._id %>"></div>
+                                                        </td>
+                                                        
+
+                                                        
+                                                        <td class="total-col">₹<span class="item-total" data-item-id="<%= item._id %>"><%= (item.product.price * item.quantity).toFixed(2) %></span></td>
+                                                        <td class="remove-col">
+                                                            <button class="btn-remove" data-product-id= "<%= item.product._id %> ">
+                                                                <i class="icon-close"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                <% }) %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="5">Your cart is empty.</td>
+                                                </tr>
+                                            <% } %>
+                                            
+                                        </tbody>
+                                    </table>
+                                
+                                    <!-- Checkout Section -->
+                                   
+                                
+                                
+                                
+
+	                			<div class="cart-bottom">
+			            			<div class="cart-discount">
+			            				<form action="#">
+			            					<div class="input-group">
+				        						<input type="text" class="form-control" required placeholder="coupon code">
+				        						<div class="input-group-append">
+													<button class="btn btn-outline-primary-2" type="submit"><i class="icon-long-arrow-right"></i></button>
+												</div><!-- .End .input-group-append -->
+			        						</div><!-- End .input-group -->
+			            				</form>
+			            			</div><!-- End .cart-discount -->
+
+			            			
+		            			</div><!-- End .cart-bottom -->
+	                		</div><!-- End .col-lg-9 -->
+	                		<aside class="col-lg-3">
+	                			<div class="summary summary-cart" style="max-width: 400px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+                                    <table class="table table-summary" style="width: 100%; text-align: left;">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2" style="text-align: center; padding-bottom: 10px;">
+                                                    <h5 style="font-size: 20px; margin: 0;">Cart Total</h5>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="padding: 10px 0;">Subtotal:</td>
+                                                <td style="text-align: right;">₹<%= totalPrice.toFixed(2) %></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 10px 0;">Shipping:</td>
+                                                <td style="text-align: right;">Free Shipping: ₹0</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td style="color: blue; padding: 10px 0;">Total:</td>
+                                                <td style="color: blue; text-align: right;">₹<%= totalPrice.toFixed(2) %></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                
+                                    <div class="checkout-section" style="text-align: center; margin-top: 20px;">
+                                        <a href="/checkOut" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px; border-radius: 5px;">
+                                            Proceed to Checkout
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                
+                                <!-- End .summary -->
+
+		            			<a href="/productList" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
+	                		</aside><!-- End .col-lg-3 -->
+	                	</div><!-- End .row -->
+	                </div><!-- End .container -->
+                </div><!-- End .cart -->
+            </div><!-- End .page-content -->
+        </main><!-- End .main -->
+
+        <footer class="footer">
+        	<div class="footer-middle">
+	            <div class="container">
+	            	<div class="row">
+	            		<div class="col-sm-6 col-lg-3">
+	            			<div class="widget widget-about">
+	            				
+	            				<p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. </p>
+
+	            				<div class="social-icons">
+	            					<a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
+	            					<a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
+	            					<a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
+	            					<a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
+	            					<a href="#" class="social-icon" target="_blank" title="Pinterest"><i class="icon-pinterest"></i></a>
+	            				</div><!-- End .soial-icons -->
+	            			</div><!-- End .widget about-widget -->
+	            		</div><!-- End .col-sm-6 col-lg-3 -->
+
+	            		<div class="col-sm-6 col-lg-3">
+	            			<div class="widget">
+	            				<h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
+
+	            				<ul class="widget-list">
+	            					<li><a href="about.html">About Molla</a></li>
+	            					<li><a href="#">How to shop on Molla</a></li>
+	            					<li><a href="#">FAQ</a></li>
+	            					<li><a href="contact.html">Contact us</a></li>
+	            					<li><a href="login.html">Log in</a></li>
+	            				</ul><!-- End .widget-list -->
+	            			</div><!-- End .widget -->
+	            		</div><!-- End .col-sm-6 col-lg-3 -->
+
+	            		<div class="col-sm-6 col-lg-3">
+	            			<div class="widget">
+	            				<h4 class="widget-title">Customer Service</h4><!-- End .widget-title -->
+
+	            				<ul class="widget-list">
+	            					<li><a href="#">Payment Methods</a></li>
+	            					<li><a href="#">Money-back guarantee!</a></li>
+	            					<li><a href="#">Returns</a></li>
+	            					<li><a href="#">Shipping</a></li>
+	            					<li><a href="#">Terms and conditions</a></li>
+	            					<li><a href="#">Privacy Policy</a></li>
+	            				</ul><!-- End .widget-list -->
+	            			</div><!-- End .widget -->
+	            		</div><!-- End .col-sm-6 col-lg-3 -->
+
+	            		<div class="col-sm-6 col-lg-3">
+	            			<div class="widget">
+	            				<h4 class="widget-title">My Account</h4><!-- End .widget-title -->
+
+	            				<ul class="widget-list">
+	            					<li><a href="#">Sign In</a></li>
+	            					<li><a href="/cart">View Cart</a></li>
+	            					<li><a href="#">My Wishlist</a></li>
+	            					<li><a href="#">Track My Order</a></li>
+	            					<li><a href="#">Help</a></li>
+	            				</ul><!-- End .widget-list -->
+	            			</div><!-- End .widget -->
+	            		</div><!-- End .col-sm-6 col-lg-3 -->
+	            	</div><!-- End .row -->
+	            </div><!-- End .container -->
+	        </div><!-- End .footer-middle -->
+
+	        <div class="footer-bottom">
+	        	<div class="container">
+	        		<p class="footer-copyright">Copyright © 2019 Molla Store. All Rights Reserved.</p><!-- End .footer-copyright -->
+	        		<figure class="footer-payments">
+	        			<img src="assets/images/payments.png" alt="Payment methods" width="272" height="20">
+	        		</figure><!-- End .footer-payments -->
+	        	</div><!-- End .container -->
+	        </div><!-- End .footer-bottom -->
+        </footer><!-- End .footer -->
+    </div><!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
+
+    <div class="mobile-menu-container">
+        <div class="mobile-menu-wrapper">
+            <span class="mobile-menu-close"><i class="icon-close"></i></span>
+
+          
+            
+            <!-- End .mobile-nav -->
+
+            <div class="social-icons">
+                <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
+            </div><!-- End .social-icons -->
+        </div><!-- End .mobile-menu-wrapper -->
+    </div><!-- End .mobile-menu-container -->
+
+    <!-- Sign in / Register Modal -->
+    <!-- End .modal -->
+
+    <!-- Plugins JS File -->
+   
+
+
+    <script>
+      
+      document.addEventListener('DOMContentLoaded', function() {
+    const quantityInputs = document.querySelectorAll('.quantity-input');
+    const removeButtons = document.querySelectorAll('.btn-remove');
+
+    quantityInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const quantity = parseInt(this.value);
+            const price = parseFloat(this.getAttribute('data-price'));
+            const itemId = this.getAttribute('data-item-id');
+
+            if (isNaN(quantity) || quantity < 1) {
+                console.error('Invalid quantity:', quantity);
+                this.value = 1; // Default to 1 if invalid quantity
+                return;
+            }
+
+            updateItemTotal(itemId, quantity, price);
+            updateCartTotal();
+            updateServerQuantity(itemId, quantity);
+        });
+    });
+
+    function updateServerQuantity(itemId, quantity) {
+        fetch('/api/cart/update-quantity', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ itemId, quantity })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => Promise.reject(err));
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                console.log('Quantity updated successfully:', data);
+                // Update the UI with the new quantity if needed
+            } else {
+                throw new Error(data.message || 'Failed to update quantity');
+            }
+        })
+        .catch(error => {
+            console.error('Error updating quantity:', error);
+            alert('There was a problem updating the quantity: ' + (error.message || 'Unknown error'));
+            // Revert the input to the previous value if needed
+        });
+    }
+
+
+
+    removeButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.getAttribute('data-product-id');
+            console.log('Attempting to remove product:', productId);
+            removeItemFromCart(productId, this);
+        });
+    });
+
+    function updateItemTotal(itemId, quantity, price) {
+        const total = quantity * price;
+        const itemTotalElement = document.querySelector(`.item-total[data-item-id="${itemId}"]`);
+        if (itemTotalElement) {
+            itemTotalElement.textContent =  + total.toFixed(2);
+        }
+    }
+
+
+    function removeItemFromCart(productId, buttonElement) {
+        const trimmedProductId = productId.trim();
+        console.log('Sending request to remove product:', trimmedProductId);
+        
+        fetch('/cart/remove', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId: trimmedProductId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log(`Successfully removed product: ${trimmedProductId}`);
+                removeProductRow(buttonElement);
+                updateCartTotal();
+                showMessage(data.message || 'Item removed successfully', 'success');
+            } else {
+                console.error('Failed to remove item from cart:', data.message);
+                showMessage(data.message || 'Failed to remove item from cart', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error removing item from cart:', error);
+            showMessage('Error removing item', 'error');
+        });
+    }
+
+    function removeProductRow(buttonElement) {
+        const row = buttonElement.closest('tr');
+        if (row) {
+            console.log('Removing row from DOM:', row);
+            row.style.transition = 'opacity 0.5s';
+            row.style.opacity = '0';
+            
+            setTimeout(() => {
+                row.remove();
+                updateCartTotal();
+            }, 500);
+        } else {
+            console.error('Could not find the row to remove');
+        }
+    }
+
+    function updateCartTotal() {
+        const itemTotals = document.querySelectorAll('.item-total');
+        let cartTotal = 0;
+
+        itemTotals.forEach(item => {
+            const itemTotal = parseFloat(item.textContent.replace('₹', ''));
+            if (!isNaN(itemTotal)) {
+                cartTotal += itemTotal;
+            }
+        });
+
+        console.log('Calculated cart total:', cartTotal);
+
+        updateElementText('#cart-total', + cartTotal.toFixed(2));
+        updateElementText('.checkout-section h4', 'Total Price: ' + cartTotal.toFixed(2));
+        updateSummaryTable(cartTotal);
+        sendCartTotalToServer(cartTotal);
+    }
+
+    function updateElementText(selector, text) {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.textContent = text;
+        } else {
+            console.error(`Element not found: ${selector}`);
+        }
+    }
+
+    function updateSummaryTable(total) {
+        updateElementText('.table-summary tbody tr:first-child td:last-child', '₹' + total.toFixed(2));
+        updateElementText('.table-summary tfoot tr td:last-child', '₹' + total.toFixed(2));
+    }
+
+    function sendCartTotalToServer(total) {
+        $.ajax({
+            url: '/update-cart-total',
+            type: 'POST',
+            data: JSON.stringify({ cartTotal: total }),
+            contentType: 'application/json',
+            success: function(response) {
+                console.log('Cart total updated on server:', response);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error updating cart total on server:', error);
+            }
+        });
+    }
+
+    function showMessage(message, type = 'success') {
+        console.log(`Showing message: "${message}" (${type})`);
+        const messageDiv = document.createElement('div');
+        messageDiv.textContent = message;
+        messageDiv.className = `message ${type}`;
+        document.body.appendChild(messageDiv);
+
+        setTimeout(() => {
+            messageDiv.remove();
+        }, 2000);
+    }
+});
+
+
+    </script>
+    <%- include ('../../layout/footer.ejs') %>

@@ -8,25 +8,25 @@ const session = require("express-session");
 const passport = require("./config/passport");
 const userRouter = require('./router/userRouter');
 const adminRouter = require('./router/adminRouter');
-// const nocache = require('nocache');
+
+
 db();
-// MongoDB connection
-// mongoose.connect("mongodb://127.0.0.1:27017/furniture")
-//     .then(() => console.log('MongoDB Connected'))
-//     .catch((err) => console.log('MongoDB connection error:', err));
-
-
+  
     app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
+    app.use(express.urlencoded({ extended: true }));  
+
+
 
 app.use('/adminassets',express.static(path.join(__dirname,"./public/adminassets")));
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+  
 
 app.use(session({
-    secret: 'secret',
+    secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,    
     cookie:{
         secure:false,
         httpOnly:true,
@@ -39,10 +39,11 @@ app.use(passport.session());
 
 
 app.use('/', userRouter);
-app.use('/admin',adminRouter);
+app.use('/admin',adminRouter); 
 
 
-const port = 7001;
+const port = 4000 || process.env.PORT;  
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 });
+ 

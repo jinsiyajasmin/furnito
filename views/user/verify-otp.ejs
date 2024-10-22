@@ -21,13 +21,19 @@
             padding: 40px;
             background: #ffffff;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
         h2 {
             color: #333;
             text-align: center;
             margin-bottom: 30px;
             font-weight: 600;
+            font-size: 28px;
         }
         .form-group {
             margin-bottom: 25px;
@@ -37,6 +43,7 @@
             margin-bottom: 10px;
             color: #555;
             font-weight: 500;
+            font-size: 14px;
         }
         .otp-container {
             display: flex;
@@ -53,10 +60,11 @@
             margin: 0 5px;
             font-weight: 600;
             color: #333;
+            transition: all 0.3s ease;
         }
         .otp-input:focus {
             border-color: #4A90E2;
-            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
             outline: none;
         }
         .btn {
@@ -75,11 +83,13 @@
         }
         .btn-primary:hover {
             background-color: #357ABD;
+            transform: translateY(-2px);
         }
         .btn-secondary {
             background-color: #F0F0F0;
             color: #333;
             margin-top: 10px;
+            display: none;
         }
         .btn-secondary:hover {
             background-color: #E0E0E0;
@@ -95,11 +105,12 @@
             color: #4A90E2;
         }
         .alert {
-            padding: 10px;
+            padding: 12px;
             border-radius: 10px;
             margin-top: 20px;
             text-align: center;
             font-size: 14px;
+            transition: all 0.3s ease;
         }
         .alert-danger {
             background-color: #FFF3F3;
@@ -115,13 +126,16 @@
             text-align: center;
             margin-top: 20px;
             color: #777;
+            font-size: 14px;
         }
         .text-center a {
             color: #4A90E2;
             text-decoration: none;
             font-weight: 500;
+            transition: all 0.3s ease;
         }
         .text-center a:hover {
+            color: #357ABD;
             text-decoration: underline;
         }
     </style>
@@ -142,7 +156,7 @@
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">Verify Email</button>
-            <button type="button" class="btn btn-secondary" onclick="resendOTP()">Resend OTP</button>
+            <button type="button" id="resendBtn" class="btn btn-secondary" onclick="resendOTP()">Resend OTP</button>
         </form>
         <div class="otp-timer">
             Time remaining: <span id="timerValue">60</span> seconds
@@ -161,12 +175,14 @@
         function startTimer() {
             clearInterval(timerInterval);
             timer = 60;
+            document.getElementById("resendBtn").style.display = "none";
             timerInterval = setInterval(() => {
                 timer--;
                 document.getElementById("timerValue").textContent = timer;
                 if (timer <= 0) {
                     clearInterval(timerInterval);
                     document.getElementById("timerValue").textContent = "Expired";
+                    document.getElementById("resendBtn").style.display = "block";
                 }
             }, 1000);
         }
@@ -193,7 +209,7 @@
                     }
                 },
                 error: function() {
-                    showMessage("Something went wrong. Please try again.", "error");
+                    showMessage("Invalid OTP. Please try again.", "error");
                 }
             });
             return false;
@@ -202,7 +218,7 @@
         function resendOTP() {
             $.ajax({
                 type: "POST",
-                url: "/resend-otp",
+                url: "/resendOtp",
                 success: function(response) {
                     if (response.success) {
                         showMessage("OTP resent successfully", "success");
@@ -224,7 +240,7 @@
             messageElement.style.display = "block";
         }
 
-        // Auto-tab functionality for OTP inputs
+    
         const otpInputs = document.querySelectorAll('.otp-input');
         otpInputs.forEach((input, index) => {
             input.addEventListener('input', (e) => {
@@ -241,9 +257,5 @@
 
         startTimer();
     </script>
-
-
-
-<%- include ('../../layout/footer.ejs') %>
 </body>
 </html>

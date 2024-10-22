@@ -1,0 +1,254 @@
+function getCartItems() {
+    const cartItems = [];
+    const rows = document.querySelectorAll('.table-summary tbody tr');
+
+    rows.forEach(row => {
+        // Skip rows that are subtotal or total, and ensure the row has two cells (name and total)
+        if (!row.classList.contains('summary-subtotal') && 
+            !row.classList.contains('summary-total') && 
+            row.cells.length === 2) {
+            
+            // Get item id from data attribute
+            const itemId = row.getAttribute('data-item-id');
+            const name = row.cells[0].textContent.trim(); // Product name
+            const total = row.cells[1].textContent.trim(); // Total price for product
+
+            if (itemId) {
+                cartItems.push({
+                    id: itemId,
+                    name: name,
+                    total: total
+                });
+            }
+        }
+    });
+
+    return cartItems;
+}
+
+// Function to retrieve the total cart value from the table
+function getCartTotal() {
+    const totalRow = document.querySelector('.table-summary .summary-total td:last-child');
+    return totalRow ? totalRow.textContent.trim() : '₹0.00'; // Default to ₹0.00 if not found
+}
+
+// Example usage: Retrieve and log cart items and total
+const cartItems = getCartItems();
+const cartTotal = getCartTotal();
+console.log('Cart Items:', cartItems);
+console.log('Cart Total:', cartTotal);
+
+// Function to update the subtotal and total in the DOM (for dynamic updates)
+function updateCartTotal(newTotal) {
+    const subtotalRow = document.querySelector('.table-summary .summary-subtotal td:last-child');
+    const totalRow = document.querySelector('.table-summary .summary-total td:last-child');
+    
+    if (subtotalRow && totalRow) {
+        subtotalRow.textContent = `₹${newTotal}`;
+        totalRow.textContent = `₹${newTotal}`;
+    }
+}
+
+
+
+
+
+
+
+
+
+function deleteAddress(addressId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+           
+            fetch(`/api/addresses/${addressId}`, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => Promise.reject(err));
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'Your address has been deleted successfully.',
+                        confirmButtonText: 'OK',
+                    }).then(() => {
+                       
+                        location.reload(); 
+                    });
+                } else {
+                    throw new Error(data.message || 'Failed to delete the address.');
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'There was a problem deleting the address: ' + (error.message || 'Unknown error'),
+                    confirmButtonText: 'OK',
+                });
+            });
+        }
+    });
+}
+
+
+
+document.getElementById('editAddressForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+    
+    console.log('Form data:', data);  // Log the data being sent
+
+    fetch(`/api/addresses/${data.id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        return response.text().then(text => {
+            try {
+                return JSON.parse(text);
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                console.log('Raw response:', text);
+                throw new Error('Invalid JSON response from server');
+            }
+        });
+    })
+    .then(result => {
+        console.log('Server response:', result);
+        if (result.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Address updated successfully',
+                confirmButtonText: 'OK',
+            }).then(() => {
+                location.reload();
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error updating address: ' + result.message,
+                confirmButtonText: 'OK',
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while updating the address: ' + error.message,
+            confirmButtonText: 'OK',
+        });
+    });
+});
+
+
+
+
+function openEditModal(addressId) {
+
+    fetch(`/get-address/${addressId}`)
+        .then(response => response.json())
+        .then(data => {
+            // Pre-fill the form fields with the existing address data
+            document.getElementById('editAddressId').value = data._id;
+            document.getElementById('editName').value = data.name;
+            document.getElementById('editPhone').value = data.phone;
+            document.getElementById('editAddress').value = data.address;
+            document.getElementById('editLandmark').value = data.landmark;
+            document.getElementById('editCity').value = data.city;
+            document.getElementById('editState').value = data.state;
+            document.getElementById('editPostalCode').value = data.pincode;
+
+            // Show the modal
+            const editModal = new bootstrap.Modal(document.getElementById('editAddressModal'));
+            editModal.show();
+        })
+        .catch(error => {
+            console.error('Error fetching address:', error);
+            alert('Failed to fetch address data');
+        });
+}
+document.getElementById('editAddressForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+    
+    console.log('Form data:', data);  // Log the data being sent
+
+    fetch(`/api/addresses/${data.id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        return response.text().then(text => {
+            try {
+                return JSON.parse(text);
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                console.log('Raw response:', text);
+                throw new Error('Invalid JSON response from server');
+            }
+        });
+    })
+    .then(result => {
+        console.log('Server response:', result);
+        if (result.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Address updated successfully',
+                confirmButtonText: 'OK',
+            }).then(() => {
+                location.reload();
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error updating address: ' + result.message,
+                confirmButtonText: 'OK',
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while updating the address: ' + error.message,
+            confirmButtonText: 'OK',
+        });
+    });
+});
