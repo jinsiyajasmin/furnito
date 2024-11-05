@@ -1,7 +1,8 @@
 const User = require("../../models/user/userSchema");
 const env = require ('dotenv').config;
 const bcrypt = require('bcryptjs');
-const Product = require('../../models/admin/productSchema'); 
+const Order = require('../../models/user/userOrder');
+const Product = require('../../models/admin/productSchema');
 const Address = require('../../models/user/addressSchema')
 const Category = require('../../models/admin/categorySchema');
 const { userAuth } = require("../../middlewares/auth");
@@ -147,7 +148,7 @@ const updateProfile = async (req, res) => {
             }
     
            
-            const pincodeNum = parseInt(pincode, 6);
+            const pincodeNum = parseInt(pincode, 10);
             if (isNaN(pincodeNum)) {
                 return res.status(400).json({ success: false, message: 'Pincode must be a valid number' });
             }
@@ -244,7 +245,55 @@ const updateProfile = async (req, res) => {
             res.status(500).json({ success: false, message: 'Error deleting address', error: err.message });
         }
     };
-
+    const getOrders = async (req, res) => {
+        try {
+            const orders = await Order.find()
+                .populate('items.product')
+                .populate('address')
+                .sort({ createdAt: -1 });
+    
+            res.render('orders', { orders }); 
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+            res.render('orders', { 
+                error: 'Unable to fetch orders. Please try again later.',
+                orders: null 
+            });
+        }
+    };
+    
+    const cancelOrder = async (req, res) => {
+        try {
+            const { _id, cancel_reason,item_id } = req.body;
+           
+    
+            const order = await Order.findById(_id).populate('payment_type').populate('items.product');
+            if (!order) {
+                return res.status(404).json({ success: false, message: 'Order not found' });
+            }
+            const products = order.items.find(product=>product._id.equals(item_id))
+            
+            
+                products.status = 'Cancelled';
+                products.cancellationReason = cancel_reason;
+                await order.save();
+            
+    
+           
+            for (const item of order.items) {
+                await Product.findByIdAndUpdate(
+                    item.product,
+                    { $inc: { quantity: item.quantity } },
+                    { new: true }
+                );
+            }
+    
+            res.json({ success: true, message: "Order Cancelled Successfully and Stock Updated" });
+        } catch (error) {
+            console.error('Error cancelling order:', error);
+            res.status(500).json({ success: false, message: 'Failed to cancel order' });
+        }
+    };
 
 
     module.exports = {
@@ -257,5 +306,7 @@ const updateProfile = async (req, res) => {
         addresses,
         addAddress ,
         editAddress,
-        deleteAddress  
+        deleteAddress ,
+        getOrders,
+        cancelOrder
     }

@@ -2,9 +2,11 @@ const express = require("express");
 const adminRouter = express();
 const admin = require('../controller/admin/adminController');
 const customer = require('../controller/admin/customerController');
+const Orders = require('../controller/admin/orderController');
 const path = require('path')
 const Category = require('../controller/admin/categoryController');
 const Product = require('../controller/admin/productController');
+const offer = require('../controller/admin/offerController');
 const {userAuth,adminAuth} = require("../middlewares/auth");
 
 
@@ -68,6 +70,22 @@ adminRouter.post('/add-category', adminAuth, Category.addCategory);
 adminRouter.get('/get-categories', adminAuth, Category.getCategories);
 adminRouter.get('/api/categories/:id',  adminAuth,Category.getCategoryById);
 adminRouter.put('/api/categories/:id', adminAuth, Category.updateCategory);
+
+adminRouter.get('/orders',adminAuth,Orders.getAdminOrders);
+
+adminRouter.get('/updateStatus',adminAuth,Orders.getupdateStatus);
+adminRouter.post('/updateOrderStatus',adminAuth,Orders.updateOrderStatus);
+adminRouter.put('/admin/cancelOrder', Orders.cancelOrder);
+
+
+
+
+adminRouter.get('/offers',adminAuth,offer.loadOffer);
+adminRouter.post('/offers/addOffers',adminAuth,offer.addOffer);
+adminRouter.get('/offers/category',adminAuth,offer.loadCateOffer)
+adminRouter.post('/updateOffer',adminAuth,offer.updateOffer);
+adminRouter.post('/deleteOffer',adminAuth,offer.deleteOffer);
+
 
 
 adminRouter.get("/product", adminAuth, Product.getProductAddPage);

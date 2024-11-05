@@ -42,13 +42,13 @@
                         <nav class="main-nav">
                             <ul class="menu sf-arrows">
                                 <li class="megamenu-container active">
-                                    <a href="index.html" class="sf-with-ul">Home</a>
+                                    <a href="/" class="sf-with-ul">Home</a>
 
                                     
                                 <li>
                                     <a href="/productList" class="sf-with-ul">Shop</a>
 
-                                   <!-- End .megamenu megamenu-md -->
+                                  
                                 </li>
                                 <li>
                                     <a href="product.html" class="sf-with-ul">Product</a>
@@ -93,7 +93,7 @@
             <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
                 <div class="container">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/home ">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/ ">Home</a></li>
                         <li class="breadcrumb-item"><a href="/productList">Shop</a></li>
                         
                     </ol>
@@ -192,9 +192,14 @@
                                                 </div>
                                                 <div class="product-action">
                                                     <% if (user) { %> <!-- Check if user is logged in -->
-                                                        <a href="#" class="btn-product btn-cart" data-product-id="<%= items._id %>">
-                                                            <span>Add to cart</span>
-                                                        </a>
+                                                        <% if(items.quantity == 0){%>
+                                                            <span class="btn-product ">Out of stock</span>
+                                                    
+                                                        <%}else{%>
+                                                            <a href="#" class="btn-product btn-cart" data-product-id="<%= items._id %>">
+                                                                <span>Add to cart</span>
+                                                            </a>
+                                                        <%}%>
                                                     <% } else { %> <!-- If no user, show login button -->
                                                         <a href="/login" class="btn-product btn-login">
                                                             <span>Login</span>

@@ -1,4 +1,47 @@
 <%- include ('../../layout/header.ejs') %>
+<style>
+    .order-details {
+        max-width: 800px;
+        margin: 30px auto;
+        padding: 20px;
+    }
+    .section {
+        margin-bottom: 20px;
+    }
+    .order-header {
+        border-bottom: 2px solid #eee;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+    }
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    .address-box {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    .products-table {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .products-table th, .products-table td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+    }
+    .total-section {
+        border-top: 2px solid #eee;
+        margin-top: 20px;
+        padding-top: 15px;
+    }
+    .highlight {
+        color: #0066cc;
+        font-weight: bold;
+    }
+</style>
     <div class="page-wrapper">
         <header class="header">
             <div class="header-top">
@@ -31,7 +74,7 @@
                         </button>
 
                         <a href="index.html" class="logo">
-                            <img src="assets/images/wonder.png" alt="Molla Logo" width="105" height="25">
+                            <img src="/assets/images/wonder.png" alt="Molla Logo" width="105" height="25">
                         </a>
 
                         <nav class="main-nav">
@@ -86,7 +129,7 @@
         <main class="main">
         	<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
         		<div class="container">
-        			<h1 class="page-title">Checkout<span>Shop</span></h1>
+        			<h1 class="page-title">Order Summary</h1>
         		</div>
         	</div>
             <nav aria-label="breadcrumb" class="breadcrumb-nav">
@@ -98,8 +141,115 @@
                     </ol>
                 </div>
             </nav>
+           
 
+        
+            <div class="order-details">
+                <% if (error) { %>
+                    <div class="alert alert-danger">
+                        <%= error %>
+                    </div>
+                <% } else if (!order) { %>
+                    <div class="alert alert-warning">
+                        No order information available
+                    </div>
+                <% } else { %>
+                    <div class="order-header">
+                        <h5>Order Details</h5>
+                        <div class="detail-column">
+                            <span><strong>Order ID:</strong> <%= order.orderId %></span><br>
+                            <span><strong>Ordered Date:</strong> <%= new Date(order.createdAt).toLocaleString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            }) %></span><br>
+                            <span><strong>Payment Status:</strong> <span class="highlight"><%= order.paymentStatus %></span></span><br>
+                            <span><strong>Estimated Dispatch Date:</strong> <%= new Date(order.estimatedDispatchDate).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            }) %></span>
+                            
+                    <% if (order.address) { %>
+                        <div class="section">
+                
+                            <p><strong>Ship to:</strong>  <%= order.address.name %></p>
+                            <div class="address-details">
+                                <%= order.address.address %>,
+                                <%= order.address.landmark ?order.address.landmark + ', ' : '' %> 
+                                <%= order.address.city %>, <%= order.address.pincode %>
+                                <%= order.address.state %>
+                                <br>
+                                <%=order.address.phone %>
+                            </div>
+                        </div>
+                    <% } %>
             
+                        </div>
+                    </div>
+            
+                    
+                       
+                           
+                      
+                 
+            
+                    <% if (order && order.items.length > 0) { %>
+                        <div class="section">
+                            <h3>Products</h3>
+                            <table class="products-table">
+                                <thead>
+                                    <tr>
+                                        
+                                        <th></th>
+                                        <th>Product</th>
+                                        <th>Quantity</th>
+                                        <th >Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% order.items.forEach(item => { %>
+                                        <tr>
+                                            <td>
+                                                <img src="/uploads/<%= item.product.productImage[0] %>" alt="" style="width: 50px; height: 50px;"/>
+                                                
+                                             </td>
+                                             <td><%= item.product.productName%></td>
+                                            <td><%= item.quantity %></td>
+                                            <td>₹<%= item.price.toFixed(2) %></td>
+                                            <td>₹<%= (item.price * item.quantity).toFixed(2) %></td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } %>
+            
+                    <div class="detail-row" style="margin-bottom: 5px;">
+                        <span>Subtotal:</span>
+                        <span>₹<%= total.toFixed(2) %></span>
+                    </div>
+                    <!-- <div class="detail-row" style="margin-bottom: 5px;">
+                        <span>Discount:</span>
+                        <span>- ₹<%= (order.discount || 0).toFixed(2) %></span>
+                    </div> -->
+                    <div class="detail-row" style="margin-bottom: 5px;">
+                        <span>Shipping Charge:</span>
+                        <span class="highlight">Free Delivery</span>
+                    </div>
+                    <div class="detail-row" style="font-size: 1.2em; font-weight: bold; margin-top: 10px;">
+                        <span>Grand Total:</span>
+                        <span>₹<%= (total - (order.discount || 0)).toFixed(2) %></span>
+                    </div>
+                    <div class="section" style="margin-top: 30px; text-align: center;">
+                        <a href="/productList" class="btn btn-primary" style="margin-right: 10px;">Continue Shopping</a>
+                        <a href="/orders" class="btn btn-outline-primary">View All Orders</a>
+                    </div>
+                <% } %>
+            </div>
         </main>
 
         <footer class="footer">
@@ -108,7 +258,7 @@
 	            	<div class="row">
 	            		<div class="col-sm-6 col-lg-3">
 	            			<div class="widget widget-about">
-	            				<img src="assets/images/wonder.png" class="footer-logo" alt="Footer Logo" width="105" height="25">
+	            				<img src="/assets/images/wonder.png" class="footer-logo" alt="Footer Logo" width="105" height="25">
 	            				<p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. </p>
 
 	            				<div class="social-icons">

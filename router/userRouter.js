@@ -27,7 +27,7 @@ userRouter.get('/register', user.loadSignup);
 userRouter.post('/signup', user.signup);
 userRouter.post('/verify-otp', user.verifyOtp); 
 userRouter.post('/resend-otp', user.resendOtp); 
-userRouter.get('/productList',userAuth, user.getProductList);
+userRouter.get('/productList', user.getProductList);
 
 userRouter.get('/productDetails/:id',userAuth, user.getProductDetails);
 
@@ -41,15 +41,19 @@ userRouter.post('/api/cart/update-quantity',Cart.updateQuant)
 
 
 userRouter.get('/checkout',userAuth, checkout.loadCheckoutPage);
-userRouter.post('/addAddress', checkout.addAddress);
-userRouter.get('/order',userAuth,checkout.placeOrder);
+userRouter.post('/addAddress',userAuth, checkout.addAddress);
+userRouter.post('/place-order',userAuth,checkout.placeOrder);
+userRouter.get('/orderSummary/:orderId',checkout.loadOrder);
 userRouter.get('/Address',checkout.getAddresses )
+
 
 
 
 userRouter.get('/userDashboard',userAuth,dashboard.getUserDashboard);
 userRouter.get('/userProfile',userAuth,dashboard.getUserProfile);
-userRouter.get('/accountDetails',dashboard.getAccountDetails);
+userRouter.get('/accountDetails',userAuth,dashboard.getAccountDetails);
+userRouter.get('/orders',userAuth,dashboard.getOrders);
+userRouter.post('/cancelOrder',userAuth, dashboard.cancelOrder);
 
 userRouter.post('/add-address', dashboard.addAddress);
 userRouter.get('/get-address/:id',userAuth,dashboard.getEditAddress);

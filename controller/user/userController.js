@@ -28,6 +28,7 @@ const loadHome = async (req, res) => {
         }else{
            return res.render('home');
         }
+        
       
     } catch (error) {
         console.error('Error loading home page:', error);
@@ -95,7 +96,6 @@ const signup = async (req, res) => {
         if (findUser) {
             return res.status(400).json({ msg: "Email already exists" });
         }
-
         const otp = generateOtp();
         const emailSent = await sendVerificationEmail(email, otp);
 
@@ -135,6 +135,7 @@ const verifyOtp = async (req, res) => {
                 phone: user.phone,
                 email: user.email,
                 password: passwordHash
+                
             });
             await saveUserData.save();
             req.session.user = saveUserData._id;
