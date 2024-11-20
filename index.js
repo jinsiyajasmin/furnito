@@ -23,26 +23,21 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
   
 
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,    
-    cookie:{
-        secure:false,
-        httpOnly:true,
-        maxAge:72*60*60*100
-    } 
-}))
 
-app.use(passport.initialize());
-app.use(passport.session());
+
+
+
 
 
 app.use('/', userRouter);
 app.use('/admin',adminRouter); 
 
 
-const port = 4000 || process.env.PORT;  
+
+
+
+
+const port = 7000 || process.env.PORT;  
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 });

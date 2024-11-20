@@ -4,6 +4,7 @@ const env = require ('dotenv').config;
 const bcrypt = require('bcryptjs');
 const Product = require('../../models/admin/productSchema'); 
 const Address = require('../../models/user/addressSchema')
+const   Offer = require('../../models/admin/offerSchema');
 const Category = require('../../models/admin/categorySchema');
 const { userAuth } = require("../../middlewares/auth");
 
@@ -20,16 +21,26 @@ const pageNotFound = async(req,res)=>{
 
 const loadHome = async (req, res) => {
     try {
+        const products = await Product.find({status:'active'});
+        const categories = await Category.find({isListed:'true'}); 
+     
+        
         const user = req.session.user;
         if(user){
-            const userData =  await  User.findOne({_id:user});
-          
-            res.render('home',{user:userData});
-        }else{
-           return res.render('home');
+            const userData = await User.findOne({_id: user});
+            res.render('home', {
+                user: userData,
+                categories,
+                products,
+              
+            });
+        } else {
+            res.render('home', {
+                categories ,
+                products,
+             
+            });
         }
-        
-      
     } catch (error) {
         console.error('Error loading home page:', error);
         res.status(500).send('Internal Server Error');
@@ -198,7 +209,7 @@ const login = async (req, res) => {
         const { email, password } = req.body;
 
         const user = await User.findOne({ email });
-        console.log(user);
+     
 
         if (!user) {
             return res.render('login', { message: "Invalid email or password" });
@@ -246,10 +257,17 @@ const getProductList = async (req, res) => {
         const products = await Product.find({status:'active'});
         const categories = await Category.find(); 
         const user = req.session.user;
+       
+        const userId = req.session.user;
         
-
         
-        res.render('productList', { products, categories,user });
+        let userData = null;
+        if (userId) {
+            userData = await User.findById(userId);
+        }
+   
+        
+        res.render('productList', { products, categories, user:userData});
     } catch (error) {
         console.error('Error fetching product list or categories:', error);
         res.status(500).send('Internal Server Error');
@@ -261,20 +279,127 @@ const getProductList = async (req, res) => {
         const userData = await User.findById( user);
         const productId = req.params.id;
         const product = await Product.findById(productId).populate('Category');
+        const allProductData = await Product.find();
 
         if (!product) {
             return res.status(404).render('404', { message: 'Product not found' });
         }
-
-        res.render('productDetails', { userData,productData:product });
+        
+       
+        res.render('productDetails', { userData,productData:product, allProductData  });
     } catch (error) {
         console.error('Error fetching product details:', error);
         res.status(500).render('500', { message: 'Server error' });
     }
 };
- 
- 
-    
+   const   getCategory = async (req,res)=>{
+    try {
+        if(!req.session.user){
+            return res.render("categoryList")
+        } 
+         else {
+            res.redirect("/")
+        }
+
+    } catch(error) {
+        res.redirect("/pageNotFound")
+    }
+}
+
+   
+const filterProducts = async (req, res) => {
+    try {
+        const {
+            sort = 'name_asc',
+            category = '',
+            minPrice,
+            maxPrice,
+            search = ''
+        } = req.query;
+
+        // Filter query object
+        const filterQuery = {};
+
+        // Add category filter
+        if (category) {
+            filterQuery.category = { $in: category.split(',') };
+        }
+
+        // Add price range filter
+        if (minPrice || maxPrice) {
+            filterQuery.price = {};
+            if (minPrice) filterQuery.price.$gte = parseFloat(minPrice);
+            if (maxPrice) filterQuery.price.$lte = parseFloat(maxPrice);
+        }
+
+        // Add search filter
+        if (search) {
+            filterQuery.$or = [
+                { name: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } }
+            ];
+        }
+
+        // Sort options
+        const sortOptions = {
+            name_asc: { name: 1 },
+            name_desc: { name: -1 },
+            price_asc: { price: 1 },
+            price_desc: { price: -1 },
+            newest: { createdAt: -1 },
+            oldest: { createdAt: 1 },
+        };
+
+        const sortQuery = sortOptions[sort] || { name: 1 };
+
+        // Fetch filtered and sorted products
+        const products = await Product.find(filterQuery).sort(sortQuery);
+
+        res.json({
+            products,
+            pagination: {
+                visibleCount: products.length,
+                totalCount: await Product.countDocuments()
+            },
+            appliedFilters: {
+                sort,
+                category,
+                minPrice,
+                maxPrice,
+                search
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
+const searchProducts =  async (req, res) => {
+    const query = req.query.q || ''; // Get the search query from the request
+    try {
+        // Search for products by name (or other fields you want to search by)
+        const products = await Product.find({
+            name: { $regex: query, $options: 'i' } // Case-insensitive search
+        });
+
+        // Render a page with the search results
+        res.render('search-results', { products }); // Adjust view as necessary
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error occurred while searching.');
+    }
+};
+
+
+
+
+
+
+
+
+
 
    
 
@@ -290,8 +415,9 @@ module.exports = {
     logout,
     getProductList,
     getProductDetails,
-    
-    
+    filterProducts,
+    getCategory,
+    searchProducts
    
     
 };

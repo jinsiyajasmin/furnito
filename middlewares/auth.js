@@ -1,4 +1,5 @@
 const User = require ("../models/user/userSchema");
+const session = require('express-session');
 
 
 
@@ -27,35 +28,22 @@ const userAuth = async (req, res, next) => {
   }
 };
 
+
+
 const adminAuth = async (req, res, next) => {
   try {
-    if (!req.session.admin) {
-      return res.redirect("/admin/login");
-    }
-
-    const admin = await User.findOne({ _id: req.session.admin, isAdmin: true });
-    if (!admin) {
-      return res.redirect("/admin/login");
-    }
-
-    next();
+   
+      if (!req.session.admin || req.session.admin !== process.env.ADMIN_EMAIL) {
+          return res.redirect('/admin/login'); 
+      }
+      next();
   } catch (error) {
-    console.error('Error in admin auth middleware:', error);
-    res.status(500).send('Internal Server Error');
+      console.error("Error in admin auth middleware:", error);
+      return res.status(500).send("Internal Server Error");
   }
 };
 
-const noAdminAuth = async (req, res, next) => {
-  try {
-    if (!req.session.admin) {
-      return res.redirect("/admin/login");
-    }
 
-  } catch (error) {
-    console.error('Error in admin auth middleware:', error);
-    res.status(500).send('Internal Server Error');
-  }
-};
 
 
 

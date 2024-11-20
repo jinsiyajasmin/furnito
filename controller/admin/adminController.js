@@ -18,26 +18,27 @@ const loadLogin = (req, res) => {
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        
-        const admin = await User.findOne({ email, isAdmin: true });
-        
-        if (!admin) {
-            return res.status(401).json({ message: "Invalid credentials" });
+
+        // Check admin credentials
+        if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+            // Store admin details in session
+            req.session.admin = email;
+
+            return res.redirect('/admin/dashboard'); // Redirect to the dashboard after successful login
         }
 
-        const passwordMatch = await bcrypt.compare(password, admin.password);
-
-        if (passwordMatch) {
-            req.session.admin = admin._id; 
-            res.redirect('/admin/dashboard')
-        } else {
-            res.redirect('/admin/login')
-        }
+        // Handle incorrect credentials
+        return res.status(401).render('admin/login', {
+            errorMessage: "Invalid email or password",
+        });
     } catch (error) {
         console.error("Login error:", error);
-        return res.status(500).json({ message: "Internal server error" });
+        return res.status(500).render('admin/login', {
+            errorMessage: "Internal server error",
+        });
     }
 };
+
 
 const loadDashboard = async (req,res)=>{
     if(req.session.admin){

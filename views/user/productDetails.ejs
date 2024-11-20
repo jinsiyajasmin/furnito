@@ -1,22 +1,70 @@
-<%- include ('../../layout/header.ejs') %>
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- molla/product-centered.html  22 Nov 2019 10:03:13 GMT -->
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Molla - Bootstrap eCommerce Template</title>
+    <meta name="keywords" content="HTML5 Template">
+    <meta name="description" content="Molla - Bootstrap eCommerce Template">
+    <meta name="author" content="p-themes">
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/icons/favicon-16x16.png">
+    <link rel="manifest" href="/assets/images/icons/site.html">
+    <link rel="mask-icon" href="/assets/images/icons/safari-pinned-tab.svg" color="#666666">
+    <link rel="shortcut icon" href="/assets/images/icons/favicon.ico">
+    <meta name="apple-mobile-web-app-title" content="Molla">
+    <meta name="application-name" content="Molla">
+    <meta name="msapplication-TileColor" content="#cc9966">
+    <meta name="msapplication-config" content="/assets/images/icons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <!-- Plugins CSS File -->
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/plugins/owl-carousel/owl.carousel.css">
+    <link rel="stylesheet" href="/assets/css/plugins/magnific-popup/magnific-popup.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Main CSS File -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/plugins/nouislider/nouislider.css">
+</head>
+
+<body>
     <div class="page-wrapper">
         <header class="header">
             <div class="header-top">
                 <div class="container">
                     <div class="header-left">
                         <div class="header-dropdown">
-                            
+
                         </div><!-- End .header-dropdown -->
 
                         <div class="header-dropdown">
                             <a href="#">Eng</a>
-                           
+
                         </div><!-- End .header-dropdown -->
                     </div><!-- End .header-left -->
 
                     <div class="header-right">
                         <ul class="top-menu">
-                            
+                            <li>
+                                <a href="#">Links</a>
+                                <ul>
+                                    <li><a href="/wishlist"><i class="icon-heart-o"></i>Wishlist <span></span></a></li>
+                                    <% if (locals.userData) { %>
+                                        <li><a href="/logout">Logout</a></li>
+                                        <li><a href="/userDashboard"><%=userData.name%></a></li>
+                                    <% } else { %>
+                                        <li><a href="/login"><i class="icon-user"></i>Login</a></li>
+                                    <% } %>
+                                </ul>
+                            </li>
                         </ul><!-- End .top-menu -->
                     </div><!-- End .header-right -->
                 </div><!-- End .container -->
@@ -30,45 +78,45 @@
                             <i class="icon-bars"></i>
                         </button>
                         <a href="index.html" class="logo">
-                            <img src="//assets/images/wonder.png" alt="Molla Logo" width="105" height="25">
+                            <img src="assets/images/wonder.png" alt="Molla Logo" width="105" height="25">
                         </a>
+
 
                         <nav class="main-nav">
                             <ul class="menu sf-arrows">
                                 <li class="megamenu-container active">
-                                    <a href="index.html" class="sf-with-ul">Home</a>
+                                    <a href="/" class="sf-with-ul">Home</a>
 
-                                  
+
                                 </li>
                                 <li>
                                     <a href="/productList" class="sf-with-ul">Shop</a>
 
-                                  
-                                </li>
-                                <li>
-                                    <a href="product.html" class="sf-with-ul">Product</a>
 
                                 </li>
-                                
-                                
                                
+
+
+
                             </ul><!-- End .menu -->
                         </nav><!-- End .main-nav -->
                     </div><!-- End .header-left -->
 
                     <div class="header-right">
                         <div class="header-search">
-                            <a href="#" class="search-toggle" role="button" title="Search"><i class="icon-search"></i></a>
+                            <a href="#" class="search-toggle" role="button" title="Search"><i
+                                    class="icon-search"></i></a>
                             <form action="#" method="get">
-                                
+
                             </form>
                         </div><!-- End .header-search -->
-               
+
 
                         <div class="dropdown cart-dropdown">
-                            <a href="/cart" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                            <a href="/cart" class="dropdown-toggle" role="button" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
                                 <i class="icon-shopping-cart"></i>
-                               
+
                             </a>
 
                             <!-- End .dropdown-menu -->
@@ -83,7 +131,7 @@
                 <div class="container d-flex align-items-center">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        
+
                         <li class="breadcrumb-item active" aria-current="page">produt</li>
                     </ol>
 
@@ -112,13 +160,15 @@
                                             <a class="product-gallery-item active" href="#"
                                                 data-image="/uploads/<%= productData.productImage[0]%>"
                                                 data-zoom-image="/uploads/<%= productData.productImage[0]%>">
-                                                <img src="/uploads/<%= productData.productImage[0]%>" alt="product side">
+                                                <img src="/uploads/<%= productData.productImage[0]%>"
+                                                    alt="product side">
                                             </a>
 
                                             <a class="product-gallery-item" href="#"
                                                 data-image="/uploads/<%= productData.productImage[1]%>"
                                                 data-zoom-image="/uploads/<%= productData.productImage[1]%>">
-                                                <img src="/uploads/<%= productData.productImage[1]%>" alt="product cross">
+                                                <img src="/uploads/<%= productData.productImage[1]%>"
+                                                    alt="product cross">
                                             </a>
 
                                             <a class="product-gallery-item" href="#"
@@ -150,9 +200,9 @@
                                     </div><!-- End .rating-container -->
 
                                     <div class="product-price">
-                                       
-                                            ₹<%= productData.price.toFixed(2) %>
-                                        
+
+                                        ₹<%= productData.price.toFixed(2) %>
+
                                     </div><!-- End .product-price -->
 
                                     <div class="product-content">
@@ -173,44 +223,52 @@
                                                 </label>
                                             </div>
                                             <%}%>
-                                      
+
 
                                                 <div class="product-details-action">
                                                     <div class="details-action-col">
                                                         <div class="product-details-quantity">
-                                                          
-                                                          <%if(productData.quantity > 5) {%>
-                                                            <input type="number" id="qty" class="form-control"
-                                                                value="1" min="1" max="5" step="1"
-                                                                data-decimals="0" required>
+
+                                                            <%if(productData.quantity> 5) {%>
+                                                                <input type="number" id="qty" class="form-control"
+                                                                    value="1" min="1" max="5" step="1" data-decimals="0"
+                                                                    required>
                                                                 <%} else {%>
                                                                     <input type="number" id="qty" class="form-control"
-                                                                value="1" min="1" max="<%=productData.quantity%>" step="1"
-                                                                data-decimals="0" required>
+                                                                        value="1" min="1"
+                                                                        max="<%=productData.quantity%>" step="1"
+                                                                        data-decimals="0" required>
                                                                     <%}%>
                                                         </div><!-- End .product-details-quantity -->
                                                         <% if(productData.quantity !==0){%>
                                                             <% if(typeof userData=='undefined' ){ %>
                                                                 <span class="btn-product text-danger">NO LOGGED</span>
                                                                 <%} else {%>
-                                                                    <button class="btn-add-to-cart btn-product btn-cart " data-product-id="<%= productData?._id %>"  data-user-id="<%= userData._id %>" >Add to Cart</button>
+                                                                    <button
+                                                                        class="btn btn-block btn-outline-primary-2 addtocart "
+                                                                        data-product-id="<%= productData?._id %>"
+                                                                        data-user-id="<%= userData._id %>">Add to
+                                                                        Cart</button>
+                                                                       
+
                                                                     <%}%>
-                                                            <%} %>
+                                                                   
+                                                                        <%} %>
 
                                                     </div><!-- End .details-action-col -->
 
+
                                                     <div class="details-action-wrapper">
-                                                        <!-- <% if(typeof userData !=='undefined' ){ %>
+                                                        <% if(typeof userData !=='undefined' ){ %>
                                                             <button class="btn-product-icon btn-wishlist" title="Add to wishlist" data-product-id="<%= productData?._id %>"  data-user-id="<%= userData._id %>"></button><span>Add to wishlist</span>
-                                                        <%}%> -->
+                                                        <%}%>
                                                     </div><!-- End .details-action-wrapper -->
                                                 </div><!-- End .product-details-action -->
 
                                                 <div class="product-details-footer">
                                                     <div class="product-cat">
                                                         <span>Category:</span>
-                                                        <a
-                                                            href="/productCategories?id=<%= productData.Category._id%>">
+                                                        <a href="/productCategories?id=<%= productData.Category._id%>">
                                                             <%= productData.Category.name%>
                                                         </a>,
 
@@ -241,9 +299,9 @@
                                     aria-selected="true">Description</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="product-info-link" data-toggle="tab"
-                                    href="#product-info-tab" role="tab" aria-controls="product-info-tab"
-                                    aria-selected="false">Additional information</a>
+                                <a class="nav-link" id="product-info-link" data-toggle="tab" href="#product-info-tab"
+                                    role="tab" aria-controls="product-info-tab" aria-selected="false">Additional
+                                    information</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="product-shipping-link" data-toggle="tab"
@@ -386,41 +444,84 @@
                     </div><!-- End .product-details-tab -->
 
                     <h2 class="title text-center mb-4">You May Also Like</h2><!-- End .title text-center -->
-                    <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow"
-                        data-toggle="owl" data-owl-options='{
-                        "nav": false, 
-                        "dots": true,
-                        "margin": 20,
-                        "loop": false,
-                        "responsive": {
-                            "0": {
-                                "items":1
-                            },
-                            "480": {
-                                "items":2
-                            },
-                            "768": {
-                                "items":3
-                            },
-                            "992": {
-                                "items":4
-                            },
-                            "1200": {
-                                "items":4,
-                                "nav": true,
-                                "dots": false
-                            }
-                        }
-                    }'>
-                       
-                            <div class="product product-7 text-center">
-                               
-                            </div><!-- End .product -->
-                           
+                    <!-- Product Carousel -->
+<!-- Product Carousel -->
+<div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow" data-toggle="owl" 
+    data-owl-options='{
+        "nav": false, 
+        "dots": true,
+        "margin": 20,
+        "loop": false,
+        "responsive": {
+            "0": {
+                "items":1
+            },
+            "480": {
+                "items":2
+            },
+            "768": {
+                "items":3
+            },
+            "992": {
+                "items":4
+            },
+            "1200": {
+                "items":4,
+                "nav": true,
+                "dots": false
+            }
+        }
+    }'>
+    
+    <% for(let i = 0; i < allProductData.length; i++){ %>
+        <div class="product product-7 text-center">
+            <figure class="product-media">
+                <a href="/showProduct?id=<%= allProductData[i]._id %>">
+                    <% if(allProductData[i].productImage && allProductData[i].productImage.length > 0){ %>
+                        <img src="/uploads/<%= allProductData[i].productImage[0] %>" alt="Product image" class="product-image">
+                    <% } else { %>
+                        <img src="/path/to/default/image.jpg" alt="Default product image" class="product-image">
+                    <% } %>
+                </a>
+    
+                <div class="product-action-vertical">
+                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>Add to wishlist</span></a>
+                </div><!-- End .product-action-vertical -->
+    
+                <div class="product-action">
+                    
+                                <a href="#" class="btn-product btn-cart"
+                                    data-product-id="<%= allProductData._id %>">
+                                    <span>Add to cart</span>
+                                </a>
+                                
+                </div><!-- End .product-action -->
+            </figure><!-- End .product-media -->
+    
+            <div class="product-body">
+                <div class="product-cat">
+                    <!-- Add category if needed -->
+                </div><!-- End .product-cat -->
+                <h3 class="product-title">
+                    <a href="/showProduct?id=<%= allProductData[i]._id %>">
+                        <%= allProductData[i].productName %>
+                    </a>
+                </h3><!-- End .product-title -->
+                <div class="product-price">
+                    ₹<%= allProductData[i].price %>
+                </div><!-- End .product-price -->
+                <div class="ratings-container">
+                    <div class="ratings">
+                        <div class="ratings-val" style="width: 20%;"></div>
+                        <!-- End .ratings-val -->
+                    </div><!-- End .ratings -->
+                    <span class="ratings-text">(2 Reviews)</span>
+                </div><!-- End .ratings-container -->
+            </div><!-- End .product-body -->
+        </div><!-- End .product -->
+    <% } %>
+    
 
-                    </div><!-- End .owl-carousel -->
-                </div><!-- End .container -->
-            </div><!-- End .page-content -->
 
 
 
@@ -441,83 +542,85 @@
         </main><!-- End .main -->
 
         <footer class="footer">
-        	<div class="footer-middle">
-	            <div class="container">
-	            	<div class="row">
-	            		<div class="col-sm-6 col-lg-3">
-	            			<div class="widget widget-about">
-	            				<img src="/assets/images/wonder.png" class="footer-logo" alt="Footer Logo" width="105" height="25">
-	            				<p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. </p>
 
-	            				<div class="social-icons">
-	            					<a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
-	            					<a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
-	            					<a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
-	            					<a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
-	            					<a href="#" class="social-icon" target="_blank" title="Pinterest"><i class="icon-pinterest"></i></a>
-	            				</div><!-- End .soial-icons -->
-	            			</div><!-- End .widget about-widget -->
-	            		</div><!-- End .col-sm-6 col-lg-3 -->
+            <div class="footer-middle">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget widget-about">
+                                <img src="assets/newimages/logo.png" class="footer-logo" alt="Footer Logo" width="150"
+                                    height="25">
+                                <p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu
+                                    vulputate magna eros eu erat. </p>
 
-	            		<div class="col-sm-6 col-lg-3">
-	            			<div class="widget">
-	            				<h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
+                                <div class="widget-call">
+                                    <i class="icon-phone"></i>
+                                    Got Question? Call us 24/7
+                                    <a href="tel:#">+0123 456 789</a>
+                                </div><!-- End .widget-call -->
+                            </div><!-- End .widget about-widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
 
-	            				<ul class="widget-list">
-	            					<li><a href="about.html">About Molla</a></li>
-	            					<li><a href="#">How to shop on Molla</a></li>
-	            					<li><a href="#">FAQ</a></li>
-	            					<li><a href="contact.html">Contact us</a></li>
-	            					<li><a href="login.html">Log in</a></li>
-	            				</ul><!-- End .widget-list -->
-	            			</div><!-- End .widget -->
-	            		</div><!-- End .col-sm-6 col-lg-3 -->
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget">
+                                <h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
 
-	            		<div class="col-sm-6 col-lg-3">
-	            			<div class="widget">
-	            				<h4 class="widget-title">Customer Service</h4><!-- End .widget-title -->
+                                <ul class="widget-list">
+                                    <li><a href="about.html">About furnicom</a></li>
+                                    <li><a href="#">Our Services</a></li>
+                                    <li><a href="#">How to shop on furnicom</a></li>
+                                    <li><a href="faq.html">FAQ</a></li>
+                                    <li><a href="contact.html">Contact us</a></li>
+                                </ul><!-- End .widget-list -->
+                            </div><!-- End .widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
 
-	            				<ul class="widget-list">
-	            					<li><a href="#">Payment Methods</a></li>
-	            					<li><a href="#">Money-back guarantee!</a></li>
-	            					<li><a href="#">Returns</a></li>
-	            					<li><a href="#">Shipping</a></li>
-	            					<li><a href="#">Terms and conditions</a></li>
-	            					<li><a href="#">Privacy Policy</a></li>
-	            				</ul><!-- End .widget-list -->
-	            			</div><!-- End .widget -->
-	            		</div><!-- End .col-sm-6 col-lg-3 -->
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget">
+                                <h4 class="widget-title">Customer Service</h4><!-- End .widget-title -->
 
-	            		<div class="col-sm-6 col-lg-3">
-	            			<div class="widget">
-	            				<h4 class="widget-title">My Account</h4><!-- End .widget-title -->
+                                <ul class="widget-list">
+                                    <li><a href="#">Payment Methods</a></li>
+                                    <li><a href="#">Money-back guarantee!</a></li>
+                                    <li><a href="#">Returns</a></li>
+                                    <li><a href="#">Shipping</a></li>
+                                    <li><a href="#">Terms and conditions</a></li>
+                                    <li><a href="#">Privacy Policy</a></li>
+                                </ul><!-- End .widget-list -->
+                            </div><!-- End .widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
 
-	            				<ul class="widget-list">
-	            					<li><a href="#">Sign In</a></li>
-	            					<li><a href="cart.html">View Cart</a></li>
-	            					<li><a href="#">My Wishlist</a></li>
-	            					<li><a href="#">Track My Order</a></li>
-	            					<li><a href="#">Help</a></li>
-	            				</ul><!-- End .widget-list -->
-	            			</div><!-- End .widget -->
-	            		</div><!-- End .col-sm-6 col-lg-3 -->
-	            	</div><!-- End .row -->
-	            </div><!-- End .container -->
-	        </div><!-- End .footer-middle -->
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget">
+                                <h4 class="widget-title">My Account</h4><!-- End .widget-title -->
 
-	        <div class="footer-bottom">
-	        	<div class="container">
-	        		<p class="footer-copyright">Copyright © 2019 Molla Store. All Rights Reserved.</p><!-- End .footer-copyright -->
-	        		<figure class="footer-payments">
-	        			<img src="/assets/images/payments.png" alt="Payment methods" width="272" height="20">
-	        		</figure><!-- End .footer-payments -->
-	        	</div><!-- End .container -->
-	        </div><!-- End .footer-bottom -->
+                                <ul class="widget-list">
+                                    <li><a href="#">Sign In</a></li>
+                                    <li><a href="cart.html">View Cart</a></li>
+                                    <li><a href="#">My Wishlist</a></li>
+                                    <li><a href="#">Track My Order</a></li>
+                                    <li><a href="#">Help</a></li>
+                                </ul><!-- End .widget-list -->
+                            </div><!-- End .widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+                    </div><!-- End .row -->
+                </div><!-- End .container -->
+            </div><!-- End .footer-middle -->
+
+            <div class="footer-bottom">
+                <div class="container">
+                    <p class="footer-copyright">Copyright © 2024 furnicom Store. All Rights Reserved.</p>
+                    <!-- End .footer-copyright -->
+                    <figure class="footer-payments">
+                        <img src="assets/images/payments.png" alt="Payment methods" width="272" height="20">
+                    </figure><!-- End .footer-payments -->
+                </div><!-- End .container -->
+            </div><!-- End .footer-bottom -->
         </footer><!-- End .footer -->
     </div><!-- End .page-wrapper -->
     <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
 
-  
+    <!-- Mobile Menu -->
     <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
 
     <div class="mobile-menu-container">
@@ -526,28 +629,55 @@
 
             <form action="#" method="get" class="mobile-search">
                 <label for="mobile-search" class="sr-only">Search</label>
-                <input type="search" class="form-control" name="mobile-search" id="mobile-search" placeholder="Search in..." required>
+                <input type="search" class="form-control" name="mobile-search" id="mobile-search"
+                    placeholder="Search in..." required>
                 <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
             </form>
-            
+
+
+            <div class="social-icons">
+                <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
+            </div><!-- End .social-icons -->
+        </div><!-- End .mobile-menu-wrapper -->
+    </div><!-- End .footer -->
+    </div><!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+
+    <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
+
+    <div class="mobile-menu-container">
+        <div class="mobile-menu-wrapper">
+            <span class="mobile-menu-close"><i class="icon-close"></i></span>
+
+            <form action="#" method="get" class="mobile-search">
+                <label for="mobile-search" class="sr-only">Search</label>
+                <input type="search" class="form-control" name="mobile-search" id="mobile-search"
+                    placeholder="Search in..." required>
+                <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
+            </form>
+
             <nav class="mobile-nav">
                 <ul class="mobile-menu">
                     <li class="active">
-                        <a href="index.html">Home</a>
+                        <a href="/">Home</a>
 
-                      
+
                     </li>
                     <li>
                         <a href="/productList">Shop</a>
-                        
+
                     </li>
                     <li>
                         <a href="product.html" class="sf-with-ul">Product</a>
-                       
+
                     </li>
-                    
-                    
-                    
+
+
+
                 </ul>
             </nav><!-- End .mobile-nav -->
 
@@ -573,23 +703,28 @@
                         <div class="form-tab">
                             <ul class="nav nav-pills nav-fill" role="tablist">
                                 <li class="nav-item">
-                                    <a class="nav-link active" id="signin-tab" data-toggle="tab" href="#signin" role="tab" aria-controls="signin" aria-selected="true">Sign In</a>
+                                    <a class="nav-link active" id="signin-tab" data-toggle="tab" href="#signin"
+                                        role="tab" aria-controls="signin" aria-selected="true">Sign In</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="register-tab" data-toggle="tab" href="#register" role="tab" aria-controls="register" aria-selected="false">Register</a>
+                                    <a class="nav-link" id="register-tab" data-toggle="tab" href="#register" role="tab"
+                                        aria-controls="register" aria-selected="false">Register</a>
                                 </li>
                             </ul>
                             <div class="tab-content" id="tab-content-5">
-                                <div class="tab-pane fade show active" id="signin" role="tabpanel" aria-labelledby="signin-tab">
+                                <div class="tab-pane fade show active" id="signin" role="tabpanel"
+                                    aria-labelledby="signin-tab">
                                     <form action="#">
                                         <div class="form-group">
                                             <label for="singin-email">Username or email address *</label>
-                                            <input type="text" class="form-control" id="singin-email" name="singin-email" required>
+                                            <input type="text" class="form-control" id="singin-email"
+                                                name="singin-email" required>
                                         </div><!-- End .form-group -->
 
                                         <div class="form-group">
                                             <label for="singin-password">Password *</label>
-                                            <input type="password" class="form-control" id="singin-password" name="singin-password" required>
+                                            <input type="password" class="form-control" id="singin-password"
+                                                name="singin-password" required>
                                         </div><!-- End .form-group -->
 
                                         <div class="form-footer">
@@ -599,8 +734,10 @@
                                             </button>
 
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="signin-remember">
-                                                <label class="custom-control-label" for="signin-remember">Remember Me</label>
+                                                <input type="checkbox" class="custom-control-input"
+                                                    id="signin-remember">
+                                                <label class="custom-control-label" for="signin-remember">Remember
+                                                    Me</label>
                                             </div><!-- End .custom-checkbox -->
 
                                             <a href="#" class="forgot-link">Forgot Your Password?</a>
@@ -628,12 +765,14 @@
                                     <form action="#">
                                         <div class="form-group">
                                             <label for="register-email">Your email address *</label>
-                                            <input type="email" class="form-control" id="register-email" name="register-email" required>
+                                            <input type="email" class="form-control" id="register-email"
+                                                name="register-email" required>
                                         </div><!-- End .form-group -->
 
                                         <div class="form-group">
                                             <label for="register-password">Password *</label>
-                                            <input type="password" class="form-control" id="register-password" name="register-password" required>
+                                            <input type="password" class="form-control" id="register-password"
+                                                name="register-password" required>
                                         </div><!-- End .form-group -->
 
                                         <div class="form-footer">
@@ -643,8 +782,10 @@
                                             </button>
 
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="register-policy" required>
-                                                <label class="custom-control-label" for="register-policy">I agree to the <a href="#">privacy policy</a> *</label>
+                                                <input type="checkbox" class="custom-control-input" id="register-policy"
+                                                    required>
+                                                <label class="custom-control-label" for="register-policy">I agree to the
+                                                    <a href="#">privacy policy</a> *</label>
                                             </div><!-- End .custom-checkbox -->
                                         </div><!-- End .form-footer -->
                                     </form>
@@ -673,15 +814,159 @@
             </div><!-- End .modal-content -->
         </div><!-- End .modal-dialog -->
     </div><!-- End .modal -->
-    <script src="/assets/js/jquery.min.js"></script>
-    <script src="/assets/js/bootstrap.bundle.min.js"></script>
-    <script src="/assets/js/jquery.hoverIntent.min.js"></script>
-    <script src="/assets/js/jquery.waypoints.min.js"></script>
-    <script src="/assets/js/superfish.min.js"></script>
-    <script src="/assets/js/owl.carousel.min.js"></script>
-    <script src="/assets/js/bootstrap-input-spinner.js"></script>
-    <!-- Main JS File -->
-    <script src="/assets/js/main.js"></script>
-    
-    </body>
-    </html>
+     <!-- Plugins JS File -->
+     <script src="/assets/js/jquery.min.js"></script>
+     <script src="/assets/js/bootstrap.bundle.min.js"></script>
+     <script src="/assets/js/jquery.hoverIntent.min.js"></script>
+     <script src="/assets/js/jquery.waypoints.min.js"></script>
+     <script src="/assets/js/superfish.min.js"></script>
+     <script src="/assets/js/owl.carousel.min.js"></script>
+     <script src="/assets/js/bootstrap-input-spinner.js"></script>
+     <script src="/assets/js/jquery.elevateZoom.min.js"></script>
+     <script src="/assets/js/bootstrap-input-spinner.js"></script>
+     <script src="/assets/js/jquery.magnific-popup.min.js"></script>
+     <!-- Main JS File -->
+     <script src="/assets/js/main.js"></script>
+ </body>
+ 
+ 
+ <!-- molla/product-centered.html  22 Nov 2019 10:03:20 GMT -->
+ </html>
+
+
+    <script>
+         document.addEventListener('DOMContentLoaded', function () {
+                const addToCartButtons = document.querySelectorAll('.addtocart'); // Changed selector to match your HTML
+
+                addToCartButtons.forEach(button => {
+                    button.addEventListener('click', async function (e) {
+                        e.preventDefault();
+
+                        const productId = this.getAttribute('data-product-id');
+                        const button = this; // Store button reference
+
+                        if (!productId) {
+                            console.error('Product ID is not defined.');
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Error: Product ID is missing.'
+                            });
+                            return;
+                        }
+
+                        // Disable button while processing
+                        button.disabled = true;
+                        button.innerHTML = '<i class="icon-cart-plus"></i>Adding...';
+
+                        try {
+                            const response = await fetch('/cart/add', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ productId })
+                            });
+
+                            if (!response.ok) {
+                                throw new Error('Network response was not OK');
+                            }
+
+                            const data = await response.json();
+
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Added!',
+                                    text: 'Product added to cart successfully',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+
+                                // Optionally update button state
+                                button.innerHTML = '<i class="icon-cart-plus"></i>In Cart';
+                                button.classList.add('added-to-cart');
+                            } else {
+                                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Note',
+                                    text: data.message || 'Could not add product to cart'
+                                });
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'An error occurred. Please try again.'
+                            });
+                        } finally {
+                            // Re-enable button and restore original text
+                            button.disabled = false;
+                            if (!button.classList.contains('added-to-cart')) {
+                                button.innerHTML = '<i class="icon-cart-plus"></i>Add to Cart';
+                            }
+                        }
+                    });
+                });
+            });
+
+    </script>
+    <script>
+          document.addEventListener('DOMContentLoaded', function () {
+                // Function to handle wishlist item removal
+                function handleWishlistRemoval() {
+                    document.querySelectorAll('.btn-remove').forEach(button => {
+                        button.addEventListener('click', async function (e) {
+                            e.preventDefault();
+                            const cartItemId = this.getAttribute('data-cart-item-id');
+
+                            try {
+                                const response = await fetch('/remove-from-wishlist', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({ itemId: cartItemId }),
+                                });
+
+                                const data = await response.json();
+
+                                if (data.success) {
+                                    // Find and remove the table row
+                                    const row = this.closest('tr');
+                                    if (row) {
+                                        row.remove();
+
+                                        // Check if wishlist is now empty
+                                        const tbody = document.querySelector('.table-wishlist tbody');
+                                        if (tbody && tbody.children.length === 0) {
+                                            // Get the container that holds the table
+                                            const container = document.querySelector('.table-wishlist').closest('.table-mobile');
+                                            if (container) {
+                                                // Replace the entire table with empty message
+                                                container.innerHTML = `
+                                        <div class="row" style="display: flex;justify-content: center;">
+                                            <div style="display: flex;">
+                                                <h5>Wishlist is empty !</h5>
+                                            </div>
+                                        </div>
+                                    `;
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    throw new Error(data.message || 'Failed to remove item');
+                                }
+                            } catch (error) {
+                                console.error('Error:', error);
+                                alert('Error removing item from wishlist');
+                            }
+                        });
+                    });
+                }
+
+                // Initialize the removal functionality
+                handleWishlistRemoval();
+            });
+    </script>

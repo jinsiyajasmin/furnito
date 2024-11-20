@@ -1,4 +1,16 @@
 <%- include('../../layout/header.ejs') %>
+<style>
+    .error-message {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}
+.edit-error-message {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}
+</style>
 
     <div class="page-wrapper">
         <header class="header">
@@ -16,15 +28,13 @@
                             <li>
                                 <a href="#">Links</a>
                                 <ul>
+                                    <li><a href="/wishlist"><i class="icon-heart-o"></i>Wishlist <span></span></a></li>
                                     <% if (locals.user) { %>
                                         <li><a href="/logout">Logout</a></li>
-                                        <li></li>
-                                        <li><a href="#">
-                                                <%= locals.user.name %>
-                                            </a></li>
-                                        <% } else { %>
-                                            <li><a href="/login"><i class="icon-user"></i>Login</a></li>
-                                            <% } %>
+                                        <li><a href="/userDashboard"><%=user.name%></a></li>
+                                    <% } else { %>
+                                        <li><a href="/login"><i class="icon-user"></i>Login</a></li>
+                                    <% } %>
                                 </ul>
                             </li>
                         </ul><!-- End .top-menu -->
@@ -44,6 +54,7 @@
                             <img src="assets/images/wonder.png" alt="Molla Logo" width="105" height="25">
                         </a>
 
+
                         <nav class="main-nav">
                             <ul class="menu sf-arrows">
                                 <li class="megamenu-container active">
@@ -52,9 +63,7 @@
                                 <li>
                                     <a href="/productList" class="sf-with-ul">Shop</a>
                                 </li>
-                                <li>
-                                    <a href="" class="sf-with-ul">Product</a>
-                                </li>
+                              
                             </ul><!-- End .menu -->
                         </nav><!-- End .main-nav -->
                     </div><!-- End .header-left -->
@@ -188,27 +197,22 @@
         </main><!-- End .main -->
 
         <footer class="footer">
+
             <div class="footer-middle">
                 <div class="container">
                     <div class="row">
                         <div class="col-sm-6 col-lg-3">
                             <div class="widget widget-about">
+                                <img src="assets/newimages/logo.png" class="footer-logo" alt="Footer Logo" width="150"
+                                    height="25">
+                                <p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu
+                                    vulputate magna eros eu erat. </p>
 
-                                <p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate
-                                    magna eros eu erat. </p>
-
-                                <div class="social-icons">
-                                    <a href="#" class="social-icon" target="_blank" title="Facebook"><i
-                                            class="icon-facebook-f"></i></a>
-                                    <a href="#" class="social-icon" target="_blank" title="Twitter"><i
-                                            class="icon-twitter"></i></a>
-                                    <a href="#" class="social-icon" target="_blank" title="Instagram"><i
-                                            class="icon-instagram"></i></a>
-                                    <a href="#" class="social-icon" target="_blank" title="Youtube"><i
-                                            class="icon-youtube"></i></a>
-                                    <a href="#" class="social-icon" target="_blank" title="Pinterest"><i
-                                            class="icon-pinterest"></i></a>
-                                </div><!-- End .soial-icons -->
+                                <div class="widget-call">
+                                    <i class="icon-phone"></i>
+                                    Got Question? Call us 24/7
+                                    <a href="tel:#">+0123 456 789</a>
+                                </div><!-- End .widget-call -->
                             </div><!-- End .widget about-widget -->
                         </div><!-- End .col-sm-6 col-lg-3 -->
 
@@ -217,11 +221,11 @@
                                 <h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
 
                                 <ul class="widget-list">
-                                    <li><a href="about.html">About Molla</a></li>
-                                    <li><a href="#">How to shop on Molla</a></li>
-                                    <li><a href="#">FAQ</a></li>
+                                    <li><a href="about.html">About furnicom</a></li>
+                                    <li><a href="#">Our Services</a></li>
+                                    <li><a href="#">How to shop on furnicom</a></li>
+                                    <li><a href="faq.html">FAQ</a></li>
                                     <li><a href="contact.html">Contact us</a></li>
-                                    <li><a href="login.html">Log in</a></li>
                                 </ul><!-- End .widget-list -->
                             </div><!-- End .widget -->
                         </div><!-- End .col-sm-6 col-lg-3 -->
@@ -258,8 +262,45 @@
                 </div><!-- End .container -->
             </div><!-- End .footer-middle -->
 
-
+            <div class="footer-bottom">
+                <div class="container">
+                    <p class="footer-copyright">Copyright © 2024 furnicom Store. All Rights Reserved.</p>
+                    <!-- End .footer-copyright -->
+                    <figure class="footer-payments">
+                        <img src="assets/images/payments.png" alt="Payment methods" width="272" height="20">
+                    </figure><!-- End .footer-payments -->
+                </div><!-- End .container -->
+            </div><!-- End .footer-bottom -->
         </footer><!-- End .footer -->
+    </div><!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
+
+    <div class="mobile-menu-container">
+        <div class="mobile-menu-wrapper">
+            <span class="mobile-menu-close"><i class="icon-close"></i></span>
+
+            <form action="#" method="get" class="mobile-search">
+                <label for="mobile-search" class="sr-only">Search</label>
+                <input type="search" class="form-control" name="mobile-search" id="mobile-search"
+                    placeholder="Search in..." required>
+                <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
+            </form>
+
+
+            <div class="social-icons">
+                <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
+            </div><!-- End .social-icons -->
+        </div><!-- End .mobile-menu-wrapper -->
+    </div><!-- End .footer-middle -->
+
+
+    </footer><!-- End .footer -->
     </div><!-- End .page-wrapper -->
     <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel"
         aria-hidden="true">
@@ -272,39 +313,39 @@
                 <div class="modal-body" style="padding: 20px;">
                     <form id="addAddressForm" style="padding-left: 15px; padding-right: 15px;">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Name</label>
+                            <label for="name" class="form-label  error-message">Name</label>
                             <input type="text" class="form-control" id="name" name="name" required
                                 style="border-radius: 5px;">
                         </div>
                         <div class="mb-3">
-                            <label for="phone" class="form-label">Phone number</label>
+                            <label for="phone" class="form-label error-message">Phone number</label>
                             <input type="text" class="form-control" id="phone" name="phone" required
                                 style="border-radius: 5px;">
                         </div>
                         <div class="mb-3">
-                            <label for="address" class="form-label">Address</label>
+                            <label for="address" class="form-label error-message">Address</label>
                             <textarea class="form-control" id="address" name="address" rows="3" required
                                 style="border-radius: 5px;"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="landmark" class="form-label">Landmark (Optional)</label>
+                            <label for="landmark" class="form-label error-message">Landmark (Optional)</label>
                             <input type="text" class="form-control" id="landmark" name="landmark"
                                 style="border-radius: 5px;">
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="city" class="form-label">City</label>
+                                <label for="city" class="form-label error-message">City</label>
                                 <input type="text" class="form-control" id="city" name="city" required
                                     style="border-radius: 5px;">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="state" class="form-label">State</label>
+                                <label for="state" class="form-label error-message">State</label>
                                 <input type="text" class="form-control" id="state" name="state" required
                                     style="border-radius: 5px;">
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="pincode" class="form-label">Postal Code</label>
+                            <label for="pincode" class="form-label error-message">Postal Code</label>
                             <input type="text" class="form-control" id="pincode" name="pincode" required
                                 style="border-radius: 5px;">
                         </div>
@@ -319,8 +360,7 @@
 
 
     <!-- Edit Address Modal -->
-    <div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" style="border-radius: 10px;">
                 <div class="modal-header">
@@ -332,40 +372,40 @@
                         <input type="hidden" id="editAddressId" name="id">
                         <div class="mb-3">
                             <label for="editName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="editName" name="name" required
-                                style="border-radius: 5px;">
+                            <input type="text" class="form-control" id="editName" name="name" required style="border-radius: 5px;">
+                            <div class="invalid-feedback edit-error-message"></div>
                         </div>
                         <div class="mb-3">
                             <label for="editPhone" class="form-label">Phone</label>
-                            <input type="text" class="form-control" id="editPhone" name="phone" required
-                                style="border-radius: 5px;">
+                            <input type="text" class="form-control" id="editPhone" name="phone" required style="border-radius: 5px;">
+                            <div class="invalid-feedback edit-error-message"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="editAddressLine" class="form-label">Address</label>
-                            <textarea class="form-control" id="editAddress" name="address" rows="3" required
-                                style="border-radius: 5px;"></textarea>
+                            <label for="editAddress" class="form-label">Address</label>
+                            <textarea class="form-control" id="editAddress" name="address" rows="3" required style="border-radius: 5px;"></textarea>
+                            <div class="invalid-feedback edit-error-message"></div>
                         </div>
                         <div class="mb-3">
                             <label for="editLandmark" class="form-label">Landmark</label>
                             <input type="text" class="form-control" id="editLandmark" name="landmark">
+                            <div class="invalid-feedback edit-error-message"></div>
                         </div>
                         <div class="mb-3">
                             <label for="editCity" class="form-label">City</label>
-                            <input type="text" class="form-control" id="editCity" name="city" required
-                                style="border-radius: 5px;">
+                            <input type="text" class="form-control" id="editCity" name="city" required style="border-radius: 5px;">
+                            <div class="invalid-feedback edit-error-message"></div>
                         </div>
                         <div class="mb-3">
                             <label for="editState" class="form-label">State</label>
-                            <input type="text" class="form-control" id="editState" name="state" required
-                                style="border-radius: 5px;">
+                            <input type="text" class="form-control" id="editState" name="state" required style="border-radius: 5px;">
+                            <div class="invalid-feedback edit-error-message"></div>
                         </div>
                         <div class="mb-3">
                             <label for="editPostalCode" class="form-label">Postal Code</label>
-                            <input type="text" class="form-control" id="editPostalCode" name="pincode" required
-                                style="border-radius: 5px;">
+                            <input type="text" class="form-control" id="editPostalCode" name="pincode" required style="border-radius: 5px;">
+                            <div class="invalid-feedback edit-error-message"></div>
                         </div>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                     </form>
                 </div>
@@ -373,58 +413,203 @@
         </div>
     </div>
 
-
     <script>
 
-        document.getElementById('addAddressForm').addEventListener('submit', function (e) {
-            e.preventDefault();
+      
+const setError = (element, message) => {
+    const inputControl = element.parentElement;
+    const errorDisplay = inputControl.querySelector('.error-message');
 
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData.entries());
+   
+    if (!errorDisplay) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message text-danger small mt-1';
+        inputControl.appendChild(errorDiv);
+    }
 
-            // Ensure pincode is a number
-            data.pincode = parseInt(data.pincode, 10);
+  
+    element.classList.add('is-invalid');
+    element.classList.remove('is-valid');
+    
+    const errorElement = inputControl.querySelector('.error-message');
+    errorElement.textContent = message;
+};
 
-            // Log the data being sent (for debugging)
-            console.log('Sending data:', data);
+const setSuccess = (element) => {
+    const inputControl = element.parentElement;
+    const errorDisplay = inputControl.querySelector('.error-message');
+    
+   
+    if (errorDisplay) {
+        errorDisplay.textContent = '';
+    }
 
-            fetch('/add-address', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Added!',
-                            text: 'Address added successfully',
-                            showConfirmButton: false,
-                            timer: 1500
-                        }).then(() => {
-                            $('#addAddressModal').modal('hide');
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error adding address',
-                            text: data.message
-                        });
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'An error occurred',
-                        text: 'There was an error while adding the address.'
-                    });
-                });
+ 
+    element.classList.remove('is-invalid');
+    element.classList.add('is-valid');
+};
+
+
+const validateAddressForm = (form) => {
+    let isValid = true;
+    
+   
+    const name = form.querySelector('#name');
+    const phone = form.querySelector('#phone');
+    const address = form.querySelector('#address');
+    const city = form.querySelector('#city');
+    const state = form.querySelector('#state');
+    const pincode = form.querySelector('#pincode');
+    
+    
+    const nameValue = name.value.trim();
+    const phoneValue = phone.value.trim();
+    const addressValue = address.value.trim();
+    const cityValue = city.value.trim();
+    const stateValue = state.value.trim();
+    const pincodeValue = pincode.value.trim();
+
+    
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    if (nameValue === '') {
+        setError(name, 'Enter Name');
+        isValid = false;
+    } else if (nameValue.length < 3) {
+        setError(name, 'Name should be more than 2 letters');
+        isValid = false;
+    } else if (!nameRegex.test(nameValue)) {
+        setError(name, 'Name should only contain letters and spaces');
+        isValid = false;
+    } else {
+        setSuccess(name);
+    }
+
+
+    const phoneRegex = /^[689]\d{9}$/;
+    if (phoneValue === '') {
+        setError(phone, 'Enter Phone Number');
+        isValid = false;
+    } else if (!phoneRegex.test(phoneValue)) {
+        setError(phone, 'Phone number must start with 8, 9, or 6 and be 10 digits long');
+        isValid = false;
+    } else {
+        setSuccess(phone);
+    }
+
+    const addressRegex = /^[a-zA-Z0-9\s,.'-]{6,}$/;
+
+    if (addressValue === '') {
+    setError(address, 'Enter Address');
+    isValid = false;
+} else if (!addressRegex.test(addressValue)) {
+    setError(address, 'Address must contain letters, numbers, and common address symbols (min. 6 characters)');
+    isValid = false;
+} else {
+    setSuccess(address);
+}
+
+const cityRegex = /^[a-zA-Z\s]{2,20}$/;
+
+if (cityValue === '') {
+    setEditError(city, 'Enter Town/City');
+    isValid = false;
+} else if (!cityRegex.test(cityValue)) {
+    setEditError(city, 'City should contain only letters and spaces, between 2 to 20 characters');
+    isValid = false;
+} else {
+    setEditSuccess(city);
+}
+
+const stateRegex = /^[a-zA-Z\s]{2,30}$/;
+
+if (stateValue === '') {
+    setEditError(state, 'Enter State');
+    isValid = false;
+} else if (!stateRegex.test(stateValue)) {
+    setEditError(state, 'State should contain only letters and spaces, between 2 to 30 characters');
+    isValid = false;
+} else {
+    setEditSuccess(state);
+}
+
+
+    const pincodeRegex = /^\d{6}$/;
+    if (pincodeValue === '') {
+        setError(pincode, 'Enter Pincode');
+        isValid = false;
+    } else if (!pincodeRegex.test(pincodeValue)) {
+        setError(pincode, 'Enter valid 6-digit pincode');
+        isValid = false;
+    } else {
+        setSuccess(pincode);
+    }
+
+    return isValid;
+};
+
+document.getElementById('addAddressForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    if (!validateAddressForm(this)) {
+        return;
+    }
+
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+
+   
+    data.pincode = parseInt(data.pincode, 10);
+
+    fetch('/add-address', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Added!',
+                text: 'Address added successfully',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                $('#addAddressModal').modal('hide');
+                location.reload();
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error adding address',
+                text: data.message
+            });
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'An error occurred',
+            text: 'There was an error while adding the address.'
         });
+    });
+});
+
+
+document.querySelectorAll('#addAddressForm input, #addAddressForm textarea').forEach(element => {
+    element.addEventListener('input', function() {
+       
+        this.classList.remove('is-invalid');
+        this.classList.remove('is-valid');
+        const errorDisplay = this.parentElement.querySelector('.error-message');
+        if (errorDisplay) {
+            errorDisplay.textContent = '';
+        }
+    });
+});
 
 
         function deleteAddress(addressId) {
@@ -439,7 +624,7 @@
                 cancelButtonText: 'Cancel'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // If confirmed, proceed with the delete request
+                  
                     fetch(`/api/addresses/${addressId}`, {
                         method: 'DELETE',
                     })
@@ -457,7 +642,7 @@
                                     text: 'Your address has been deleted successfully.',
                                     confirmButtonText: 'OK',
                                 }).then(() => {
-                                    // Optionally refresh or remove the deleted address from the UI
+                                    
                                     location.reload();
                                 });
                             } else {
@@ -477,94 +662,260 @@
         }
 
 
-        function openEditModal(addressId) {
+      
+const setEditError = (element, message) => {
+    const inputControl = element.parentElement;
+    const errorDisplay = inputControl.querySelector('.edit-error-message');
 
-            fetch(`/get-address/${addressId}`)
-                .then(response => response.json())
-                .then(data => {
-                    // Pre-fill the form fields with the existing address data
-                    document.getElementById('editAddressId').value = data._id;
-                    document.getElementById('editName').value = data.name;
-                    document.getElementById('editPhone').value = data.phone;
-                    document.getElementById('editAddress').value = data.address;
-                    document.getElementById('editLandmark').value = data.landmark;
-                    document.getElementById('editCity').value = data.city;
-                    document.getElementById('editState').value = data.state;
-                    document.getElementById('editPostalCode').value = data.pincode;
+  
+    if (!errorDisplay) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'edit-error-message text-danger small mt-1';
+        inputControl.appendChild(errorDiv);
+    }
 
-                    // Show the modal
-                    const editModal = new bootstrap.Modal(document.getElementById('editAddressModal'));
-                    editModal.show();
-                })
-                .catch(error => {
-                    console.error('Error fetching address:', error);
-                    alert('Failed to fetch address data');
-                });
-        }
-        document.getElementById('editAddressForm').addEventListener('submit', function (e) {
-            e.preventDefault();
+    
+    element.classList.add('is-invalid');
+    element.classList.remove('is-valid');
+    
+    
+    const errorElement = inputControl.querySelector('.edit-error-message');
+    errorElement.textContent = message;
+};
 
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData.entries());
 
-            console.log('Form data:', data);  // Log the data being sent
+const setEditSuccess = (element) => {
+    const inputControl = element.parentElement;
+    const errorDisplay = inputControl.querySelector('.edit-error-message');
+    
+   
+    if (errorDisplay) {
+        errorDisplay.textContent = '';
+    }
 
-            fetch(`/api/addresses/${data.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-                .then(response => {
-                    console.log('Response status:', response.status);
-                    console.log('Response headers:', response.headers);
-                    return response.text().then(text => {
-                        try {
-                            return JSON.parse(text);
-                        } catch (error) {
-                            console.error('Error parsing JSON:', error);
-                            console.log('Raw response:', text);
-                            throw new Error('Invalid JSON response from server');
-                        }
-                    });
-                })
-                .then(result => {
-                    console.log('Server response:', result);
-                    if (result.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: 'Address updated successfully',
-                            confirmButtonText: 'OK',
-                        }).then(() => {
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Error updating address: ' + result.message,
-                            confirmButtonText: 'OK',
-                        });
+  
+    element.classList.remove('is-invalid');
+    element.classList.add('is-valid');
+};
+
+
+const validateEditAddressForm = (form) => {
+    let isValid = true;
+    
+  
+    const name = form.querySelector('#editName');
+    const phone = form.querySelector('#editPhone');
+    const address = form.querySelector('#editAddress');
+    const city = form.querySelector('#editCity');
+    const state = form.querySelector('#editState');
+    const pincode = form.querySelector('#editPostalCode');
+    
+    
+    const nameValue = name.value.trim();
+    const phoneValue = phone.value.trim();
+    const addressValue = address.value.trim();
+    const cityValue = city.value.trim();
+    const stateValue = state.value.trim();
+    const pincodeValue = pincode.value.trim();
+
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    if (nameValue === '') {
+        setEditError(name, 'Enter Name');
+        isValid = false;
+    } else if (nameValue.length < 3) {
+        setEditError(name, 'Name should be more than 2 letters');
+        isValid = false;
+    } else if (!nameRegex.test(nameValue)) {
+        setEditError(name, 'Name should only contain letters and spaces');
+        isValid = false;
+    } else {
+        setEditSuccess(name);
+    }
+
+   
+    const phoneRegex = /^[689]\d{9}$/;
+    if (phoneValue === '') {
+        setEditError(phone, 'Enter Phone Number');
+        isValid = false;
+    } else if (!phoneRegex.test(phoneValue)) {
+        setEditError(phone, 'Phone number must start with 8, 9, or 6 and be 10 digits long');
+        isValid = false;
+    } else {
+        setEditSuccess(phone);
+    }
+
+    const addressRegex = /^[a-zA-Z0-9\s,.'-]{6,}$/;
+
+if (addressValue === '') {
+setError(address, 'Enter Address');
+isValid = false;
+} else if (!addressRegex.test(addressValue)) {
+setError(address, 'Address must contain letters, numbers, and common address symbols (min. 6 characters)');
+isValid = false;
+} else {
+setSuccess(address);
+}
+
+
+const cityRegex = /^[a-zA-Z\s]{2,20}$/;
+
+if (cityValue === '') {
+    setEditError(city, 'Enter Town/City');
+    isValid = false;
+} else if (!cityRegex.test(cityValue)) {
+    setEditError(city, 'City should contain only letters and spaces, between 2 to 20 characters');
+    isValid = false;
+} else {
+    setEditSuccess(city);
+}
+
+const stateRegex = /^[a-zA-Z\s]{2,30}$/;
+
+if (stateValue === '') {
+    setEditError(state, 'Enter State');
+    isValid = false;
+} else if (!stateRegex.test(stateValue)) {
+    setEditError(state, 'State should contain only letters and spaces, between 2 to 30 characters');
+    isValid = false;
+} else {
+    setEditSuccess(state);
+}
+
+
+  
+    const pincodeRegex = /^\d{6}$/;
+    if (pincodeValue === '') {
+        setEditError(pincode, 'Enter Pincode');
+        isValid = false;
+    } else if (!pincodeRegex.test(pincodeValue)) {
+        setEditError(pincode, 'Enter valid 6-digit pincode');
+        isValid = false;
+    } else {
+        setEditSuccess(pincode);
+    }
+
+    return isValid;
+};
+
+
+function openEditModal(addressId) {
+    fetch(`/get-address/${addressId}`)
+        .then(response => response.json())
+        .then(data => {
+          
+            document.getElementById('editAddressId').value = data._id;
+            document.getElementById('editName').value = data.name;
+            document.getElementById('editPhone').value = data.phone;
+            document.getElementById('editAddress').value = data.address;
+            document.getElementById('editLandmark').value = data.landmark;
+            document.getElementById('editCity').value = data.city;
+            document.getElementById('editState').value = data.state;
+            document.getElementById('editPostalCode').value = data.pincode;
+
+    
+            document.querySelectorAll('.edit-error-message').forEach(element => {
+                element.textContent = '';
+            });
+            document.querySelectorAll('.is-invalid, .is-valid').forEach(element => {
+                element.classList.remove('is-invalid', 'is-valid');
+            });
+
+         
+            const editModal = new bootstrap.Modal(document.getElementById('editAddressModal'));
+            editModal.show();
+
+            document.querySelectorAll('#editAddressForm input, #editAddressForm textarea').forEach(element => {
+                element.addEventListener('input', function() {
+                  
+                    this.classList.remove('is-invalid');
+                    this.classList.remove('is-valid');
+                    const errorDisplay = this.parentElement.querySelector('.edit-error-message');
+                    if (errorDisplay) {
+                        errorDisplay.textContent = '';
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'An error occurred while updating the address: ' + error.message,
-                        confirmButtonText: 'OK',
-                    });
                 });
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching address:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to fetch address data',
+            });
         });
+}
+
+
+document.getElementById('editAddressForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    if (!validateEditAddressForm(this)) {
+        return; 
+    }
+
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+
+    console.log('Form data:', data);
+
+    fetch(`/api/addresses/${data.id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        return response.text().then(text => {
+            try {
+                return JSON.parse(text);
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                console.log('Raw response:', text);
+                throw new Error('Invalid JSON response from server');
+            }
+        });
+    })
+    .then(result => {
+        console.log('Server response:', result);
+        if (result.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Address updated successfully',
+                confirmButtonText: 'OK',
+            }).then(() => {
+                location.reload();
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error updating address: ' + result.message,
+                confirmButtonText: 'OK',
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while updating the address: ' + error.message,
+            confirmButtonText: 'OK',
+        });
+    });
+});
 
 
 
 
 
     </script>
+    
 
 
 

@@ -644,15 +644,15 @@
                 <script>
 
                   document.addEventListener('DOMContentLoaded', function () {
-                    // Initialize Select2 for product selection
+                 
                     const productSelect = $('#productSelect');
 
-                    // Destroy any existing Select2 instance first
+                 
                     if (productSelect.hasClass('select2-hidden-accessible')) {
                       productSelect.select2('destroy');
                     }
 
-                    // Initialize Select2 with configuration
+                    
                     productSelect.select2({
                       placeholder: "Select products",
                       allowClear: true,
@@ -680,7 +680,6 @@
                       width: '100%'
                     });
 
-                    // Reinitialize Select2 when modal is shown
                     $('#addOffer').on('shown.bs.modal', function () {
                       $('#productSelect').select2({
                         placeholder: "Select products",
@@ -693,277 +692,283 @@
 
 
 
-                    // Form submission handler
-                    const offerForm = document.getElementById('addNewOfferForm');
-                    offerForm.addEventListener('submit', handleFormSubmit);
+              
+                    document.getElementById('addNewOfferForm').addEventListener('submit', async function (e) {
+                            e.preventDefault();
 
-                    // Delete button handlers
-                    initializeDeleteButtons();
+                            const title = document.getElementById('offerTitle').value.trim();
+                            const description = document.getElementById('offerDetails').value.trim();
+                            const discount = document.getElementById('offerDiscount').value.trim();
+                            const products = document.getElementById('productSelect').value.trim();
 
-
-                    // Validation and error handling functions
-                    const setError = (element, message) => {
-                      const formGroup = element.closest('.form-floating');
-                      const errorDisplay = formGroup.querySelector('.errMsg');
-                      if (errorDisplay) {
-                        errorDisplay.innerText = message;
-                        element.classList.add('is-invalid');
-                        errorDisplay.classList.add('text-danger');
-                      }
-                    };
-
-                    const setSuccess = (element) => {
-                      const formGroup = element.closest('.form-floating');
-                      const errorDisplay = formGroup.querySelector('.errMsg');
-                      if (errorDisplay) {
-                        errorDisplay.innerText = '';
-                        element.classList.remove('is-invalid');
-                        element.classList.add('is-valid');
-                        errorDisplay.classList.remove('text-danger');
-                      }
-                    };
-
-                    const validateForm = (formData) => {
-                      let isValid = true;
-                      const nameRegex = /^[a-zA-Z0-9\s]+$/;
-
-                      // Title validation
-                      if (!formData.title) {
-                        setError(document.getElementById('offerTitle'), 'Enter Title');
-                        isValid = false;
-                      } else if (!nameRegex.test(formData.title)) {
-                        setError(document.getElementById('offerTitle'), 'Title should only contain letters and numbers');
-                        isValid = false;
-                      } else if (formData.title.length < 3) {
-                        setError(document.getElementById('offerTitle'), 'Title should be more than 2 letters');
-                        isValid = false;
-                      } else {
-                        setSuccess(document.getElementById('offerTitle'));
-                      }
-
-                      // Description validation
-                      if (!formData.description) {
-                        setError(document.getElementById('offerDetails'), 'Enter Description');
-                        isValid = false;
-                      } else if (formData.description.length < 3) {
-                        setError(document.getElementById('offerDetails'), 'Description should be more than 2 letters');
-                        isValid = false;
-                      } else {
-                        setSuccess(document.getElementById('offerDetails'));
-                      }
-
-                      // Discount validation
-                      const discount = Number(formData.discount);
-                      if (!formData.discount) {
-                        setError(document.getElementById('offerDiscount'), 'Enter Discount Amount');
-                        isValid = false;
-                      } else if (discount < 0) {
-                        setError(document.getElementById('offerDiscount'), 'Discount should be more than 0');
-                        isValid = false;
-                      } else if (discount > 90) {
-                        setError(document.getElementById('offerDiscount'), 'Discount should be less than 90');
-                        isValid = false;
-                      } else {
-                        setSuccess(document.getElementById('offerDiscount'));
-                      }
-
-                      // Products validation
-                      if (!formData.products || formData.products.length === 0) {
-                        setError(document.getElementById('productSelect'), 'Please select at least one product');
-                        isValid = false;
-                      } else {
-                        setSuccess(document.getElementById('productSelect'));
-                      }
-
-                      // Status validation
-                      if (!formData.status) {
-                        setError(document.getElementById('offerStatus'), 'Please select a status');
-                        isValid = false;
-                      } else {
-                        setSuccess(document.getElementById('offerStatus'));
-                      }
-
-                      return isValid;
-                    };
-
-                    // Form submission handler
-                    const handleFormSubmit = async (e) => {
-                      e.preventDefault();
-
-                      const formData = {
-                        title: document.getElementById('offerTitle').value.trim(),
-                        description: document.getElementById('offerDetails').value.trim(),
-                        discount: document.getElementById('offerDiscount').value.trim(),
-                        products: Array.from(document.getElementById('productSelect').selectedOptions).map(option => option.value),
-                        status: document.getElementById('offerStatus').value,
-                        type: 'PRODUCT'
-                      };
-
-                      if (!validateForm(formData)) {
-                        return;
-                      }
-
-                      try {
-                        const response = await fetch('/admin/offers/addOffers', {
-                          method: 'POST',
-                          headers: {
-                            'Content-Type': 'application/json',
-                          },
-                          body: JSON.stringify(formData)
+                            addForm(title, description, discount, products);
                         });
-
-                        const data = await response.json();
-
-                        if (data.success) {
-                          Swal.fire({
-                            title: 'Success!',
-                            text: data.message,
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                          }).then((result) => {
-                            if (result.isConfirmed) {
-                              window.location.reload();
-                            }
-                          });
-                          $('#addOffer').modal('hide');
-                        } else {
-                          Swal.fire({
-                            title: 'Error!',
-                            text: data.message,
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                          });
-                        }
-                      } catch (error) {
-                        Swal.fire({
-                          title: 'Error!',
-                          text: 'An error occurred while saving the offer.',
-                          icon: 'error',
-                          confirmButtonText: 'OK'
-                        });
-                      }
-                    };
-
-                    // Delete functionality
-
-                    document.addEventListener('DOMContentLoaded', function () {
-                      const editOfferForms = document.querySelectorAll('.edit-offer-form');
-
-                      // Initialize select2 on modal show for each modal
-                      $('.editmodel').on('shown.bs.modal', function () {
-                        const modalId = $(this).attr('id');
-                        $(`#${modalId} .select2`).select2({
-                          placeholder: "Select products",
-                          allowClear: true,
-                          dropdownParent: $(`#${modalId}`),
-                          width: '100%'
-                        });
-                      });
-
-                      editOfferForms.forEach(form => {
-                        form.addEventListener('submit', async function (event) {
-                          event.preventDefault();
-                          const offerId = this.getAttribute('data-offer-id');
-
-                          const offerTitle = document.getElementById(`offerTitle${offerId}`);
-                          const offerDetails = document.getElementById(`offerDetails${offerId}`);
-                          const offerDiscount = document.getElementById(`offerDiscount${offerId}`);
-                          const productSelect = document.getElementById(`productSelect${offerId}`);
-                          const offerStatus = document.getElementById(`offerStatus${offerId}`);
-                          const edit_hidden = document.getElementById(`edit-hiddenid${offerId}`);
-
-                          const selectedProducts = Array.from(productSelect.selectedOptions).map(option => option.value);
-
-                          const isValid = validateForm(offerTitle, offerDetails, offerDiscount, selectedProducts, offerStatus);
-
-                          if (!isValid) return;
-
-                          try {
-                            const response = await fetch('/admin/updateOffer', {
-                              method: 'POST',
-                              headers: {
-                                'Content-Type': 'application/json',
-                              },
-                              body: JSON.stringify({
-                                title: offerTitle.value.trim(),
-                                description: offerDetails.value.trim(),
-                                discount: offerDiscount.value.trim(),
-                                products: selectedProducts,
-                                status: offerStatus.value,
-                                type: 'PRODUCT',
-                                id: edit_hidden.value.trim()
-                              })
+                        const deleteButtons = document.querySelectorAll('.delete-address');
+                        deleteButtons.forEach(button => {
+                            button.addEventListener('click', function (event) {
+                                event.preventDefault();
+                                const offerId = this.getAttribute('data-offer-id');
+                                deleteOffer(offerId);
                             });
-                            const data = await response.json();
-                            if (data.success) {
-                              Swal.fire('Success!', data.message, 'success').then(() => {
-                                window.location.href = data.redirectUrl;
-                              });
-                              $('.editmodel').modal('hide');
-                            } else {
-                              Swal.fire('Error!', data.message, 'error');
-                            }
-                          } catch (error) {
-                            console.error('Error updating offer:', error);
-                          }
                         });
-                      });
-
-                      const validateForm = (offerTitle, offerDetails, offerDiscount, selectedProducts, offerStatus) => {
-                        let isValid = true;
-                        const nameRegex = /^[a-zA-Z0-9\s]+$/;
-
-                        if (!offerTitle.value.trim()) {
-                          setError(offerTitle, 'Enter Title');
-                          isValid = false;
-                        } else if (!nameRegex.test(offerTitle.value.trim())) {
-                          setError(offerTitle, 'Offer Name should only contain letters and numbers');
-                          isValid = false;
-                        } else {
-                          setSuccess(offerTitle);
+                        const setError = (element, message) => {
+                            const formGroup1 = element.parentElement;
+                            const errorDisplay = formGroup1.querySelector('.errMsg');
+                            if (errorDisplay) {
+                                errorDisplay.innerText = message;
+                                element.classList.add('error');
+                                errorDisplay.classList.add('error');
+                                element.classList.remove('success');
+                                errorDisplay.classList.remove('success');
+                            }
                         }
 
-                        if (!offerDetails.value.trim()) {
-                          setError(offerDetails, 'Enter Description');
-                          isValid = false;
-                        } else {
-                          setSuccess(offerDetails);
+                        const setSuccess = (element, message) => {
+                            const formGroup1 = element.parentElement;
+                            const errorDisplay = formGroup1.querySelector('.errMsg');
+                            if (errorDisplay) {
+                                errorDisplay.innerText = message;
+                                element.classList.add('success');
+                                errorDisplay.classList.add('success');
+                                element.classList.remove('error');
+                                errorDisplay.classList.remove('error');
+                            }
                         }
 
-                        if (!offerDiscount.value.trim() || offerDiscount.value <= 0 || offerDiscount.value > 90) {
-                          setError(offerDiscount, 'Discount should be between 1 and 90');
-                          isValid = false;
-                        } else {
-                          setSuccess(offerDiscount);
+
+
+                        const addForm = async (title, description, discount, products) => {
+
+                            let isValid = true;
+                            const nameRegex = /[a-zA-Z0-9]+$/;
+                    
+
+                            if (title === '') {
+                                isValid = false;
+                                setError(document.getElementById('offerTitle'), 'Enter Title');
+                            }else if (!nameRegex.test(title)) {
+                                setError(document.getElementById('offerTitle'), 'Offer Name should only contain letters and numbers');
+                                 isValid = false;
+                            } else if (title.length < 3) {
+                                isValid = false;
+                                setError(document.getElementById('offerTitle'), 'Title should be more than 2 letters');
+                            } else {
+                                setSuccess(document.getElementById('offerTitle'), 'Name');
+                            }
+                            if (description === '') {
+                                isValid = false;
+                                setError(document.getElementById('offerDetails'), 'Enter Description');
+                            } else if (description.length < 3) {
+                                isValid = false;
+                                setError(document.getElementById('offerDetails'), 'Description should be more than 2 letters');
+                            } else {
+                                setSuccess(document.getElementById('offerDetails'), 'Description');
+                            }
+                            if (discount === '') {
+                                isValid = false;
+                                setError(document.getElementById('offerDiscount'), 'Enter Discount Amount');
+                            } else if (discount < 0) {
+                                isValid = false;
+                                setError(document.getElementById('offerDiscount'), 'Discount shuold be more than 0 ');
+                            } else if (discount > 90) {
+                                isValid = false;
+                                setError(document.getElementById('offerDiscount'), 'Discount shuold be less than 90 ');
+                            } else {
+                                setSuccess(document.getElementById('offerDiscount'), 'Discount');
+                            }
+                            if (products.length === 0) {
+                                isValid = false;
+                                setError(document.getElementById('productSelect'), 'Please select at least one product');
+                            } else {
+                                setSuccess(document.getElementById('productSelect'), 'Products');
+                            }
+                            if (!isValid) {
+                                return;
+                            }
+
+
+                            const formData = {
+                                title: document.getElementById('offerTitle').value,
+                                description: document.getElementById('offerDetails').value,
+                                discount: document.getElementById('offerDiscount').value,
+                                products: Array.from(document.getElementById('productSelect').selectedOptions).map(option => option.value),
+                                status: document.getElementById('offerStatus').value,
+                                type: 'PRODUCT'
+                            };
+                            try {
+                                const response = await fetch('/admin/offers/addOffers', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify(formData)
+                                })
+                                const data = await response.json();
+                                if (data.success) {
+                                    Swal.fire({
+                                        title: 'Success!',
+                                        text: data.message,
+                                        icon: 'success',
+                                        confirmButtonText: 'OK'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.href = data.redirectUrl;
+                                        }
+                                    });
+                                    $('#addOffer').modal('hide');
+                                } else {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: data.message,
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+                            } catch (error) {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: error.message,
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
                         }
 
-                        if (!selectedProducts.length) {
-                          setError(productSelect, 'Select at least one product');
-                          isValid = false;
-                        } else {
-                          setSuccess(productSelect);
-                        }
+                        
 
-                        if (!offerStatus.value) {
-                          setError(offerStatus, 'Select Status');
-                          isValid = false;
-                        } else {
-                          setSuccess(offerStatus);
-                        }
 
-                        return isValid;
-                      };
+                    
 
-                      const setError = (element, message) => {
-                        element.classList.add('is-invalid');
-                        const errorLabel = element.nextElementSibling;
-                        errorLabel.textContent = message;
-                      };
+                    const editOfferForms = document.querySelectorAll('.edit-offer-form');
 
-                      const setSuccess = (element) => {
-                        element.classList.remove('is-invalid');
-                      };
-                    });
+editOfferForms.forEach(form => {
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const offerId = this.getAttribute('data-offer-id');
+
+        const offerTitle = document.getElementById(`offerTitle${offerId}`);
+        const offerDetails = document.getElementById(`offerDetails${offerId}`);
+        const offerDiscount = document.getElementById(`offerDiscount${offerId}`);
+        const productSelect = document.getElementById(`productSelect${offerId}`);
+        const offerStatus = document.getElementById(`offerStatus${offerId}`);
+        const edit_hidden = document.getElementById(`edit-hiddenid${offerId}`);
+
+
+
+        editOfferForm(
+            offerTitle, offerDetails, offerDiscount,
+            productSelect, offerStatus, edit_hidden
+        );
+    });
+});
+
+
+const editOfferForm = async (
+    offerTitle, offerDetails, offerDiscount,
+    productSelect, offerStatus, edit_hidden
+) => {
+
+    const edit_titleValue = offerTitle.value.trim();
+    const edit_detailsValue = offerDetails.value.trim();
+    const edit_discountValue = offerDiscount.value.trim();
+    const edit_selectValue = productSelect.value.trim();
+    const edit_statusValue = offerStatus.value;
+    const edit_hiddenValue = edit_hidden.value.trim();
+
+
+
+    let isValid = true;
+    const nameRegex = /[a-zA-Z0-9]+$/;
+
+    
+    if (edit_titleValue === '') {
+        isValid = false;
+        setError(offerTitle, 'Enter Title');
+    }else if (!nameRegex.test(edit_titleValue)) {
+        setError(offerTitle, 'Offer Name should only contain letters and numbers');
+         isValid = false;
+    } else if (edit_titleValue.length < 3) {
+        isValid = false;
+        setError(offerTitle, 'Title should be more than 2 letters');
+    } else {
+        setSuccess(offerTitle, 'Name');
+    }
+    if (edit_detailsValue === '') {
+        isValid = false;
+        setError(offerDetails, 'Enter Description');
+    } else if (edit_detailsValue.length < 3) {
+        isValid = false;
+        setError(offerDetails, 'Description should be more than 2 letters');
+    } else {
+        setSuccess(offerDetails, 'Description');
+    }
+    if (edit_discountValue === '') {
+        isValid = false;
+        setError(offerDiscount, 'Enter Discount Amount');
+    } else if (edit_discountValue < 0) {
+        isValid = false;
+        setError(offerDiscount, 'Discount shuold be more than 0 ');
+    } else if (edit_discountValue > 90) {
+        isValid = false;
+        setError(offerDiscount, 'Discount shuold be less than 90 ');
+    } else {
+        setSuccess(offerDiscount, 'Discount');
+    }
+    if (edit_selectValue.length === 0) {
+        isValid = false;
+        setError(productSelect, 'Please select at least one product');
+    } else {
+        setSuccess(productSelect, 'Products');
+    }
+    if (!edit_statusValue) {
+        isValid = false;
+        setError(offerStatus, 'Select Status');
+    } else {
+        setSuccess(offerStatus, 'Status');
+    }
+    if (!isValid) {
+        return;
+    } try {
+        const response = await fetch('/admin/updateOffer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                title: edit_titleValue,
+                description: edit_detailsValue,
+                discount: edit_discountValue,
+                products: Array.from(productSelect.selectedOptions).map(option => option.value),
+                status: edit_statusValue,
+                type: 'PRODUCT',
+                id: edit_hiddenValue
+            })
+        });
+        const data = await response.json();
+        if (data.success) {
+            Swal.fire({
+                title: 'Success!',
+                text: data.message,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = data.redirectUrl;
+                }
+            });
+            $('.editmodel').modal('hide');
+        } else {
+            Swal.fire({
+                title: 'Error!',
+                text: data.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    } catch (error) {
+        console.error('Error during address update:', error);
+    }
+}
 
 
 
@@ -1027,10 +1032,118 @@
 
 
                 </script>
+                       
 
+                       <script>
+                        const handleFormSubmit = async (e) => {
+  e.preventDefault();
 
+  const formData = {
+    title: document.getElementById('offerTitle').value.trim(),
+    description: document.getElementById('offerDetails').value.trim(),
+    discount: document.getElementById('offerDiscount').value.trim(),
+    products: Array.from(document.getElementById('productSelect').selectedOptions).map(option => option.value),
+    status: document.getElementById('offerStatus').value,
+    type: 'PRODUCT'
+  };
 
+  if (!validateForm(formData)) {
+    return;
+  }
 
+  try {
+    const response = await fetch('/admin/offers/addOffers', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData)
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      // First, properly close the modal
+      const modal = bootstrap.Modal.getInstance(document.getElementById('addOffer'));
+      modal.hide();
+      
+      // Remove modal backdrop and any modal-open classes
+      document.body.classList.remove('modal-open');
+      const backdrops = document.getElementsByClassName('modal-backdrop');
+      while(backdrops.length > 0) {
+        backdrops[0].parentNode.removeChild(backdrops[0]);
+      }
+      
+      // Reset any inline styles added by Bootstrap
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+
+      // Then show the success message
+      Swal.fire({
+        title: 'Success!',
+        text: data.message,
+        icon: 'success',
+        confirmButtonText: 'OK'
+      }).then(() => {
+        // Create and add the new offer card
+        const offersContainer = document.querySelector('.row');
+        const newOfferCard = createOfferCard({
+          ...formData,
+          _id: data.offerId,
+          createdAt: new Date()
+        });
+        offersContainer.insertAdjacentHTML('afterbegin', newOfferCard);
+      });
+
+      // Reset form
+      document.getElementById('addNewOfferForm').reset();
+
+      // Reset form validation states
+      const formInputs = document.querySelectorAll('#addNewOfferForm input, #addNewOfferForm select');
+      formInputs.forEach(input => {
+        input.classList.remove('is-valid', 'is-invalid');
+        const errorDisplay = input.closest('.form-floating')?.querySelector('.errMsg');
+        if (errorDisplay) {
+          errorDisplay.innerText = '';
+        }
+      });
+    } else {
+      Swal.fire({
+        title: 'Error!',
+        text: data.message,
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    Swal.fire({
+      title: 'Error!',
+      text: 'An error occurred while saving the offer.',
+      icon: 'error',
+      confirmButtonText: 'OK'
+    });
+  }
+};
+
+// Additionally, add this CSS to ensure proper z-index handling
+const style = document.createElement('style');
+style.textContent = `
+  .swal2-container {
+    z-index: 9999 !important;
+  }
+  .modal-backdrop {
+    z-index: 1040 !important;
+  }
+  .modal {
+    z-index: 1050 !important;
+  }
+`;
+document.head.appendChild(style);
+                       </script>
+
+         
+                       
 
 
 

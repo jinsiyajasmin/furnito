@@ -16,48 +16,56 @@ const loadOffer = async (req, res) => {
         res.status(500).send("An error occurred while loading offers.");
     }
 };
+
 const addOffer = async (req, res) => {
     try {
         const { title, description, discount, products, status, type } = req.body;
 
-        // Validate required fields
-        if (!title || !description || !discount || !products || !status) {
+     
+        if (!title || !description || !discount || !type || !status) {
             return res.status(400).json({
                 success: false,
                 message: 'All fields are required'
             });
         }
 
-        // Validate discount range
-        if (discount < 0 || discount > 90) {
+        
+        if (!['PRODUCT', 'CATEGORY'].includes(type)) {
             return res.status(400).json({
                 success: false,
-                message: 'Discount must be between 0 and 90'
+                message: 'Invalid offer type'
             });
         }
 
-        // Create new offer
-        const newOffer = new Offer({
+        const offerData = {
             title,
             description,
             discount,
-            type: 'PRODUCT',
-            products,
+            type,
             status
-        });
+        };
 
+        if (type === 'PRODUCT') {
+            offerData.products = products;
+        } else {
+            offerData.category = products; 
+        }
+
+        const newOffer = new Offer(offerData);
         await newOffer.save();
 
         res.status(201).json({
             success: true,
             message: 'Offer added successfully',
-            redirectUrl: '/admin/offers'
+            redirectUrl: type === 'PRODUCT' ? '/admin/offers' : '/admin/offers/category'
         });
+
     } catch (error) {
-        console.error("Error adding offer:", error);
+        console.error('Error adding offer:', error);
         res.status(500).json({
             success: false,
-            message: 'An error occurred while adding the offer'
+            message: 'Failed to add offer',
+            error: error.message
         });
     }
 };
@@ -86,7 +94,7 @@ const updateOffer = async (req, res) => {
         console.log('Error updating offer:', error.message);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
-};
+}
 const deleteOffer = async (req, res) => {
     try {
         const offerId = req.body.id;

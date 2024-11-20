@@ -5,6 +5,7 @@ const Order = require('../../models/user/userOrder');
 const Product = require('../../models/admin/productSchema');
 const Address = require('../../models/user/addressSchema')
 const Category = require('../../models/admin/categorySchema');
+const ReturnRequest = require('../../models/user/ReturnRequest');
 const { userAuth } = require("../../middlewares/auth");
 
 
@@ -124,10 +125,7 @@ const updateProfile = async (req, res) => {
         const userId = req.session.user;
     
         try {
-            // Check if required fields are provided
-            if (!name || !phone || !address || !city || !state || !pincode) {
-                return res.status(400).json({ success: false, message: 'All fields except landmark are required' });
-            }
+           
     
             // Validate name: only alphabets and spaces allowed
             const namePattern = /^[A-Za-z\s]+$/;
@@ -135,7 +133,7 @@ const updateProfile = async (req, res) => {
                 return res.status(400).json({ success: false, message: 'Name must contain only letters and spaces' });
             }
     
-            // Validate phone: must start with 8, 9, or 6 and be 10 digits
+            
             const phonePattern = /^[689]\d{9}$/;
             if (!phonePattern.test(phone)) {
                 return res.status(400).json({ success: false, message: 'Phone number must start with 8, 9, or 6 and be 10 digits long' });
@@ -177,11 +175,18 @@ const updateProfile = async (req, res) => {
     
     
     const  addresses = async (req, res) => {
-        const user = req.session.user;
+       
         try {
+            const userId = req.session.user;
+        
+        
+        let userData = null;
+        if (userId) {
+            userData = await User.findById(userId);
+        }
             const addresses = await Address.find();
            
-            res.render('userAddress', {user:user, addresses  });
+            res.render('userAddress', {user:userData, addresses  });
         } catch (error) {
             console.error(error);
             res.status(500).send('Server error');
@@ -247,12 +252,23 @@ const updateProfile = async (req, res) => {
     };
     const getOrders = async (req, res) => {
         try {
+            
+            const userId = req.session.user;
+        
+        
+        let userData = null;
+        if (userId) {
+            userData = await User.findById(userId);
+        }
+
+
+
             const orders = await Order.find()
                 .populate('items.product')
                 .populate('address')
                 .sort({ createdAt: -1 });
     
-            res.render('orders', { orders }); 
+            res.render('orders', { orders , user: userData }); 
         } catch (error) {
             console.error('Error fetching orders:', error);
             res.render('orders', { 
@@ -294,8 +310,51 @@ const updateProfile = async (req, res) => {
             res.status(500).json({ success: false, message: 'Failed to cancel order' });
         }
     };
+    
 
-
+    const returnOrder = async (req, res) => {
+        try {
+            if (!req.session || !req.session.user) {
+                return res.status(401).json({ success: false, message: 'User not authenticated' });
+            }
+    
+            const { order_id, return_reason, item_id } = req.body;
+    
+            if (!order_id || !return_reason || !item_id) {
+                return res.status(400).json({ success: false, message: 'Missing required fields' });
+            }
+    
+            const order = await Order.findById(order_id);
+            if (!order || order.user.toString() !== req.session.user) {
+                return res.status(404).json({ success: false, message: 'Order not found or unauthorized' });
+            }
+    
+            const product = order.items.find(item => item._id.equals(item_id));
+            if (!product || product.status !== 'Delivered') {
+                return res.status(400).json({ success: false, message: 'Invalid item or status for return' });
+            }
+    
+            const returnRequest = new ReturnRequest({
+                item_id,
+                order_id,
+                user_id: req.session.user,
+                reason: return_reason,
+                status: 'Pending',
+                created_at: new Date(),
+            });
+    
+            await returnRequest.save();
+    
+            product.status = 'Return Requested';
+            await order.save();
+    
+            res.json({ success: true, message: 'Return request submitted successfully' });
+        } catch (error) {
+            console.error('Error processing return request:', error);
+            res.status(500).json({ success: false, message: 'An error occurred. Please try again.' });
+        }
+    };
+    
     module.exports = {
         getUserProfile,
         getAccountDetails,
@@ -308,5 +367,6 @@ const updateProfile = async (req, res) => {
         editAddress,
         deleteAddress ,
         getOrders,
-        cancelOrder
+        cancelOrder,
+        returnOrder
     }

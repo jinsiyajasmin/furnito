@@ -2,18 +2,18 @@ const Product = require("../../models/admin/productSchema");
 const Category = require('../../models/admin/categorySchema');
 const User = require('../../models/user/userSchema');
 const fs = require('fs');
-const path = require ('path');
-const sharp = require ("sharp");
+const path = require('path');
+const sharp = require("sharp");
 
 const getProductAddPage = async (req, res) => {
     try {
         const products = await Product.find({}).populate('Category');
-        const categories = await Category.find({isListed: true});
+        const categories = await Category.find({ isListed: true });
         res.render("product", {
             categories: categories,
             products: products
         });
-    } catch(error) {
+    } catch (error) {
         console.error(error);
         res.redirect("/pageerror");
     }
@@ -45,9 +45,9 @@ const getProducts = async (req, res) => {
 }
 const getAddProductPage = async (req, res) => {
     try {
-        const categories = await Category.find({isListed: true});
+        const categories = await Category.find({ isListed: true });
         res.render("addProduct", { categories: categories });
-    } catch(error) {
+    } catch (error) {
         res.redirect("/pageerror");
     }
 };
@@ -56,28 +56,28 @@ const getAddProductPage = async (req, res) => {
 
 const getEditProduct = async (req, res) => {
     try {
-        const productId = req.query.id; 
-        
+        const productId = req.query.id;
+
         if (!productId) {
             return res.status(400).send('Product ID is required');
         }
-    
+
         const product = await Product.findById(productId).populate('Category').exec();
         if (!product) {
             return res.status(404).send('Product not found');
         }
 
-      
-    
+
+
 
         const categories = await Category.find().exec();
-       
-      
-        
-        res.render('editProduct', { 
-            product, 
+
+
+
+        res.render('editProduct', {
+            product,
             categories,
-            selectedCategoryId: product.Category ? product.Category._id : null 
+            selectedCategoryId: product.Category ? product.Category._id : null
         });
     } catch (error) {
         console.error("Error fetching product details", error);
@@ -87,8 +87,8 @@ const getEditProduct = async (req, res) => {
 
 const addProduct = async (req, res) => {
     try {
-        const { productName, description, price, category, quantity ,status} = req.body;
-        
+        const { productName, description, price, category, quantity, status } = req.body;
+
 
         const images = [];
         if (req.files && req.files.length > 0) {
@@ -98,10 +98,10 @@ const addProduct = async (req, res) => {
         }
 
         const newProduct = new Product({
-            productName:productName,
-            productDescription: description, 
-            price: price, 
-            Category: category, 
+            productName: productName,
+            productDescription: description,
+            price: price,
+            Category: category,
             quantity,
             productImage: images,
             createdOn: new Date(),
@@ -120,14 +120,14 @@ const addProduct = async (req, res) => {
 
 
 
-  
-  
 
-  
+
+
+
 const editProduct = async (req, res) => {
     try {
         const id = req.params.id;
-        
+
 
         const product = await Product.findById(id);
         if (!product) {
@@ -135,9 +135,9 @@ const editProduct = async (req, res) => {
         }
 
         const data = req.body;
-        
 
-       
+
+
         const existingProduct = await Product.findOne({
             productName: data.productName,
             _id: { $ne: id }
@@ -147,10 +147,10 @@ const editProduct = async (req, res) => {
             return res.status(400).json({ success: false, message: "Product with the same name already exists" });
         }
 
-       
+
         let images = [...product.productImage];
 
-   
+
         if (req.files && req.files.length > 0) {
             req.files.forEach((file, index) => {
                 if (index < images.length) {
@@ -161,27 +161,27 @@ const editProduct = async (req, res) => {
             });
         }
 
-       
-        
+
+
         const updateFields = {
             productName: data.productName,
             productDescription: data.productDescription,
             price: data.price,
             quantity: data.quantity,
             Category: data.category,
-            productImage: images
+            productImage: images,
+            status : data.status
         };
 
-      
 
-        
+
+
         const updatedProduct = await Product.findByIdAndUpdate(id, { $set: updateFields }, { new: true });
-       
+
         if (!updatedProduct) {
             return res.status(500).json({ success: false, message: "Failed to update product" });
         }
 
-        // Send JSON response instead of redirecting
         res.json({ success: true, message: "Product updated successfully", product: updatedProduct });
     } catch (error) {
         console.error('Error updating product:', error);
@@ -197,12 +197,12 @@ const editProduct = async (req, res) => {
 
 
 
-module.exports = { 
+module.exports = {
     getProductAddPage,
     getProducts,
     getAddProductPage,
     addProduct,
-   
+
     editProduct,
     getEditProduct
 }

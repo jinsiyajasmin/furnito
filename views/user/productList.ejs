@@ -1,4 +1,54 @@
 <%- include ('../../layout/header.ejs') %>
+    <style>
+        .filter-btn {
+            font-size: 18px;
+            /* Increase the font size */
+            padding: 10px 15px;
+            /* Increase padding for larger button */
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .filter-btn i {
+            font-size: 24px;
+            /* Increase icon size */
+            margin-right: 8px;
+            /* Space between icon and text */
+        }
+
+        .product-price .old-price {
+            text-decoration: line-through;
+            color: #888;
+            margin-right: 10px;
+        }
+
+        .product-price .new-price {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .header-search {
+    position: relative;
+}
+.header-search-wrapper {
+    display: block;
+    position: relative;
+}
+
+.form-control {
+    width: 100%;
+    max-width: 300px; /* Adjust width as needed */
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.header-search .search-toggle {
+    cursor: pointer;
+}
+
+ 
+    </style>
     <div class="page-wrapper">
         <header class="header">
             <div class="header-top">
@@ -7,11 +57,11 @@
                         <div class="header-dropdown">
                             <a href="#">Usd</a>
                             <div class="header-menu">
-                             
+
                             </div><!-- End .header-menu -->
                         </div><!-- End .header-dropdown -->
 
-                        
+
                     </div><!-- End .header-left -->
 
                     <div class="header-right">
@@ -19,7 +69,15 @@
                             <li>
                                 <a href="#">Links</a>
                                 <ul>
-                                   
+                                    <li><a href="/wishlist"><i class="icon-heart-o"></i>Wishlist <span></span></a></li>
+                                    <% if (locals.user) { %>
+                                        <li><a href="/logout">Logout</a></li>
+                                        <li><a href="/userDashboard">
+                                                <%=user.name%>
+                                            </a></li>
+                                        <% } else { %>
+                                            <li><a href="/login"><i class="icon-user"></i>Login</a></li>
+                                            <% } %>
                                 </ul>
                             </li>
                         </ul><!-- End .top-menu -->
@@ -39,44 +97,52 @@
                             <img src="assets/images/wonder.png" alt="Molla Logo" width="105" height="25">
                         </a>
 
+
                         <nav class="main-nav">
                             <ul class="menu sf-arrows">
                                 <li class="megamenu-container active">
                                     <a href="/" class="sf-with-ul">Home</a>
 
-                                    
+
                                 <li>
                                     <a href="/productList" class="sf-with-ul">Shop</a>
 
-                                  
+
                                 </li>
-                                <li>
-                                    <a href="product.html" class="sf-with-ul">Product</a>
-                              
-                              
-                                </li>
-                               
-                    
-                               
+
+
+
+
                             </ul><!-- End .menu -->
                         </nav><!-- End .main-nav -->
                     </div><!-- End .header-left -->
 
                     <div class="header-right">
                         <div class="header-search">
-                            <a href="#" class="search-toggle" role="button" title="Search"><i class="icon-search"></i></a>
-                            <form action="#" method="get">
-                                <div class="header-search-wrapper">
+                            <a href="#" class="search-toggle" role="button" title="Search">
+                                <i class="icon-search"></i>
+                            </a>
+                            <form action="/search" method="get">
+                                <div class="header-search-wrapper" style="display: none;">
                                     <label for="q" class="sr-only">Search</label>
-                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search in..." required>
-                                </div><!-- End .header-search-wrapper -->
+                                    <input 
+                                        type="search" 
+                                        class="form-control" 
+                                        name="q" 
+                                        id="q" 
+                                        placeholder="Search here..." 
+                                        required
+                                    >
+                                </div>
                             </form>
-                        </div><!-- End .header-search -->
-                       
+                        </div>
+                        
+                        
 
+                        
                         <div class="dropdown cart-dropdown">
-                          
-                          <a href="/cart"><i class="icon-shopping-cart" style="font-size: 24px;"></i></a>
+
+                            <a href="/cart"><i class="icon-shopping-cart" style="font-size: 24px;"></i></a>
 
                         </div>
                     </div>
@@ -85,17 +151,17 @@
         </header>
 
         <main class="main">
-        	<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
-        		<div class="container">
-        			<h1 class="page-title">Products</h1>
-        		</div>
-        	</div>
+            <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+                <div class="container">
+                    <h1 class="page-title">Products</h1>
+                </div>
+            </div>
             <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
                 <div class="container">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/ ">Home</a></li>
                         <li class="breadcrumb-item"><a href="/productList">Shop</a></li>
-                        
+
                     </ol>
                 </div>
             </nav>
@@ -104,250 +170,315 @@
                 <div class="page-content">
                     <div class="container">
                         <div class="row">
-                          
+
                             <aside class="col-lg-3 order-lg-first">
                                 <div class="sidebar sidebar-shop">
-                                  
-                                    <div class="widget widget-clean">
-                                        <label>Filters:</label>
-                                        <a href="#" class="sidebar-filter-clear">Clean All</a>
-                                    </div>
-            
-                                 
-                                    <div class="widget widget-collapsible">
-                                        <h3 class="widget-title">
-                                            <a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="true" aria-controls="widget-1">
-                                                Category
-                                            </a>
-                                        </h3>
-                                        <div class="collapse show" id="widget-1">
-                                            <div class="widget-body">
-                                                <div class="filter-items filter-items-count">
-                                                    <% categories.forEach((category, index) => { %>
-                                                    <div class="filter-item">
-                                                        <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="cat-<%= index %>" name="categoryFilter" value="<%= category.name %>" onchange="filterProducts()">
-                                                            <label class="custom-control-label" for="cat-<%= index %>"><%= category.name %></label>
+
+                                    <!-- Off-Canvas Sidebar for Sorting and Categories -->
+                                    <div class="offcanvas offcanvas-start" tabindex="-1" id="filterSidebar" aria-labelledby="filterSidebarLabel">
+                                        <div class="offcanvas-header">
+                                            <h5 class="offcanvas-title" id="filterSidebarLabel">Filters</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                        </div>
+                                        <div class="offcanvas-body">
+                                            <!-- Category Filter Section -->
+                                            <div class="widget widget-collapsible">
+                                                <h3 class="widget-title">
+                                                    <a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="true" aria-controls="widget-1">
+                                                        Category
+                                                    </a>
+                                                </h3>
+                                                <div class="collapse show" id="widget-1">
+                                                    <div class="widget-body">
+                                                        <div class="filter-items filter-items-count">
+                                                            <% if (categories && categories.length > 0) { %>
+                                                                <% categories.forEach((category, index) => { %>
+                                                                    <div class="filter-item">
+                                                                        <div class="custom-control custom-checkbox">
+                                                                            <input type="checkbox" class="custom-control-input" id="cat-<%= index %>"
+                                                                                name="categoryFilter" value="<%= category.name %>">
+                                                                            <label class="custom-control-label" for="cat-<%= index %>">
+                                                                                <%= category.name %>
+                                                                            </label>
+                                                                        </div>
+                                                                        <span class="item-count"><%= category.count %></span>
+                                                                    </div>
+                                                                <% }); %>
+                                                            <% } else { %>
+                                                                <p>No categories available</p>
+                                                            <% } %>
                                                         </div>
-                                                        <span class="item-count"><%= category.count %></span>
                                                     </div>
-                                                    <% }); %>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-            
-                                   
-                                    <div class="widget widget-collapsible">
-                                        <h3 class="widget-title">
-                                            <a data-toggle="collapse" href="#widget-sort" role="button" aria-expanded="false" aria-controls="widget-sort">
-                                                Sort By
-                                            </a>
-                                        </h3>
-                                        <div class="collapse" id="widget-sort">
-                                            <div class="widget-body">
-                                                <div class="filter-items">
-                                                    <div class="custom-control custom-radio">
-                                                        <input type="radio" class="custom-control-input" id="sort-default" name="sortBy" value="default" checked onchange="filterProducts()">
-                                                        <label class="custom-control-label" for="sort-default">Default</label>
-                                                    </div>
-                                                    <div class="custom-control custom-radio">
-                                                        <input type="radio" class="custom-control-input" id="sort-lowToHigh" name="sortBy" value="lowToHigh" onchange="filterProducts()">
-                                                        <label class="custom-control-label" for="sort-lowToHigh">Low to High</label>
-                                                    </div>
-                                                    <div class="custom-control custom-radio">
-                                                        <input type="radio" class="custom-control-input" id="sort-highToLow" name="sortBy" value="highToLow" onchange="filterProducts()">
-                                                        <label class="custom-control-label" for="sort-highToLow">High to Low</label>
-                                                    </div>
-                                                    <div class="custom-control custom-radio">
-                                                        <input type="radio" class="custom-control-input" id="sort-aToZ" name="sortBy" value="aToZ" onchange="filterProducts()">
-                                                        <label class="custom-control-label" for="sort-aToZ">A to Z</label>
-                                                    </div>
-                                                    <div class="custom-control custom-radio">
-                                                        <input type="radio" class="custom-control-input" id="sort-zToA" name="sortBy" value="zToA" onchange="filterProducts()">
-                                                        <label class="custom-control-label" for="sort-zToA">Z to A</label>
+                                    
+                                            <!-- Sorting Section -->
+                                            <div class="widget widget-collapsible">
+                                                <h3 class="widget-title">Sort By</h3>
+                                                <div class="widget-body">
+                                                    <div class="filter-items">
+                                                        <div class="custom-control custom-radio">
+                                                            <input type="radio" class="custom-control-input" id="sort-default" name="sortBy" value="default" checked>
+                                                            <label class="custom-control-label" for="sort-default">Default</label>
+                                                        </div>
+                                                        <div class="custom-control custom-radio">
+                                                            <input type="radio" class="custom-control-input" id="sort-lowToHigh" name="sortBy" value="lowToHigh">
+                                                            <label class="custom-control-label" for="sort-lowToHigh">Low to High</label>
+                                                        </div>
+                                                        <div class="custom-control custom-radio">
+                                                            <input type="radio" class="custom-control-input" id="sort-highToLow" name="sortBy" value="highToLow">
+                                                            <label class="custom-control-label" for="sort-highToLow">High to Low</label>
+                                                        </div>
+                                                        <div class="custom-control custom-radio">
+                                                            <input type="radio" class="custom-control-input" id="sort-aToZ" name="sortBy" value="aToZ">
+                                                            <label class="custom-control-label" for="sort-aToZ">A to Z</label>
+                                                        </div>
+                                                        <div class="custom-control custom-radio">
+                                                            <input type="radio" class="custom-control-input" id="sort-zToA" name="sortBy" value="zToA">
+                                                            <label class="custom-control-label" for="sort-zToA">Z to A</label>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        
+                                        <!-- New Footer with Apply and Clear All Buttons -->
+                                        <div class="offcanvas-footer p-3 border-top">
+                                            <div class="d-flex justify-content-between gap-2">
+                                                <button type="button" class="btn btn-outline-secondary flex-grow-1" onclick="clearAllFilters()">Clear All</button>
+                                                <button type="button" class="btn btn-primary flex-grow-1" onclick="applyFilters()">Apply Filters</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                    <div class="toolbox-left">
+                                        <a href="#" data-bs-toggle="offcanvas" data-bs-target="#filterSidebar"
+                                            aria-controls="filterSidebar" class="filter-btn">
+                                            <i class="icon-bars"></i> Filters
+                                        </a>
+
+                                    </div>
+                                    <!-- Filter Trigger Button -->
+
+
                             </aside>
-            
-                          
-                            <div class="products mb-3 col-lg-9 order-lg-last">
-                                <div class="row justify-content-center" id="productList">
-                                    <% products.forEach((items) => { %>
-                                        <div class="col-6 col-md-4 col-lg-4 product-item" 
-                                        data-category="<%= items.category %>" 
-                                        data-price="<%= items.price %>" 
-                                        data-name="<%= items.productName %>">
-                                        <div class="product product-7 text-center">
-                                            <figure class="product-media">
-                                                <a href="/productDetails/<%= items._id %>">
-                                                    <img src="uploads/<%= items.productImage[0] %>" alt="Product image" class="product-image">
-                                                </a>
-                                                <div class="product-action-vertical">
-                                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
-                                                </div>
-                                                <div class="product-action">
-                                                    <% if (user) { %> <!-- Check if user is logged in -->
-                                                        <% if(items.quantity == 0){%>
-                                                            <span class="btn-product ">Out of stock</span>
-                                                    
-                                                        <%}else{%>
-                                                            <a href="#" class="btn-product btn-cart" data-product-id="<%= items._id %>">
-                                                                <span>Add to cart</span>
-                                                            </a>
-                                                        <%}%>
-                                                    <% } else { %> <!-- If no user, show login button -->
-                                                        <a href="/login" class="btn-product btn-login">
-                                                            <span>Login</span>
+
+
+
+                            <div class="products">
+                                <div class="row">
+
+                                    <% products.forEach((item)=> { %>
+                                        <div class="col-6 col-md-4 col-lg-4 col-xl-3 product-item"
+                                            data-category="<%= item.category %>" data-price="<%= item.finalPrice %>"
+                                            data-name="<%= item.productName %>">
+                                            <div class="product product-7 text-center">
+                                                <figure class="product-media">
+                                                    <a href="/productDetails/<%= item._id %>">
+                                                        <img src="uploads/<%= item.productImage[0] %>"
+                                                            alt="<%= item.productName %> image" class="product-image">
+                                                    </a>
+                                                    <div class="product-action-vertical">
+                                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable"
+                                                            data-product-id="<%= item._id %>">
+                                                            <span>Add to wishlist</span>
                                                         </a>
-                                                    <% } %>
-                                                </div>
-                                                
-                                                
-                                            </figure>
-            
-                                            <div class="product-body">
-                                                <h3 class="product-title"><a href="product.html"><%= items.productName %></a></h3>
-                                                <div class="product-cat">
-                                                    <a href="#"><%= items.productDescription %></a>
-                                                </div>
-                                                <div class="product-price">₹<%= items.price %></div>
-                                                <!-- <div class="ratings-container">
-                                                    <div class="ratings">
-                                                        <div class="ratings-val" style="width: 20%;"></div>
                                                     </div>
-                                                   
-                                                </div> -->
+                                                    <div class="product-action">
+                                                        <% if (user) { %>
+                                                            <% if (item.quantity===0) { %>
+                                                                <span class="btn-product">Out of stock</span>
+                                                                <% } else { %>
+                                                                    <a href="#" class="btn-product btn-cart"
+                                                                        data-product-id="<%= item._id %>">
+                                                                        <span>Add to cart</span>
+                                                                    </a>
+                                                                    <% } %>
+                                                                        <% } else { %>
+                                                                            <a href="/login"
+                                                                                class="btn-product btn-login">
+                                                                                <span>Login</span>
+                                                                            </a>
+                                                                            <% } %>
+                                                    </div>
+                                                </figure>
+
+                                                <div class="product-body">
+                                                    <h3 class="product-title">
+                                                        <a href="/productDetails/<%= item._id %>">
+                                                            <%= item.productName %>
+                                                        </a>
+                                                    </h3>
+                                                    <div class="product-cat">
+                                                        <a href="#">
+                                                            <%= item.productDescription %>
+                                                        </a>
+                                                    </div>
+                                                    <div class="product-price">
+                                                        <% if (item.discount) { %>
+                                                            <span class="old-price">₹<%= item.price %></span>
+                                                            <span class="new-price">₹<%= item.finalPrice %></span>
+                                                            <% } else { %>
+                                                                ₹<%= item.price %>
+                                                                    <% } %>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <% }); %>
+                                        <% }); %>
+
+
+                        
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </form>
-            
-                    
-            
-                            
 
-                                    
 
-                			<nav aria-label="Page navigation">
-							    <ul class="pagination justify-content-center">
-							        <li class="page-item disabled">
-							            <a class="page-link page-link-prev" href="#" aria-label="Previous" tabindex="-1" aria-disabled="true">
-							                <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Prev
-							            </a>
-							        </li>
-							        <li class="page-item active" aria-current="page"><a class="page-link" href="#">1</a></li>
-							        <li class="page-item"><a class="page-link" href="#">2</a></li>
-							        <li class="page-item"><a class="page-link" href="#">3</a></li>
-							        <li class="page-item-total">of 6</li>
-							        <li class="page-item">
-							            <a class="page-link page-link-next" href="#" aria-label="Next">
-							                Next <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
-							            </a>
-							        </li>
-							    </ul>
-							</nav>
-                		</div>
-                		<aside class="col-lg-3 order-lg-first">
-                			
-                		</aside>
-                	</div>
-                </div>
-            </div>
-        </main>
 
-        <footer class="footer">
-        	<div class="footer-middle">
-	            <div class="container">
-	            	<div class="row">
-	            		<div class="col-sm-6 col-lg-3">
-	            			<div class="widget widget-about">
-	            			
-	            				<p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. </p>
 
-	            				<div class="social-icons">
-	            					<a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
-	            					<a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
-	            					<a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
-	            					<a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
-	            					<a href="#" class="social-icon" target="_blank" title="Pinterest"><i class="icon-pinterest"></i></a>
-	            				</div><!-- End .soial-icons -->
-	            			</div><!-- End .widget about-widget -->
-	            		</div><!-- End .col-sm-6 col-lg-3 -->
 
-	            		<div class="col-sm-6 col-lg-3">
-	            			<div class="widget">
-	            				<h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
 
-	            				<ul class="widget-list">
-	            					<li><a href="about.html">About Molla</a></li>
-	            					<li><a href="#">How to shop on Molla</a></li>
-	            					<li><a href="#">FAQ</a></li>
-	            					<li><a href="contact.html">Contact us</a></li>
-	            					<li><a href="login.html">Log in</a></li>
-	            				</ul><!-- End .widget-list -->
-	            			</div><!-- End .widget -->
-	            		</div><!-- End .col-sm-6 col-lg-3 -->
 
-	            		<div class="col-sm-6 col-lg-3">
-	            			<div class="widget">
-	            				<h4 class="widget-title">Customer Service</h4><!-- End .widget-title -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link page-link-prev" href="#" aria-label="Previous" tabindex="-1"
+                            aria-disabled="true">
+                            <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Prev
+                        </a>
+                    </li>
+                    <li class="page-item active" aria-current="page"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item-total">of 6</li>
+                    <li class="page-item">
+                        <a class="page-link page-link-next" href="#" aria-label="Next">
+                            Next <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+    </div>
+    <aside class="col-lg-3 order-lg-first">
 
-	            				<ul class="widget-list">
-	            					<li><a href="#">Payment Methods</a></li>
-	            					<li><a href="#">Money-back guarantee!</a></li>
-	            					<li><a href="#">Returns</a></li>
-	            					<li><a href="#">Shipping</a></li>
-	            					<li><a href="#">Terms and conditions</a></li>
-	            					<li><a href="#">Privacy Policy</a></li>
-	            				</ul><!-- End .widget-list -->
-	            			</div><!-- End .widget -->
-	            		</div><!-- End .col-sm-6 col-lg-3 -->
+    </aside>
+    </div>
+    </div>
+    </div>
+    </main>
 
-	            		<div class="col-sm-6 col-lg-3">
-	            			<div class="widget">
-	            				<h4 class="widget-title">My Account</h4><!-- End .widget-title -->
+    <footer class="footer">
 
-	            				<ul class="widget-list">
-	            					<li><a href="#">Sign In</a></li>
-	            					<li><a href="cart.html">View Cart</a></li>
-	            					<li><a href="#">My Wishlist</a></li>
-	            					<li><a href="#">Track My Order</a></li>
-	            					<li><a href="#">Help</a></li>
-	            				</ul><!-- End .widget-list -->
-	            			</div><!-- End .widget -->
-	            		</div><!-- End .col-sm-6 col-lg-3 -->
-	            	</div><!-- End .row -->
-	            </div><!-- End .container -->
-	        </div><!-- End .footer-middle -->
+        <div class="footer-middle">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="widget widget-about">
+                            <img src="assets/newimages/logo.png" class="footer-logo" alt="Footer Logo" width="150"
+                                height="25">
+                            <p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu
+                                vulputate magna eros eu erat. </p>
 
-	        <div class="footer-bottom">
-	        	<div class="container">
-	        		<p class="footer-copyright">Copyright © 2019 Molla Store. All Rights Reserved.</p><!-- End .footer-copyright -->
-	        		<figure class="footer-payments">
-	        			<img src="assets/images/payments.png" alt="Payment methods" width="272" height="20">
-	        		</figure><!-- End .footer-payments -->
-	        	</div><!-- End .container -->
-	        </div><!-- End .footer-bottom -->
-        </footer><!-- End .footer -->
+                            <div class="widget-call">
+                                <i class="icon-phone"></i>
+                                Got Question? Call us 24/7
+                                <a href="tel:#">+0123 456 789</a>
+                            </div><!-- End .widget-call -->
+                        </div><!-- End .widget about-widget -->
+                    </div><!-- End .col-sm-6 col-lg-3 -->
+
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="widget">
+                            <h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
+
+                            <ul class="widget-list">
+                                <li><a href="about.html">About furnicom</a></li>
+                                <li><a href="#">Our Services</a></li>
+                                <li><a href="#">How to shop on furnicom</a></li>
+                                <li><a href="faq.html">FAQ</a></li>
+                                <li><a href="contact.html">Contact us</a></li>
+                            </ul><!-- End .widget-list -->
+                        </div><!-- End .widget -->
+                    </div><!-- End .col-sm-6 col-lg-3 -->
+
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="widget">
+                            <h4 class="widget-title">Customer Service</h4><!-- End .widget-title -->
+
+                            <ul class="widget-list">
+                                <li><a href="#">Payment Methods</a></li>
+                                <li><a href="#">Money-back guarantee!</a></li>
+                                <li><a href="#">Returns</a></li>
+                                <li><a href="#">Shipping</a></li>
+                                <li><a href="#">Terms and conditions</a></li>
+                                <li><a href="#">Privacy Policy</a></li>
+                            </ul><!-- End .widget-list -->
+                        </div><!-- End .widget -->
+                    </div><!-- End .col-sm-6 col-lg-3 -->
+
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="widget">
+                            <h4 class="widget-title">My Account</h4><!-- End .widget-title -->
+
+                            <ul class="widget-list">
+                                <li><a href="#">Sign In</a></li>
+                                <li><a href="cart.html">View Cart</a></li>
+                                <li><a href="#">My Wishlist</a></li>
+                                <li><a href="#">Track My Order</a></li>
+                                <li><a href="#">Help</a></li>
+                            </ul><!-- End .widget-list -->
+                        </div><!-- End .widget -->
+                    </div><!-- End .col-sm-6 col-lg-3 -->
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+        </div><!-- End .footer-middle -->
+
+        <div class="footer-bottom">
+            <div class="container">
+                <p class="footer-copyright">Copyright © 2024 furnicom Store. All Rights Reserved.</p>
+                <!-- End .footer-copyright -->
+                <figure class="footer-payments">
+                    <img src="assets/images/payments.png" alt="Payment methods" width="272" height="20">
+                </figure><!-- End .footer-payments -->
+            </div><!-- End .container -->
+        </div><!-- End .footer-bottom -->
+    </footer><!-- End .footer -->
+    </div><!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
+
+    <div class="mobile-menu-container">
+        <div class="mobile-menu-wrapper">
+            <span class="mobile-menu-close"><i class="icon-close"></i></span>
+
+            <form action="#" method="get" class="mobile-search">
+                <label for="mobile-search" class="sr-only">Search</label>
+                <input type="search" class="form-control" name="mobile-search" id="mobile-search"
+                    placeholder="Search in..." required>
+                <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
+            </form>
+
+
+            <div class="social-icons">
+                <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
+            </div><!-- End .social-icons -->
+        </div><!-- End .mobile-menu-wrapper -->
+    </div><!-- End .footer -->
     </div><!-- End .page-wrapper -->
     <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
 
 
- 
-    
 
-    
+
+
+
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/jquery.hoverIntent.min.js"></script>
@@ -360,139 +491,460 @@
     <script src="assets/js/nouislider.min.js"></script>
     <!-- Main JS File -->
     <script src="assets/js/main.js"></script>
+      
 
 
     <script>
-     function filterProducts() {
-    const productItems = document.querySelectorAll('.product-item');
-    const selectedCategories = Array.from(document.querySelectorAll('input[name="categoryFilter"]:checked')).map(checkbox => checkbox.value);
-    const sortBy = document.querySelector('input[name="sortBy"]:checked').value;
+       
+       document.addEventListener('DOMContentLoaded', () => {
+    initializeFilters();
+});
 
-    // Filter products based on selected categories
-    const visibleItems = Array.from(productItems).filter(item => {
-        const category = item.dataset.category;
-        const shouldShow = selectedCategories.length === 0 || selectedCategories.includes(category);
-        item.style.display = shouldShow ? '' : 'none';
-        return shouldShow;
+function initializeFilters() {
+    const categoryCheckboxes = document.querySelectorAll('input[name="categoryFilter"]');
+    const sortRadios = document.querySelectorAll('input[name="sortBy"]');
+    const applyButton = document.querySelector('#applyFilters');
+    const clearButton = document.querySelector('#clearFilters');
+
+    categoryCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', applyFilters);
     });
 
-    // Sort products
-    visibleItems.sort((a, b) => {
-        
-        if (selectedCategories.length > 0) {
-            const categoryOrderA = selectedCategories.indexOf(a.dataset.category);
-            const categoryOrderB = selectedCategories.indexOf(b.dataset.category);
-            if (categoryOrderA !== categoryOrderB) {
-                return categoryOrderA - categoryOrderB;
-            }
-        }
-
-        
-        switch (sortBy) {
-            case 'lowToHigh':
-                return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
-            case 'highToLow':
-                return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
-            case 'aToZ':
-                return a.dataset.name.localeCompare(b.dataset.name);
-            case 'zToA':
-                return b.dataset.name.localeCompare(a.dataset.name);
-            default:
-                return 0;
-        }
+    sortRadios.forEach(radio => {
+        radio.addEventListener('change', applyFilters);
     });
 
-    
-    const productList = document.getElementById('productList');
-    visibleItems.forEach(item => productList.appendChild(item));
+    if (applyButton) {
+        applyButton.addEventListener('click', applyFilters);
+    }
+
+    if (clearButton) {
+        clearButton.addEventListener('click', clearAllFilters);
+    }
+}
+
+function applyFilters() {
+    const selectedCategories = Array.from(document.querySelectorAll('input[name="categoryFilter"]:checked')).map(cb => cb.value);
+    const sortOption = document.querySelector('input[name="sortBy"]:checked')?.value || 'name_asc';
+    const minPrice = document.querySelector('#minPrice')?.value;
+    const maxPrice = document.querySelector('#maxPrice')?.value;
+    const searchQuery = document.querySelector('#searchBox')?.value.trim();
+
+    const queryParams = new URLSearchParams({
+        sort: sortOption,
+        category: selectedCategories.join(','),
+        minPrice: minPrice || '',
+        maxPrice: maxPrice || '',
+        search: searchQuery || '',
+    });
+
+    fetch(`/products/filter?${queryParams.toString()}`)
+        .then(response => response.json())
+        .then(data => updateProductList(data))
+        .catch(err => console.error('Error applying filters:', err));
+}
+
+function clearAllFilters() {
+    document.querySelectorAll('input[name="categoryFilter"]').forEach(cb => (cb.checked = false));
+    document.querySelectorAll('input[name="sortBy"]').forEach(radio => (radio.checked = radio.value === 'name_asc'));
+    document.querySelector('#minPrice').value = '';
+    document.querySelector('#maxPrice').value = '';
+    document.querySelector('#searchBox').value = '';
+
+    applyFilters();
+}
+
+function updateProductList(data) {
+    const productContainer = document.querySelector('#productContainer');
+    if (!productContainer) return;
+
+    productContainer.innerHTML = '';
+    data.products.forEach(product => {
+        productContainer.innerHTML += `
+            <div class="product-item" data-category="${product.category}" data-price="${product.price}" data-name="${product.name}">
+                <h3>${product.name}</h3>
+                <p>Price: $${product.price}</p>
+                <p>Category: ${product.category}</p>
+            </div>`;
+    });
+
+    const productCount = document.querySelector('.product-count');
+    if (productCount) {
+        productCount.textContent = `Showing ${data.pagination.visibleCount} of ${data.pagination.totalCount} products`;
+    }
 }
 
 
-document.addEventListener('DOMContentLoaded', filterProducts);
 
 
-document.querySelectorAll('input[name="categoryFilter"], input[name="sortBy"]').forEach(input => {
-    input.addEventListener('change', filterProducts);
-});
+    </script>
 
+    <script>
+       
 
-document.querySelector('.sidebar-filter-clear').addEventListener('click', (e) => {
-    e.preventDefault();
-    document.querySelectorAll('input[name="categoryFilter"]').forEach(checkbox => {
-        checkbox.checked = false;
-    });
-    document.getElementById('sort-default').checked = true;
-    filterProducts();
-});
+        document.addEventListener('DOMContentLoaded', function () {
+            const addToCartButtons = document.querySelectorAll('.btn-cart');
 
-document.addEventListener('DOMContentLoaded', function() {
-    const addToCartButtons = document.querySelectorAll('.btn-cart');
-    
-    addToCartButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const productId = this.dataset.productId;
-            
-            if (!productId) {
-                console.error('Product ID is not defined.');
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Error: Product ID is missing.'
-                });
-                return;
-            }
-            
-            console.log('Product ID:', productId);
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const productId = this.dataset.productId;
 
-            fetch('/cart/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ productId: productId })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not OK');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    console.log('Product added to cart successfully:', data);
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Added!',
-                        text: 'Product added to cart',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                } else {
-                    console.error('Failed to add product to cart:', data.message);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: data.message
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'An error occurred. Please try again.'
+                    if (!productId) {
+                        console.error('Product ID is not defined.');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Error: Product ID is missing.'
+                        });
+                        return;
+                    }
+
+                    console.log('Product ID:', productId);
+
+                    fetch('/cart/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ productId: productId })
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not OK');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                console.log('Product added to cart successfully:', data);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Added!',
+                                    text: 'Product added to cart',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            } else {
+                                console.error('Failed to add product to cart:', data.message);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: data.message
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'An error occurred. Please try again.'
+                            });
+                        });
                 });
             });
         });
-    });
+
+
+
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const wishlistButtons = document.querySelectorAll('.btn-wishlist');
+
+            wishlistButtons.forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const productId = this.dataset.productId; 
+
+                    fetch('/addWishlistItem', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ productId: productId })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Added!',
+                                    text: 'Product added to wishlist',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                this.classList.add('added-to-wishlist');
+                            } else {
+                                throw new Error(data.message);
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: error.message || 'An error occurred'
+                            });
+                        });
+                });
+            });
+        });
+
+
+        const removeButtons = document.querySelectorAll('.btn-remove');
+
+        removeButtons.forEach(button => {
+            button.addEventListener('click', async function () {
+                const itemId = this.getAttribute('data-cart-item-id');
+
+                try {
+                    const response = await fetch('/remove-from-wishlist', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ itemId })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+
+                        this.closest('tr').remove();
+
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Removed!',
+                            text: 'Item removed from wishlist',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+
+
+                        const wishlistTable = document.querySelector('.table-wishlist tbody');
+                        if (!wishlistTable.children.length) {
+                            location.reload();
+                        }
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: error.message || 'Failed to remove item'
+                    });
+                }
+            });
+        });
+
+
+    </script>
+    <script>
+
+document.querySelector('.search-toggle').addEventListener('click', function (e) {
+    e.preventDefault();
+    const searchWrapper = document.querySelector('.header-search-wrapper');
+    if (searchWrapper.style.display === 'block') {
+        searchWrapper.style.display = 'none';
+    } else {
+        searchWrapper.style.display = 'block';
+        document.querySelector('.form-control').focus(); // Focus on the search input
+    }
 });
 
 
 
-</script>
-<%- include ('../../layout/footer.ejs') %>
 
 
 
+
+        const SearchHandler = {
+    init() {
+        this.searchToggle = document.querySelector('.search-toggle');
+        this.searchWrapper = document.querySelector('.header-search');
+        this.searchForm = document.querySelector('.header-search form');
+        this.searchInput = document.getElementById('q');
+        this.productsContainer = document.querySelector('.products-container'); // Adjust selector as needed
+
+        // Create loading indicator
+        this.loadingIndicator = document.createElement('div');
+        this.loadingIndicator.className = 'search-loading d-none';
+        this.loadingIndicator.innerHTML = `
+            <div class="spinner-border spinner-border-sm text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        `;
+        this.searchForm.appendChild(this.loadingIndicator);
+
+        this.bindEvents();
+    },
+
+    bindEvents() {
+        // Toggle search on click
+        this.searchToggle?.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.toggleSearch();
+        });
+
+        // Close search on click outside
+        document.addEventListener('click', (e) => {
+            if (!this.searchWrapper.contains(e.target)) {
+                this.searchWrapper.classList.remove('show');
+            }
+        });
+
+        // Prevent form submission and handle search
+        this.searchForm?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.handleSearch();
+        });
+
+        // Real-time search as user types
+        this.searchInput?.addEventListener('input', debounce(() => {
+            this.handleSearch();
+        }, 300));
+
+        // Handle search input clear
+        this.searchInput?.addEventListener('search', () => {
+            if (!this.searchInput.value) {
+                this.handleSearch();
+            }
+        });
+
+        // Close search on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.searchWrapper.classList.remove('show');
+            }
+        });
+    },
+
+    toggleSearch() {
+        this.searchWrapper.classList.toggle('show');
+        if (this.searchWrapper.classList.contains('show')) {
+            this.searchInput.focus();
+        }
+    },
+
+    async handleSearch() {
+        const query = this.searchInput.value.trim();
+        
+        // Show loading indicator
+        this.toggleLoading(true);
+
+        try {
+            // Update URL with search query
+            const url = new URL(window.location);
+            if (query) {
+                url.searchParams.set('q', query);
+            } else {
+                url.searchParams.delete('q');
+            }
+            window.history.pushState({}, '', url);
+
+            // Fetch search results
+            const response = await fetch(`/api/products/search?q=${encodeURIComponent(query)}`);
+            if (!response.ok) throw new Error('Search request failed');
+
+            const data = await response.json();
+            this.updateProducts(data);
+
+        } catch (error) {
+            console.error('Search error:', error);
+            this.showError('Failed to search products. Please try again.');
+        } finally {
+            this.toggleLoading(false);
+        }
+    },
+
+    updateProducts(data) {
+        if (!this.productsContainer) return;
+
+        if (!data.products?.length) {
+            this.productsContainer.innerHTML = `
+                <div class="no-results text-center py-5">
+                    <h3>No products found</h3>
+                    <p>Try different search terms or browse our categories</p>
+                </div>
+            `;
+            return;
+        }
+
+        this.productsContainer.innerHTML = data.products.map(product => `
+            <div class="product-item">
+                <figure class="product-media">
+                    <a href="/product/${product._id}">
+                        <img src="${product.image}" alt="${product.productName}" class="product-image">
+                    </a>
+                </figure>
+                <div class="product-body">
+                    <h3 class="product-title">
+                        <a href="/product/${product._id}">${product.productName}</a>
+                    </h3>
+                    <div class="product-price">
+                        $${product.price.toFixed(2)}
+                    </div>
+                    <div class="product-action">
+                        <button class="btn-product btn-cart" data-product-id="${product._id}">
+                            <span>add to cart</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        // Update result count if element exists
+        const countElement = document.querySelector('.search-result-count');
+        if (countElement) {
+            countElement.textContent = `${data.total} results found`;
+        }
+    },
+
+    toggleLoading(show) {
+        if (this.loadingIndicator) {
+            this.loadingIndicator.classList.toggle('d-none', !show);
+        }
+    },
+
+    showError(message) {
+        // Create or update error message element
+        let errorElement = document.querySelector('.search-error');
+        if (!errorElement) {
+            errorElement = document.createElement('div');
+            errorElement.className = 'search-error alert alert-danger mt-3';
+            this.searchForm.appendChild(errorElement);
+        }
+
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+
+        // Hide error after 5 seconds
+        setTimeout(() => {
+            errorElement.style.display = 'none';
+        }, 5000);
+    }
+};
+
+// Debounce helper function
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Initialize search functionality when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    SearchHandler.init();
+});
+    </script>
+    <%- include ('../../layout/footer.ejs') %>
