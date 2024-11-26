@@ -1,5 +1,6 @@
 const Product = require("../../models/admin/productSchema");
 const User = require("../../models/user/userSchema");
+const Offer = require('../../models/admin/offerSchema');
 const Cart = require("../../models/user/cartSchema");
 const Wishlist = require("../../models/user/userWishlist");
 const mongoose = require('mongoose');
@@ -45,31 +46,83 @@ const viewCart = async (req, res) => {
   const userId = req.session.user;
 
   try {
-    if (!userId) {
-      return res.render("login");
-    }
+      if (!userId) {
+          return res.render("login");
+      }
 
-    const cart = await Cart.findOne({ user: userId }).populate('items.product');
-    const user = await User.findById(userId);
+      const cart = await Cart.findOne({ user: userId }).populate('items.product');
+      const user = await User.findById(userId);
 
-    if (!cart) {
-      return res.render("cart", { cart: [], totalPrice: 0, user });
-    }
+      if (!cart) {
+          return res.render("cart", { cart: [], totalPrice: 0, user });
+      }
 
-    // Filter out invalid products
-    const validItems = cart.items.filter(item => item.product);
+      // Fetch active offers
+      const offers = await Offer.find({ status: 'active' })
+          .populate('products')
+          .populate('category');
 
-    let subTotal = 0;
-    validItems.forEach(item => {
-      subTotal += item.product.price * item.quantity;
-    });
+      // Process cart items
+      const validItems = cart.items.filter(item => item.product);
+      let subTotal = 0;
 
-    res.render("cart", { cart: validItems, totalPrice: subTotal, user });
+      const itemsWithOffers = validItems.map(item => {
+          const product = item.product;
+          let bestOffer = null;
+
+          // Find matching offers for the product
+          const matchingOffers = offers.filter(offer => {
+              const productMatch = offer.products.some(p => p && p._id.equals(product._id));
+              const categoryMatch =
+                  product.Category &&
+                  Array.isArray(offer.category) &&
+                  offer.category.some(cat =>
+                      cat && cat._id && product.Category._id.equals(cat._id)
+                  );
+
+              return productMatch || categoryMatch;
+          });
+
+          // Determine the best offer (highest discount)
+          if (matchingOffers.length > 0) {
+              bestOffer = matchingOffers.reduce((max, offer) =>
+                  max.discount > offer.discount ? max : offer
+              );
+          }
+
+          const originalPrice = product.price || 0;
+          let discountedPrice = originalPrice;
+
+          if (bestOffer) {
+              discountedPrice = (originalPrice * bestOffer.discount) / 100;
+              discountedPrice = originalPrice - discountedPrice;
+          }
+
+          const totalItemPrice = discountedPrice * item.quantity;
+          subTotal += totalItemPrice;
+
+          return {
+              ...item.toObject(),
+              discountedPrice,
+              offer: bestOffer
+                  ? {
+                      title: bestOffer.title,
+                      description: bestOffer.description,
+                      discount: bestOffer.discount,
+                      type: bestOffer.type,
+                  }
+                  : null,
+              totalItemPrice,
+          };
+      });
+
+      res.render("cart", { cart: itemsWithOffers, totalPrice: subTotal, user });
   } catch (err) {
-    console.error("Error viewing cart:", err.message);
-    res.status(500).send("Server error");
+      console.error("Error viewing cart:", err.message);
+      res.status(500).send("Server error");
   }
 };
+
 
 
 
@@ -138,26 +191,71 @@ const updateQuant = async (req, res) => {
 const removeFromCart = async (req, res) => {
   const { productId } = req.body;
   const userId = req.session.user;
-  
 
   try {
       const objectIdProductId = new mongoose.Types.ObjectId(productId.trim());
 
-      const result = await Cart.findOneAndUpdate(
-          { user: userId }, 
-          { $pull: { items: { product: objectIdProductId } } }, 
-          { new: true } 
-      );
+      const cart = await Cart.findOneAndUpdate(
+          { user: userId },
+          { $pull: { items: { product: objectIdProductId } } },
+          { new: true }
+      ).populate('items.product');
 
-      if (result) {
-          res.json({ success: true, message: 'Item removed successfully' });
-      } else {
-          res.status(404).json({ success: false, message: 'Product not found in cart' });
+      if (!cart) {
+          return res.status(404).json({ success: false, message: 'Product not found in cart' });
       }
+
+      // Fetch active offers
+      const offers = await Offer.find({ status: 'active' })
+          .populate('products')
+          .populate('category');
+
+      // Recalculate totals for remaining items
+      let cartSubtotal = 0;
+      cart.items.forEach(item => {
+          const product = item.product;
+
+          const matchingOffers = offers.filter(offer => {
+              const productMatch = offer.products.some(p => p && p._id.equals(product._id));
+              const categoryMatch =
+                  product.Category &&
+                  Array.isArray(offer.category) &&
+                  offer.category.some(cat => cat && product.Category._id.equals(cat._id));
+              return productMatch || categoryMatch;
+          });
+
+          let bestOffer = null;
+          if (matchingOffers.length > 0) {
+              bestOffer = matchingOffers.reduce((max, offer) =>
+                  max.discount > offer.discount ? max : offer
+              );
+          }
+
+          const originalPrice = product.price || 0;
+          let discountedPrice = originalPrice;
+          if (bestOffer) {
+              discountedPrice = originalPrice - (originalPrice * bestOffer.discount) / 100;
+          }
+
+          item.discountedPrice = discountedPrice;
+          item.total = discountedPrice * item.quantity;
+
+          cartSubtotal += item.total;
+      });
+
+      await cart.save();
+
+      res.json({
+          success: true,
+          message: 'Item removed successfully',
+          cartSubtotal
+      });
   } catch (err) {
-      res.status(500).json({ success: false, message: 'An error occurred while removing the item' });
+      console.error('Error removing item from cart:', err);
+      res.status(500).json({ success: false, message: 'Server error' });
   }
-};    
+};
+  
 
 
 const loadWishlist = async (req, res) => {

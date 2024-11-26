@@ -8,6 +8,7 @@ const Category = require("../controller/admin/categoryController");
 const Coupon = require("../controller/admin/couponController");
 const Product = require("../controller/admin/productController");
 const offer = require("../controller/admin/offerController");
+const sales = require('../controller/admin/salesController');
 const session = require('express-session');
 const passport = require('passport');
 const multer = require("multer");
@@ -114,6 +115,12 @@ adminRouter.get("/coupons", adminAuth, Coupon.loadCoupon);
 adminRouter.post("/coupons/addCoupon", adminAuth, Coupon.addCoupon);
 adminRouter.post("/updateCoupon", adminAuth, Coupon.updateCoupon);
 adminRouter.post("/deleteCoupon", adminAuth, Coupon.deleteCoupon);
+
+
+
+adminRouter.get('/salesreport',adminAuth,sales.loadSales);
+adminRouter.get('/salesreport/pdf',adminAuth, sales.downloadPDF);
+adminRouter.get('/salesreport/excel',adminAuth, sales.downloadExcel);
 
 
 // Error Handling

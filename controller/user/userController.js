@@ -1,44 +1,89 @@
 const User = require("../../models/user/userSchema");
 const nodemailer = require('nodemailer');
-const env = require ('dotenv').config;
+const env = require('dotenv').config;
 const bcrypt = require('bcryptjs');
-const Product = require('../../models/admin/productSchema'); 
+const Product = require('../../models/admin/productSchema');
 const Address = require('../../models/user/addressSchema')
-const   Offer = require('../../models/admin/offerSchema');
+const Offer = require('../../models/admin/offerSchema');
 const Category = require('../../models/admin/categorySchema');
 const { userAuth } = require("../../middlewares/auth");
 
 
 
 
-const pageNotFound = async(req,res)=>{
-    try{
+const pageNotFound = async (req, res) => {
+    try {
         res.render("page-404")
-    }catch(error){
+    } catch (error) {
         res.redirect('/pageNotFound');
     }
 }
 
 const loadHome = async (req, res) => {
     try {
-        const products = await Product.find({status:'active'});
-        const categories = await Category.find({isListed:'true'}); 
-     
-        
+        const products = await Product.find({ status: 'active' });
+        const categories = await Category.find({ isListed: 'true' });
+        const offers = await Offer.find({ status: 'active' })
+            .populate('products')
+            .populate('category');
+
         const user = req.session.user;
-        if(user){
-            const userData = await User.findOne({_id: user});
+
+        // Calculate the best offer for each product
+        const productsWithOffers = products.map(product => {
+            let bestOffer = null;
+
+            const matchingOffers = offers.filter(offer => {
+                const productMatch = offer.products.some(p => p && p._id.equals(product._id));
+                const categoryMatch =
+                    product.Category &&
+                    Array.isArray(offer.category) &&
+                    offer.category.some(cat =>
+                        cat && cat._id && product.Category._id.equals(cat._id)
+                    );
+                return productMatch || categoryMatch;
+            });
+
+            if (matchingOffers.length > 0) {
+                bestOffer = matchingOffers.reduce((max, offer) =>
+                    max.discount > offer.discount ? max : offer
+                );
+            }
+
+            const originalPrice = product.price || 0;
+            let discountedPrice = originalPrice;
+
+            if (bestOffer) {
+                discountedPrice = (originalPrice * bestOffer.discount) / 100;
+                discountedPrice = originalPrice - discountedPrice;
+            }
+
+            return {
+                ...product.toObject(),
+                originalPrice,
+                discountedPrice,
+                offer: bestOffer
+                    ? {
+                        title: bestOffer.title,
+                        description: bestOffer.description,
+                        discount: bestOffer.discount,
+                        type: bestOffer.type,
+                    }
+                    : null,
+            };
+        });
+
+        if (user) {
+            const userData = await User.findOne({ _id: user });
             res.render('home', {
                 user: userData,
                 categories,
-                products,
-              
+                products: productsWithOffers,
             });
         } else {
             res.render('home', {
-                categories ,
-                products,
-             
+                categories,
+                products: productsWithOffers,
             });
         }
     } catch (error) {
@@ -46,6 +91,7 @@ const loadHome = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
 
 const loadSignup = (req, res) => {
     try {
@@ -72,24 +118,24 @@ async function sendVerificationEmail(email, otp) {
             },
         });
 
-        console.log(`Sending OTP ${otp} to email ${email}`); 
+        console.log(`Sending OTP ${otp} to email ${email}`);
 
         const info = await transporter.sendMail({
             from: process.env.NODEMAILER_EMAIL,
             to: email,
             subject: 'Verify your email',
-            text: `Your verification code is ${otp}`, 
-            html: `<b>Your OTP: ${otp}</b>`, 
+            text: `Your verification code is ${otp}`,
+            html: `<b>Your OTP: ${otp}</b>`,
         });
 
         console.log('Message sent: %s', info.messageId);
-        return info.accepted.length > 0; 
+        return info.accepted.length > 0;
     } catch (error) {
         console.error('Error sending email:', error);
         if (error.response) {
-            console.error('SMTP response:', error.response); 
+            console.error('SMTP response:', error.response);
         }
-        console.error('Detailed error:', error.message); 
+        console.error('Detailed error:', error.message);
         return false;
     }
 }
@@ -136,7 +182,7 @@ const securePassword = async (password) => {
 const verifyOtp = async (req, res) => {
     try {
         const { otp } = req.body;
-       
+
 
         if (otp === req.session.userOtp) {
             const user = req.session.userData;
@@ -146,7 +192,7 @@ const verifyOtp = async (req, res) => {
                 phone: user.phone,
                 email: user.email,
                 password: passwordHash
-                
+
             });
             await saveUserData.save();
             req.session.user = saveUserData._id;
@@ -162,21 +208,21 @@ const verifyOtp = async (req, res) => {
 
 const resendOtp = async (req, res) => {
     try {
-       
+
         if (!req.session.userData || !req.session.userData.email) {
             console.error('User data not found in session.');
             return res.status(400).json({ success: false, message: "User data not found" });
         }
 
-       
+
         const newOtp = generateOtp();
         console.log(`Generated OTP: ${newOtp} for email: ${req.session.userData.email}`); // Debugging
 
-      
+
         const emailSent = await sendVerificationEmail(req.session.userData.email, newOtp);
 
         if (emailSent) {
-          
+
             req.session.userOtp = newOtp;
             console.log('OTP resent successfully.');
             return res.json({ success: true, message: "OTP resent successfully" });
@@ -190,14 +236,14 @@ const resendOtp = async (req, res) => {
     }
 };
 
-const loadLogin = async (req,res) => {
+const loadLogin = async (req, res) => {
     try {
-        if(!req.session.user){
+        if (!req.session.user) {
             return res.render("login")
         } else {
             res.redirect("/")
         }
-    } catch(error) {
+    } catch (error) {
         res.redirect("/pageNotFound")
     }
 }
@@ -205,17 +251,17 @@ const loadLogin = async (req,res) => {
 
 const login = async (req, res) => {
     try {
-        
+
         const { email, password } = req.body;
 
         const user = await User.findOne({ email });
-     
+
 
         if (!user) {
             return res.render('login', { message: "Invalid email or password" });
         }
 
-        
+
         if (user.isBlocked) {
             return res.render('login', { message: "Your account is blocked" });
         }
@@ -225,9 +271,9 @@ const login = async (req, res) => {
             return res.render('login', { message: "Invalid email or password" });
         }
 
-      
+
         req.session.user = user._id;
-     
+
         res.redirect('/');
     } catch (error) {
         console.error("Error logging in user", error);
@@ -235,16 +281,16 @@ const login = async (req, res) => {
     }
 };
 
-const logout = async (req,res)=>{
-    try{
-        req.session.destroy((err)=>{
-            if(err){
+const logout = async (req, res) => {
+    try {
+        req.session.destroy((err) => {
+            if (err) {
                 console.error("Error logging out user", err.message);
                 return res.redirect("/pageNotFound");
             }
             return res.redirect("/login")
         });
-    }catch(error){
+    } catch (error) {
         console.error("Error logging out user", error.message);
         res.redirect("/pageNotFound")
     }
@@ -254,59 +300,169 @@ const logout = async (req,res)=>{
 
 const getProductList = async (req, res) => {
     try {
-        const products = await Product.find({status:'active'});
-        const categories = await Category.find(); 
-        const user = req.session.user;
+        const products = await Product.find({ status: 'active' });
+        const categories = await Category.find();
        
-        const userId = req.session.user;
-        
-        
+        const user = req.session.user;
+
+
+        const offers = await Offer.find({ status: 'active' })
+            .populate('products')
+            .populate('category');
+            
+        const productsWithOffers = products.map(product => {
+            let bestOffer = null;
+
+            const matchingOffers = offers.filter(offer => {
+                const productMatch = offer.products.some(p => p && p._id.equals(product._id));
+
+
+                const categoryMatch =
+                    product.Category &&
+                    Array.isArray(offer.category) &&
+                    offer.category.some(cat =>
+                        cat && cat._id && product.Category._id.equals(cat._id)
+                    );
+                          
+                
+                return productMatch || categoryMatch;
+            });
+
+            if (matchingOffers.length > 0) {
+                bestOffer = matchingOffers.reduce((max, offer) =>
+                    max.discount > offer.discount ? max : offer
+                );
+            }
+
+            const originalPrice = product.price || 0;
+            let discountedPrice = originalPrice;
+           
+            if (bestOffer) {
+                discountedPrice = (originalPrice * bestOffer.discount) / 100;
+                discountedPrice = originalPrice - discountedPrice;
+            }
+            
+                   
+             
+            return {
+                ...product.toObject(),
+                originalPrice,
+                discountedPrice,
+                offer: bestOffer
+                    ? {
+                        title: bestOffer.title,
+                        description: bestOffer.description,
+                        discount: bestOffer.discount,
+                        type: bestOffer.type,
+                    }
+                    : null,
+            };
+        });
+
+
+
         let userData = null;
-        if (userId) {
-            userData = await User.findById(userId);
+        if (user) {
+            userData = await User.findById(user);
         }
-   
-        
-        res.render('productList', { products, categories, user:userData});
+
+        res.render('productList', {
+            products: productsWithOffers,
+            categories,
+            user: userData
+        });
     } catch (error) {
         console.error('Error fetching product list or categories:', error);
         res.status(500).send('Internal Server Error');
     }
 };
-   const getProductDetails = async (req, res) => {
+
+const getProductDetails = async (req, res) => {
     try {
         const user = req.session.user;
-        const userData = await User.findById( user);
+        const userData = await User.findById(user);
+
         const productId = req.params.id;
         const product = await Product.findById(productId).populate('Category');
         const allProductData = await Product.find();
+        const offers = await Offer.find({ status: 'active' })
+            .populate('products')
+            .populate('category');
 
         if (!product) {
             return res.status(404).render('404', { message: 'Product not found' });
         }
-        
-       
-        res.render('productDetails', { userData,productData:product, allProductData  });
+
+        // Calculate best offer
+        let bestOffer = null;
+
+        const matchingOffers = offers.filter(offer => {
+            const productMatch = offer.products.some(p => p && p._id.equals(product._id));
+            const categoryMatch =
+                product.Category &&
+                Array.isArray(offer.category) &&
+                offer.category.some(cat =>
+                    cat && cat._id && product.Category._id.equals(cat._id)
+                );
+
+            return productMatch || categoryMatch;
+        });
+
+        if (matchingOffers.length > 0) {
+            bestOffer = matchingOffers.reduce((max, offer) =>
+                max.discount > offer.discount ? max : offer
+            );
+        }
+
+        const originalPrice = product.price || 0;
+        let discountedPrice = originalPrice;
+
+        if (bestOffer) {
+            discountedPrice = (originalPrice * bestOffer.discount) / 100;
+            discountedPrice = originalPrice - discountedPrice;
+        }
+
+        // Attach offer details
+        const productWithOffer = {
+            ...product.toObject(),
+            originalPrice,
+            discountedPrice,
+            offer: bestOffer
+                ? {
+                    title: bestOffer.title,
+                    description: bestOffer.description,
+                    discount: bestOffer.discount,
+                    type: bestOffer.type,
+                }
+                : null,
+        };
+
+        res.render('productDetails', {
+            userData,
+            productData: productWithOffer,
+            allProductData,
+        });
     } catch (error) {
         console.error('Error fetching product details:', error);
         res.status(500).render('500', { message: 'Server error' });
     }
 };
-   const   getCategory = async (req,res)=>{
+
+const getCategory = async (req, res) => {
     try {
-        if(!req.session.user){
+        if (!req.session.user) {
             return res.render("categoryList")
-        } 
-         else {
+        }
+        else {
             res.redirect("/")
         }
 
-    } catch(error) {
+    } catch (error) {
         res.redirect("/pageNotFound")
     }
 }
 
-   
+
 const filterProducts = async (req, res) => {
     try {
         const {
@@ -317,22 +473,21 @@ const filterProducts = async (req, res) => {
             search = ''
         } = req.query;
 
-        // Filter query object
+
         const filterQuery = {};
 
-        // Add category filter
+
         if (category) {
             filterQuery.category = { $in: category.split(',') };
         }
 
-        // Add price range filter
         if (minPrice || maxPrice) {
             filterQuery.price = {};
             if (minPrice) filterQuery.price.$gte = parseFloat(minPrice);
             if (maxPrice) filterQuery.price.$lte = parseFloat(maxPrice);
         }
 
-        // Add search filter
+
         if (search) {
             filterQuery.$or = [
                 { name: { $regex: search, $options: 'i' } },
@@ -340,7 +495,7 @@ const filterProducts = async (req, res) => {
             ];
         }
 
-        // Sort options
+
         const sortOptions = {
             name_asc: { name: 1 },
             name_desc: { name: -1 },
@@ -352,7 +507,7 @@ const filterProducts = async (req, res) => {
 
         const sortQuery = sortOptions[sort] || { name: 1 };
 
-        // Fetch filtered and sorted products
+
         const products = await Product.find(filterQuery).sort(sortQuery);
 
         res.json({
@@ -376,16 +531,16 @@ const filterProducts = async (req, res) => {
 };
 
 
-const searchProducts =  async (req, res) => {
-    const query = req.query.q || ''; // Get the search query from the request
+const searchProducts = async (req, res) => {
+    const query = req.query.q || '';
     try {
-        // Search for products by name (or other fields you want to search by)
+
         const products = await Product.find({
-            name: { $regex: query, $options: 'i' } // Case-insensitive search
+            name: { $regex: query, $options: 'i' }
         });
 
-        // Render a page with the search results
-        res.render('search-results', { products }); // Adjust view as necessary
+
+        res.render('search-results', { products });
     } catch (error) {
         console.error(error);
         res.status(500).send('Error occurred while searching.');
@@ -401,7 +556,7 @@ const searchProducts =  async (req, res) => {
 
 
 
-   
+
 
 module.exports = {
     loadHome,
@@ -418,6 +573,6 @@ module.exports = {
     filterProducts,
     getCategory,
     searchProducts
-   
-    
+
+
 };

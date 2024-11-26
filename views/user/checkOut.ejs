@@ -139,7 +139,7 @@
                                 <a href="#" data-bs-toggle="modal" data-bs-target="#showCouponModal">Show Coupons</a>
                             </button>
                         </div>
-                        <form id="checkout" action="/place-order" method="POST">
+                        <form id="checkout" >
                             <div class="row">
                                 <div class="col-lg-9">
                                     <div class="row">
@@ -243,7 +243,7 @@
 
                                                         <tr class="summary-total">
                                                             <td>Total:</td>
-                                                            <td colspan="3"  id="cart-total">₹<%= subtotal%>
+                                                            <td colspan="3" id="cart-total">₹<%= subtotal%>
                                                             </td>
                                                         </tr>
                                                         <% } else { %>
@@ -265,7 +265,9 @@
                                             <select id="sort-option" name="sort" class="form-control"
                                                 style="color: black;">
                                                 <option value="COD">CASH ON DELIVERY</option>
-                                                <!-- <option value="UPI PAYMENT">UPI PAYMENT</option> -->
+                                                <option value="UPI PAYMENT">UPI PAYMENT</option>
+                                                <option value="WALLET">WALLET</option>
+
 
 
                                             </select>
@@ -304,7 +306,7 @@
                 <div class="row">
                     <div class="col-sm-6 col-lg-3">
                         <div class="widget widget-about">
-                            <img src="assets/newimages/logo.png" class="footer-logo" alt="Footer Logo" width="150"
+                            <img src="assets/images/wonder.png" class="footer-logo" alt="Footer Logo" width="150"
                                 height="25">
                             <p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu
                                 vulputate magna eros eu erat. </p>
@@ -757,7 +759,7 @@
                             id: document.getElementById('hiddenid').value.trim(),
                         };
 
-                        console.log('Submitting Form Data:', formData); // Debug log
+                        console.log('Submitting Form Data:', formData); 
 
                         try {
                             const response = await fetch('/addAddress', {
@@ -769,8 +771,7 @@
                             });
 
                             const data = await response.json();
-                            console.log('Server Response:', data); // Debug log
-
+                            console.log('Server Response:', data);
                             if (data.success) {
                                 Swal.fire({
                                     title: 'Success!',
@@ -983,7 +984,7 @@
                         cancelButtonText: 'Cancel'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            // If confirmed, proceed with the delete request
+
                             fetch(`/api/addresses/${addressId}`, {
                                 method: 'DELETE',
                             })
@@ -1001,7 +1002,7 @@
                                             text: 'Your address has been deleted successfully.',
                                             confirmButtonText: 'OK',
                                         }).then(() => {
-                                            // Optionally refresh or remove the deleted address from the UI
+
                                             location.reload();
                                         });
                                     } else {
@@ -1021,109 +1022,199 @@
                 }
             </script>
             <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const checkoutForm = document.getElementById('checkout');
+               document.addEventListener('DOMContentLoaded', function () {
+    const checkoutForm = document.getElementById('checkout');
 
-                    checkoutForm.addEventListener('submit', async function (e) {
-                        e.preventDefault();
+    checkoutForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
 
-                        // Disable the submit button to prevent double submissions
-                        const submitButton = checkoutForm.querySelector('button[type="submit"]');
-                        submitButton.disabled = true;
+        const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+        const selectedPayment = document.getElementById('sort-option');
+        const totalAmount = parseFloat(document.getElementById('cart-total').textContent.replace('₹', '').trim());
 
-                        try {
-                            // Validate address selection
-                            const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
-                            if (!selectedAddress) {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: 'Please select a delivery address',
-                                    icon: 'error',
-                                    confirmButtonText: 'OK'
-                                });
-                                submitButton.disabled = false;
-                                return;
-                            }
+        if (!selectedAddress) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Please select a delivery address',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
 
-                            // Get payment type
-                            const paymentType = document.getElementById('sort-option').value;
-                            if (!paymentType) {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: 'Please select a payment method',
-                                    icon: 'error',
-                                    confirmButtonText: 'OK'
-                                });
-                                submitButton.disabled = false;
-                                return;
-                            }
+        const orderData = {
+    address_id: selectedAddress.value,
+    payment_type: selectedPayment.value,
+    total_amount: Math.round(totalAmount * 100), // Convert to paise
+    coupon_discount: document.getElementById('couponDiscount') ? 
+        parseFloat(document.getElementById('couponDiscount').textContent) : 0,
+    couponPercent: document.getElementById('couponPercent') ? 
+        parseFloat(document.getElementById('couponPercent').textContent) : 0
+};
 
-                            // Show loading state
-                           Swal.fire({
-    title: 'Processing...',
-    text: 'Please wait while we process your order',
-    allowOutsideClick: false,
-    allowEscapeKey: false,
-    showConfirmButton: false,
-    didOpen: () => {
-        Swal.showLoading();
+console.log('Order Data:', orderData); // Debug the entire orderData object
+
+
+        try {
+            console.log('Processing order with payment type:', selectedPayment.value);
+            
+            switch (selectedPayment.value) {
+                case 'COD':
+                    await handleCODPayment(orderData);
+                    break;
+                    
+                case 'UPI PAYMENT':
+                    await handleUPIPayment(orderData);
+                    break;
+                    
+                case 'WALLET':
+                    await handleWalletPayment(orderData);
+                    break;
+                    
+                default:
+                    throw new Error('Invalid payment method selected');
+            }
+        } catch (error) {
+            console.error('Error processing payment:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: error.message || 'Failed to process payment',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    });
+
+    // Handle Cash on Delivery
+    async function handleCODPayment(orderData) {
+    const response = await fetch('/place-order', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            address_id: orderData.address_id,
+            payment_type: 'COD',
+            total_amount: orderData.total_amount,
+            coupon_discount: orderData.coupon_discount,
+            couponPercent: orderData.couponPercent
+        })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+        Swal.fire({
+            title: 'Success!',
+            text: 'Your order has been placed successfully.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/orderSummary/${data.id}`;
+            }
+        });
+    } else {
+        throw new Error(data.message || 'Failed to place order');
+    }
+}
+
+
+async function handleUPIPayment(orderData) {
+    try {
+        const response = await fetch('/initiate-razorpay', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderData),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.message || 'Failed to initialize payment');
+        }
+
+        console.log('Order ID:', data.orderId);
+
+        Swal.fire({
+            title: 'Success!',
+            text: 'Order created successfully. Proceeding to payment.',
+            icon: 'success',
+            confirmButtonText: 'OK',
+        });
+
+    } catch (error) {
+        console.error('Error in handleUPIPayment:', error);
+        Swal.fire({
+            title: 'Error!',
+            text: error.message || 'Failed to process payment',
+            icon: 'error',
+            confirmButtonText: 'OK',
+        });
+    }
+}
+
+
+
+
+
+
+
+
+    // Handle Wallet Payment
+    async function handleWalletPayment(orderData) {
+        // First check wallet balance
+        const balanceResponse = await fetch('/check-wallet-balance');
+        const balanceData = await balanceResponse.json();
+        
+        if (!balanceData.success) {
+            throw new Error(balanceData.message || 'Failed to check wallet balance');
+        }
+
+        if (balanceData.balance < orderData.total_amount) {
+            throw new Error(`Insufficient wallet balance. Available: ₹${balanceData.balance}`);
+        }
+
+        // If balance is sufficient, proceed with wallet payment
+        const paymentResponse = await fetch('/process-wallet-payment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderData)
+        });
+
+        const paymentData = await paymentResponse.json();
+        
+        if (paymentData.success) {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Payment successful! Your order has been placed.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/orderSummary/${paymentData.id}`;
+                }
+            });
+        } else {
+            throw new Error(paymentData.message || 'Failed to process wallet payment');
+        }
     }
 });
-
-
-                            const response = await fetch('/place-order', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    selectedAddress: selectedAddress.value,
-                                    payment_type: paymentType
-                                })
-                            });
-
-                            const data = await response.json();
-
-                            if (data.success) {
-                                Swal.fire({
-                                    title: 'Success!',
-                                    text: data.message,
-                                    icon: 'success',
-                                    confirmButtonText: 'View Order',
-                                    showCancelButton: false,
-                                    allowOutsideClick: false
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        window.location.href = `/orderSummary/${data.id}`;
-                                    }
-                                });
-                            } else {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: data.message,
-                                    icon: 'error',
-                                    confirmButtonText: 'OK'
-                                });
-                                submitButton.disabled = false;
-                            }
-
-                        } catch (error) {
-                            console.error('Error:', error);
-                            Swal.fire({
-                                title: 'Error!',
-                                text: 'An unexpected error occurred. Please try again.',
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                            submitButton.disabled = false;
-                        }
-                    });
-                });
+          
             </script>
             <script>
-                
 
-               document.addEventListener('DOMContentLoaded', () => {
+
+                document.addEventListener('DOMContentLoaded', () => {
 
                     const couponForm = document.getElementById('couponForm');
                     const couponInput = document.getElementById('couponCode');
@@ -1156,7 +1247,7 @@
                             const couponCode = document.getElementById('couponCode').value;
                             const subtotal = parseFloat('<%= subtotal %>');
 
-                            console.log('Submitting coupon:', couponCode, 'Subtotal:', subtotal);
+
 
                             fetch('/applyCoupon', {
                                 method: 'POST',
@@ -1199,47 +1290,48 @@
                     } else {
                         console.error('Coupon form not found');
                     }
-                           
-                    
+
+
                     removeCouponBtn.addEventListener('click', function (e) {
-    e.preventDefault();
+                        e.preventDefault();
 
-    // Ensure subtotal is correctly parsed
-    const subtotal = parseFloat('<%= subtotal %>');
+                        // Ensure subtotal is correctly parsed
+                        const subtotal = parseFloat('<%= subtotal %>');
 
-    fetch('/removeCoupon', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ subtotal })
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Check and update elements safely
-                const discountRow = document.getElementById('couponDiscountRow');
-                const cartTotalElem = document.getElementById('cart-total');
+                        fetch('/removeCoupon', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ subtotal })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Check and update elements safely
+                                    const discountRow = document.getElementById('couponDiscountRow');
+                                    const cartTotalElem = document.getElementById('cart-total');
 
-                if (discountRow) discountRow.style.display = 'none';
-                if (cartTotalElem) cartTotalElem.textContent = `₹${data.newTotal.toFixed(2)}`;
+                                    if (discountRow) discountRow.style.display = 'none';
+                                    if (cartTotalElem) cartTotalElem.textContent = `₹${data.newTotal.toFixed(2)}`;
 
-                // Display success message
-                displayCouponMessage('Coupon removed successfully', true);
+                                    // Display success message
+                                    displayCouponMessage('Coupon removed successfully', true);
 
-                // Hide applied coupon UI if necessary
-                hideAppliedCoupon();
-            } else {
-                // Display error message
-                displayCouponMessage(data.message, false);
-            }
-        })
-        .catch(error => {
-            console.error('Error removing coupon:', error);
-            displayCouponMessage('An error occurred while removing the coupon', false);
-        });
-});
+                                    // Hide applied coupon UI if necessary
+                                    hideAppliedCoupon();
+                                } else {
+                                    // Display error message
+                                    displayCouponMessage(data.message, false);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error removing coupon:', error);
+                                displayCouponMessage('An error occurred while removing the coupon', false);
+                            });
+                    });
 
                 });
             </script>
+
             <%- include ('../../layout/footer.ejs') %>

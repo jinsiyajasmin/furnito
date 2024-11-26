@@ -1,0 +1,322 @@
+<%- include ('../../layout/header.ejs') %>
+<style>
+        body {
+            background-color: #f6f6f6;
+            padding: 20px;
+        }
+        .wallet-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .balance-header {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .transaction-type-deposit {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .transaction-type-withdrawal {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .transaction-type-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+
+    <body>
+        <div class="page-wrapper">
+            <header class="header">
+                <div class="header-top">
+                    <div class="container mb-lg-2 pt-lg-2 pb-lg-2 mb-sm-0 pt-sm-0 pb-sm-0">
+                        <div class="header-left">
+                        </div><!-- End .header-left -->
+
+                        <div class="header-right">
+                            <ul class="top-menu">
+                                <ul>
+                                    <li><a href="/wishlist"><i class="icon-heart-o"></i>Wishlist <span></span></a></li>
+                                    <% if (locals.user) { %>
+                                        <li><a href="/logout">Logout</a></li>
+                                        <li><a href="/userDashboard">
+                                                <%=user.name%>
+                                            </a></li>
+                                        <% } else { %>
+                                            <li><a href="/login"><i class="icon-user"></i>Login</a></li>
+                                            <% } %>
+                                </ul>
+                            </ul><!-- End .top-menu -->
+                        </div><!-- End .header-right -->
+                    </div><!-- End .container -->
+                </div><!-- End .header-top -->
+
+                <div class="header-middle sticky-header">
+                    <div class="container">
+                        <div class="header-left">
+                            <button class="mobile-menu-toggler">
+                                <span class="sr-only">Toggle mobile menu</span>
+                                <i class="icon-bars"></i>
+                            </button>
+
+                            <a href="/" class="logo">
+                                <img src="assets/newimages/logo.png" alt="shopEazy Logo" width="105" height="25">
+                            </a>
+
+                            <nav class="main-nav">
+                                <ul class="menu sf-arrows">
+                                    <li class="megamenu-container active">
+                                        <a href="/" class="sf-with-ul">Home</a>
+
+
+                                    </li>
+                                    <li>
+                                        <a href="/productList" class="sf-with-ul">Shop</a>
+
+                                        
+                                    </li>
+                                </ul><!-- End .menu -->
+                            </nav><!-- End .main-nav -->
+                        </div><!-- End .header-left -->
+
+
+
+                        <div class="header-right">
+                            <div class="header-search">
+                                <a href="#" class="search-toggle" role="button" title="Search"><i
+                                        class="icon-search"></i></a>
+                                <form action="#" method="get">
+                                    <div class="header-search-wrapper">
+                                        <label for="q" class="sr-only">Search</label>
+                                        <input type="search" class="form-control" name="q" id="q"
+                                            placeholder="Search in..." required>
+                                    </div><!-- End .header-search-wrapper -->
+                                </form>
+                            </div><!-- End .header-search -->
+
+
+
+
+
+                        </div><!-- End .header-right -->
+                    </div><!-- End .container -->
+                </div><!-- End .header-middle -->
+            </header><!-- End .header -->
+           
+
+                    <main class="main">
+                    <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+                        <div class="container">
+                        <h1 class="page-title">Wallet</h1>
+                        </div>
+                    </div>
+                    <div class="container wallet-container">
+                        <div class="row balance-header">
+                            <div class="col-md-6">
+                                <h2>Wallet Balance</h2>
+                                <% if(wallet[0]?.balance){%>
+                                <h4>Current Balance: ₹ <%= wallet[0]?.balance %></h4><%}else{%><h4>Current Balance: ₹ 0</h4>
+                                    <%}%>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <!-- <button class="btn btn-primary me-2">Add Funds</button>
+                                <button class="btn btn-secondary">Withdraw</button> -->
+                            </div>
+                        </div>
+                
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <!-- <select class="form-select">
+                                    <option selected>Transaction Type: Show All</option>
+                                    <option>Deposit</option>
+                                    <option>Withdrawal</option>
+                                    <option>Purchase</option>
+                                </select> -->
+                            </div>
+                            <div class="col-md-4">
+                                <!-- <select class="form-select">
+                                    <option selected>Date Range: Show All</option>
+                                    <option>Last 7 days</option>
+                                    <option>Last 30 days</option>
+                                    <option>Last 90 days</option>
+                                </select> -->
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" placeholder="Search transactions">
+                            </div>
+                        </div>
+                
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>TRANSACTION ID</th>
+                                    <th>DATE</th>
+                                    <th>DESCRIPTION</th>
+                                    <th>AMOUNT</th>
+                                   
+                                    <th>TYPE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% wallet?.forEach(item=>{ %>
+                                    <% item.history.forEach(hist=>{ %>
+                                <tr>
+                                    <td><%=hist.transaction_id%></td>
+                                    <td> <%= 
+                                        new Date(hist.date.getTime() ).toLocaleDateString("en-US", {
+                                          year: "numeric",
+                                          month: "long",
+                                          day: "numeric",
+                                        }) 
+                                      %></td>
+                                    <td><%=hist.description%></td>
+                                    <td><%=hist.amount%></td>
+                                   <% if(hist.transaction_type == 'Cancelled')%>
+                                    <td><span class="badge transaction-type-withdrawal">Credit</span></td>
+                                </tr>
+                                <%})%>
+                               <%})%>
+                            </tbody>
+                        </table>
+                    </div>
+                
+                    </main>
+
+            
+
+
+
+            
+            <footer class="footer">
+
+                <div class="footer-middle">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="widget widget-about">
+                                    <img src="assets/newimages/logo.png" class="footer-logo" alt="Footer Logo"
+                                        width="150" height="25">
+                                    <p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu
+                                        vulputate magna eros eu erat. </p>
+
+                                    <div class="widget-call">
+                                        <i class="icon-phone"></i>
+                                        Got Question? Call us 24/7
+                                        <a href="tel:#">+0123 456 789</a>
+                                    </div><!-- End .widget-call -->
+                                </div><!-- End .widget about-widget -->
+                            </div><!-- End .col-sm-6 col-lg-3 -->
+
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="widget">
+                                    <h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
+
+                                    <ul class="widget-list">
+                                        <li><a href="about.html">About shopEazy</a></li>
+                                        <li><a href="#">Our Services</a></li>
+                                        <li><a href="#">How to shop on shopEazy</a></li>
+                                        <li><a href="faq.html">FAQ</a></li>
+                                        <li><a href="contact.html">Contact us</a></li>
+                                    </ul><!-- End .widget-list -->
+                                </div><!-- End .widget -->
+                            </div><!-- End .col-sm-6 col-lg-3 -->
+
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="widget">
+                                    <h4 class="widget-title">Customer Service</h4><!-- End .widget-title -->
+
+                                    <ul class="widget-list">
+                                        <li><a href="#">Payment Methods</a></li>
+                                        <li><a href="#">Money-back guarantee!</a></li>
+                                        <li><a href="#">Returns</a></li>
+                                        <li><a href="#">Shipping</a></li>
+                                        <li><a href="#">Terms and conditions</a></li>
+                                        <li><a href="#">Privacy Policy</a></li>
+                                    </ul><!-- End .widget-list -->
+                                </div><!-- End .widget -->
+                            </div><!-- End .col-sm-6 col-lg-3 -->
+
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="widget">
+                                    <h4 class="widget-title">My Account</h4><!-- End .widget-title -->
+
+                                    <ul class="widget-list">
+                                        <li><a href="#">Sign In</a></li>
+                                        <li><a href="cart.html">View Cart</a></li>
+                                        <li><a href="#">My Wishlist</a></li>
+                                        <li><a href="#">Track My Order</a></li>
+                                        <li><a href="#">Help</a></li>
+                                    </ul><!-- End .widget-list -->
+                                </div><!-- End .widget -->
+                            </div><!-- End .col-sm-6 col-lg-3 -->
+                        </div><!-- End .row -->
+                    </div><!-- End .container -->
+                </div><!-- End .footer-middle -->
+
+                <div class="footer-bottom">
+                    <div class="container">
+                        <p class="footer-copyright">Copyright © 2024 shopEazy Store. All Rights Reserved.</p>
+                        <!-- End .footer-copyright -->
+                        <figure class="footer-payments">
+                            <img src="assets/images/payments.png" alt="Payment methods" width="272" height="20">
+                        </figure><!-- End .footer-payments -->
+                    </div><!-- End .container -->
+                </div><!-- End .footer-bottom -->
+            </footer><!-- End .footer -->
+        </div><!-- End .page-wrapper -->
+        <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
+
+        <div class="mobile-menu-container">
+            <div class="mobile-menu-wrapper">
+                <span class="mobile-menu-close"><i class="icon-close"></i></span>
+
+                <nav class="mobile-nav">
+                    <ul class="mobile-menu">
+                        <li class="active">
+                            <a href="#">Wallet</a>
+
+                        </li>
+                        <li>
+                            <a href="/">Home</a>  
+                        </li>
+                        <li>
+                            <a href="/shop">Shop</a>  
+                        </li>
+                        <li>
+                            <a href="/wishlist">Wishlist</a>  
+                        </li>
+                        <li>
+                            <a href="/cart">Cart</a>  
+                        </li>
+                        <li>
+                            <a href="/dashboard">My Account</a>  
+                        </li>
+                    </ul>
+                </nav>
+
+
+                <div class="social-icons">
+                    <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
+                    <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
+                    <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
+                    <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
+                </div><!-- End .social-icons -->
+            </div><!-- End .mobile-menu-wrapper -->
+        </div><!-- End .mobile-menu-container -->
+
+        <!-- Sign in / Register Modal -->
+
+        <!-- Plugins JS File -->
+       
+
+
+    <%- include ('../../layout/footer.ejs') %>

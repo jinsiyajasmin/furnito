@@ -1,5 +1,7 @@
 const User = require("../../models/user/userSchema");
 const env = require ('dotenv').config;
+const PDFDocument = require('pdfkit');
+
 const bcrypt = require('bcryptjs');
 const Order = require('../../models/user/userOrder');
 const Product = require('../../models/admin/productSchema');
@@ -354,6 +356,99 @@ const updateProfile = async (req, res) => {
             res.status(500).json({ success: false, message: 'An error occurred. Please try again.' });
         }
     };
+
+
+    const downloadInvoice = async (req, res) => {
+        try {
+          const  orderId = req.query.orderId;
+          const itemId = req.query.itemId;
+          console.log("order:",orderId);
+          console.log("item:",itemId);
+      
+          const order = await Order.findOne({orderId }).populate('items.product');
+          if (!order) {
+            return res.status(404).send('Order not found');
+          }
+      
+          const product = order.items.find(item => item._id.equals(itemId));
+          if (!product) {
+            return res.status(404).send('Item not found');
+          }
+      
+          const doc = new PDFDocument({ margin: 50 });
+      
+          res.setHeader('Content-Type', 'application/pdf');
+          res.setHeader('Content-Disposition', `attachment; filename=invoice-${order.orderId}.pdf`);
+      
+          doc.pipe(res);
+      
+         
+          doc.fontSize(20).text('WoodnWonder', { align: 'right' });
+          doc.moveDown();
+      
+         
+          doc.fontSize(18).text('Invoice', { align: 'center' });
+          doc.moveDown();
+      
+          
+          doc.fontSize(10);
+          doc.text(`Invoice Number: INV-${order._id.toString().slice(-6)}`, { align: 'left' });
+          doc.text(`Order ID: ${order.orderId}`, { align: 'left' });
+          doc.text(`Date: ${new Date(order.createdAt).toLocaleDateString()}`, { align: 'left' });
+          doc.moveDown();
+      
+        
+          doc.text('Ship to:', { align: 'left' });
+          doc.text(`${order.address.name}`, { align: 'left' });
+          doc.text(`${order.address.address}`, { align: 'left' });
+          doc.text(`${order.address.city}, ${order.address.state} - ${order.address.pincode}`, { align: 'left' });
+          doc.moveDown();
+      
+         
+          const table = {
+            headers: ['Product', 'Quantity', 'Price', 'Total'],
+            rows: [
+              [product.name, product.quantity.toString(), `${product.price.toFixed(2)}`, `${product.total.toFixed(2)}`]
+            ]
+          };
+      
+          const startX = 50;
+          const startY = 300;
+          const rowHeight = 30;
+          const colWidth = (doc.page.width - 100) / 4;
+      
+        
+          doc.font('Helvetica-Bold');
+          table.headers.forEach((header, i) => {
+            doc.text(header, startX + i * colWidth, startY, { width: colWidth, align: 'left' });
+          });
+      
+        
+          doc.font('Helvetica');
+          table.rows.forEach((row, i) => {
+            const y = startY + (i + 1) * rowHeight;
+            row.forEach((cell, j) => {
+              doc.text(cell, startX + j * colWidth, y, { width: colWidth, align: 'left' });
+            });
+          });
+      
+          
+          const totalY = startY + (table.rows.length + 1) * rowHeight + 20;
+          doc.text(`Subtotal: ${product.total.toFixed(2)}`, { align: 'right' });
+          doc.text(`Shipping: ${order.shipping_cost.toFixed(2)}`, { align: 'right' });
+          doc.text(`Tax: ${order.tax.toFixed(2)}`, { align: 'right' });
+          doc.text(`Discount: ${order.discount.toFixed(2)}`, { align: 'right' });
+          doc.font('Helvetica-Bold');
+          doc.text(`Total: ${(product.total + order.shipping_cost + order.tax - order.discount).toFixed(2)}`, { align: 'right' });
+      
+          doc.end();
+        } catch (error) {
+          console.error('Error generating invoice:', error);
+          res.status(500).send('Error generating invoice');
+        }
+      };
+    
+    
     
     module.exports = {
         getUserProfile,
@@ -368,5 +463,6 @@ const updateProfile = async (req, res) => {
         deleteAddress ,
         getOrders,
         cancelOrder,
-        returnOrder
+        returnOrder,
+        downloadInvoice 
     }

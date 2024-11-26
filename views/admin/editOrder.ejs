@@ -563,7 +563,7 @@
            
            <script>
           
-          // Frontend JavaScript
+          
           document.addEventListener('DOMContentLoaded', function() {
     const updateOrderForm = document.getElementById('update-order-status');
     
@@ -574,7 +574,7 @@
         const orderId = document.getElementById('hiddenid').value.trim();
         const itemId = document.getElementById('hiddenitemid').value.trim();
         
-        // Log values before sending
+       
         console.log('Sending update request:', { status, orderId, itemId });
         
         updateOrderStatus(status, orderId, itemId);
@@ -588,7 +588,7 @@ async function updateOrderStatus(status, orderId, itemId) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            credentials: 'include', // Important for auth
+            credentials: 'include', 
             body: JSON.stringify({
                 orderId: orderId,
                 itemId: itemId,

@@ -4,6 +4,7 @@ const user = require('../controller/user/userController');
 const Cart = require('../controller/user/cartController');
 const dashboard = require('../controller/user/dashboardController');
 const checkout = require('../controller/user/checkoutController');
+const Wallet = require('../controller/user/walletController');
 const passport = require("passport"); 
 const path = require('path');
 const { userAuth, adminAuth } = require("../middlewares/auth");
@@ -66,6 +67,12 @@ userRouter.get('/orderSummary/:orderId', checkout.loadOrder);
 userRouter.get('/Address', checkout.getAddresses);
 userRouter.post('/applyCoupon',checkout.applyCoupon);
 userRouter.post('/removeCoupon',checkout.removeCoupon);
+userRouter.post('/verifyPayment',userAuth,checkout.verifyPayment);
+userRouter.post('/payment-failed', userAuth, checkout.paymentFailure);
+userRouter.post('/initiate-razorpay',userAuth, checkout.initiateRazorpay);
+userRouter.post('/verify-payment', userAuth, checkout.verifyPayment);
+userRouter.post('/payment-failure', userAuth, checkout.paymentFailure);
+
 
 // User Dashboard
 userRouter.get('/userDashboard', userAuth, dashboard.getUserDashboard);
@@ -74,6 +81,7 @@ userRouter.get('/accountDetails', userAuth, dashboard.getAccountDetails);
 userRouter.get('/orders', userAuth, dashboard.getOrders);
 userRouter.post('/cancelOrder', userAuth, dashboard.cancelOrder);
 userRouter.post('/returnOrder', userAuth, dashboard.returnOrder);
+userRouter.get('/downloadInvoice',  userAuth,dashboard.downloadInvoice);
 
 // Address CRUD Operations
 userRouter.post('/add-address', dashboard.addAddress);
@@ -85,6 +93,11 @@ userRouter.get('/userAddress', userAuth, dashboard.addresses);
 // Profile Management
 userRouter.post('/update-profile', dashboard.updateProfile);
 userRouter.post('/change-password', dashboard.changePassword);
+
+
+
+
+userRouter.get('/wallet', userAuth,Wallet.loadWallet);
 
 // Google Authentication
 userRouter.get("/auth/google", passport.authenticate("google", { scope: ['profile', 'email'] }));

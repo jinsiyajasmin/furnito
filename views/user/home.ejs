@@ -43,7 +43,108 @@
             position: relative;
             z-index: 500;
         }
+        .products-container {
+        width: 100%;
+    }
+    
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+    
+    .product-item {
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+    
+    .product {
+        height: 100%;
+        background: #fff;
+    }
+    
+    .product-media {
+        position: relative;
+        margin-bottom: 1rem;
+    }
+    
+    .product-image {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    .product-body {
+        padding: 0 1rem 1rem;
+    }
+    
+  
+    @media (max-width: 767px) {
+        .col-6 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .col-md-3 {
+            flex: 0 0 25%;
+            max-width: 25%;
+        }
+    }
     </style>
+    <style>
+        /* Minimal styling for alignment */
+        .products-container {
+            width: 100%;
+        }
+        
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -15px;
+            margin-left: -15px;
+        }
+        
+        .product-item {
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+        
+        .product {
+            height: 100%;
+            background: #fff;
+        }
+        
+        .product-media {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .product-image {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .product-body {
+            padding: 0 1rem 1rem;
+        }
+        
+        /* Responsive classes */
+        @media (max-width: 767px) {
+            .col-6 {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .col-md-3 {
+                flex: 0 0 25%;
+                max-width: 25%;
+            }
+        }
+        </style>
 
 
     <div class="page-wrapper">
@@ -132,6 +233,14 @@
                     </div>
 
                     <div class="header-right">
+                        <div class="dropdown compare-dropdown">
+                            <a href="/wallet" class="dropdown-toggle" role="button" >
+                                <div class="icon">
+                                    <i class="fa-solid fa-wallet" style="color: #000000;"></i>
+                                </div>
+                                <p>Wallet</p>
+                            </a>
+                        </div>
 
 
                         <div class="wishlist">
@@ -319,12 +428,20 @@
                                         </h3>
                                         
                                         <div class="product-price">
-                                            ₹<%= items.price %>
+                                            <% if (items.offer) { %>
+                                                <div>
+                                                    <span class="old-price">₹<%= items.originalPrice ? items.originalPrice.toFixed(2) : 'N/A' %></span>
+                                                    <span class="new-price">₹<%= items.discountedPrice ? items.discountedPrice.toFixed(2) : 'N/A' %></span>
+                                                </div>
+                                               
+                                            <% } else { %>
+                                                <span class="price">₹<%= items.price ? items.price.toFixed(2) : 'N/A' %></span>
+                                            <% } %>
                                         </div>
                                         <div class="ratings-container">
                                             <div class="ratings">
                                                 <div class="ratings-val" style="width: 0%;"></div>
-                                                <!-- End .ratings-val -->
+                                               
                                             </div><!-- End .ratings -->
                                             <span class="ratings-text">( 0 Reviews )</span>
                                         </div><!-- End .rating-container -->
@@ -338,58 +455,7 @@
         </div>
     </div>
     
-    <style>
-    /* Minimal styling for alignment */
-    .products-container {
-        width: 100%;
-    }
     
-    .row {
-        display: flex;
-        flex-wrap: wrap;
-        margin-right: -15px;
-        margin-left: -15px;
-    }
-    
-    .product-item {
-        padding-right: 15px;
-        padding-left: 15px;
-    }
-    
-    .product {
-        height: 100%;
-        background: #fff;
-    }
-    
-    .product-media {
-        position: relative;
-        margin-bottom: 1rem;
-    }
-    
-    .product-image {
-        max-width: 100%;
-        height: auto;
-    }
-    
-    .product-body {
-        padding: 0 1rem 1rem;
-    }
-    
-    /* Responsive classes */
-    @media (max-width: 767px) {
-        .col-6 {
-            flex: 0 0 50%;
-            max-width: 50%;
-        }
-    }
-    
-    @media (min-width: 768px) {
-        .col-md-3 {
-            flex: 0 0 25%;
-            max-width: 25%;
-        }
-    }
-    </style>
 
 
     <div class="mb-5"></div><!-- End .mb-6 -->
@@ -697,131 +763,7 @@
     </div><!-- End .mobile-menu-container -->
 
     <!-- Sign in / Register Modal -->
-    <div class="modal fade" id="signin-modal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true"><i class="icon-close"></i></span>
-                    </button>
-
-                    <div class="form-box">
-                        <div class="form-tab">
-                            <ul class="nav nav-pills nav-fill" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" id="signin-tab" data-toggle="tab" href="#signin"
-                                        role="tab" aria-controls="signin" aria-selected="true">Sign In</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " id="register-tab" data-toggle="tab" href="#register" role="tab"
-                                        aria-controls="register" aria-selected="false">Register</a>
-                                </li>
-                            </ul>
-                            <div class="tab-content" id="tab-content-5">
-                                <div class="tab-pane fade show active" id="signin" role="tabpanel"
-                                    aria-labelledby="signin-tab">
-                                    <form action="#">
-                                        <div class="form-group">
-                                            <label for="singin-email">Username or email address *</label>
-                                            <input type="text" class="form-control" id="singin-email"
-                                                name="singin-email" required>
-                                        </div><!-- End .form-group -->
-
-                                        <div class="form-group">
-                                            <label for="singin-password">Password *</label>
-                                            <input type="password" class="form-control" id="singin-password"
-                                                name="singin-password" required>
-                                        </div><!-- End .form-group -->
-
-                                        <div class="form-footer">
-                                            <button type="submit" class="btn btn-outline-primary-2">
-                                                <span>LOG IN</span>
-                                                <i class="icon-long-arrow-right"></i>
-                                            </button>
-
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input"
-                                                    id="signin-remember">
-                                                <label class="custom-control-label" for="signin-remember">Remember
-                                                    Me</label>
-                                            </div><!-- End .custom-checkbox -->
-
-                                            <a href="#" class="forgot-link">Forgot Your Password?</a>
-                                        </div><!-- End .form-footer -->
-                                    </form>
-                                    <div class="form-choice">
-                                        <p class="text-center">or sign in with</p>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <a href="#" class="btn btn-login btn-g">
-                                                    <i class="icon-google"></i>
-                                                    Login With Google
-                                                </a>
-                                            </div><!-- End .col-6 -->
-
-                                        </div><!-- End .row -->
-                                    </div><!-- End .form-choice -->
-                                </div><!-- .End .tab-pane -->
-                                <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
-                                    <form id="reg-form" method="post" action="/signup">
-                                        <div class="form-group">
-                                            <label for="register-username">Username *</label>
-                                            <input type="text" class="form-control" id="name" name="name" required>
-                                            <div id="username-error" class="errormessage"></div>
-                                        </div><!-- End .form-group -->
-
-                                        <div class="form-group">
-                                            <label for="register-phone">Phone Number *</label>
-                                            <input type="tel" class="form-control" id="phone" name="phone" required>
-                                            <div id="number-error" class="errormessage"></div>
-                                        </div><!-- End .form-group -->
-
-                                        <div class="form-group">
-                                            <label for="register-email">Your Email Address *</label>
-                                            <input type="email" class="form-control" id="email"
-                                                placeholder="email address" name="email" required>
-                                            <div id="email-error" class="errormessage"></div>
-                                        </div><!-- End .form-group -->
-
-                                        <div class="form-group">
-                                            <label for="register-password">Password *</label>
-                                            <input type="password" class="form-control" id="register-password"
-                                                name="password" required>
-                                            <div id="password-error" class="errormessage"></div>
-                                        </div><!-- End .form-group -->
-
-                                        <div class="form-group">
-                                            <label for="register-confirm-password">Confirm Password *</label>
-                                            <input type="password" class="form-control" id="register-confirm-password"
-                                                name="register-confirm-password" required>
-                                            <div id="conform-password-error" class="errormessage"></div>
-                                        </div><!-- End .form-group -->
-
-                                        <div class="form-footer">
-                                            <button type="submit" class="btn btn-outline-primary-2">
-                                                <span>SIGN UP</span>
-                                                <i class="icon-long-arrow-right"></i>
-                                            </button>
-
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="register-policy"
-                                                    required>
-                                                <label class="custom-control-label" for="register-policy">I agree to the
-                                                    <a href="#">privacy policy</a> *</label>
-                                            </div><!-- End .custom-checkbox -->
-                                        </div><!-- End .form-footer -->
-                                    </form>
-                                    <div class="form-choice">
-                                        <p class="text-center">or sign in with</p>
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <a href="#" class="btn btn-login btn-g">
-                                                    <i class="icon-google"></i>
-                                                    Login With Google
-                                                </a>
-                                            </div><!-- End .col-12 -->
-                                        </div><!-- End .row -->
-                                    </div><!-- End .form-choice -->
+   
 
                                 </div><!-- End .modal-body -->
                             </div><!-- End .modal-content -->

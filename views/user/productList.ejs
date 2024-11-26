@@ -26,28 +26,29 @@
             color: #e74c3c;
             font-weight: bold;
         }
+
         .header-search {
-    position: relative;
-}
-.header-search-wrapper {
-    display: block;
-    position: relative;
-}
+            position: relative;
+        }
 
-.form-control {
-    width: 100%;
-    max-width: 300px; /* Adjust width as needed */
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
+        .header-search-wrapper {
+            display: block;
+            position: relative;
+        }
 
-.header-search .search-toggle {
-    cursor: pointer;
-}
+        .form-control {
+            width: 100%;
+            max-width: 300px;
+            /* Adjust width as needed */
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
 
- 
+        .header-search .search-toggle {
+            cursor: pointer;
+        }
     </style>
     <div class="page-wrapper">
         <header class="header">
@@ -125,21 +126,15 @@
                             <form action="/search" method="get">
                                 <div class="header-search-wrapper" style="display: none;">
                                     <label for="q" class="sr-only">Search</label>
-                                    <input 
-                                        type="search" 
-                                        class="form-control" 
-                                        name="q" 
-                                        id="q" 
-                                        placeholder="Search here..." 
-                                        required
-                                    >
+                                    <input type="search" class="form-control" name="q" id="q"
+                                        placeholder="Search here..." required>
                                 </div>
                             </form>
                         </div>
-                        
-                        
 
-                        
+
+
+
                         <div class="dropdown cart-dropdown">
 
                             <a href="/cart"><i class="icon-shopping-cart" style="font-size: 24px;"></i></a>
@@ -175,78 +170,98 @@
                                 <div class="sidebar sidebar-shop">
 
                                     <!-- Off-Canvas Sidebar for Sorting and Categories -->
-                                    <div class="offcanvas offcanvas-start" tabindex="-1" id="filterSidebar" aria-labelledby="filterSidebarLabel">
+                                    <div class="offcanvas offcanvas-start" tabindex="-1" id="filterSidebar"
+                                        aria-labelledby="filterSidebarLabel">
                                         <div class="offcanvas-header">
                                             <h5 class="offcanvas-title" id="filterSidebarLabel">Filters</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                                                aria-label="Close"></button>
                                         </div>
                                         <div class="offcanvas-body">
                                             <!-- Category Filter Section -->
                                             <div class="widget widget-collapsible">
                                                 <h3 class="widget-title">
-                                                    <a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="true" aria-controls="widget-1">
+                                                    <a data-toggle="collapse" href="#widget-1" role="button"
+                                                        aria-expanded="true" aria-controls="widget-1">
                                                         Category
                                                     </a>
                                                 </h3>
                                                 <div class="collapse show" id="widget-1">
                                                     <div class="widget-body">
                                                         <div class="filter-items filter-items-count">
-                                                            <% if (categories && categories.length > 0) { %>
-                                                                <% categories.forEach((category, index) => { %>
+                                                            <% if (categories && categories.length> 0) { %>
+                                                                <% categories.forEach((category, index)=> { %>
                                                                     <div class="filter-item">
                                                                         <div class="custom-control custom-checkbox">
-                                                                            <input type="checkbox" class="custom-control-input" id="cat-<%= index %>"
-                                                                                name="categoryFilter" value="<%= category.name %>">
-                                                                            <label class="custom-control-label" for="cat-<%= index %>">
+                                                                            <input type="checkbox"
+                                                                                class="custom-control-input"
+                                                                                id="cat-<%= index %>"
+                                                                                name="categoryFilter"
+                                                                                value="<%= category.name %>">
+                                                                            <label class="custom-control-label"
+                                                                                for="cat-<%= index %>">
                                                                                 <%= category.name %>
                                                                             </label>
                                                                         </div>
-                                                                        <span class="item-count"><%= category.count %></span>
+                                                                        <span class="item-count">
+                                                                            <%= category.count %>
+                                                                        </span>
                                                                     </div>
-                                                                <% }); %>
-                                                            <% } else { %>
-                                                                <p>No categories available</p>
-                                                            <% } %>
+                                                                    <% }); %>
+                                                                        <% } else { %>
+                                                                            <p>No categories available</p>
+                                                                            <% } %>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                    
-                                            <!-- Sorting Section -->
+
                                             <div class="widget widget-collapsible">
                                                 <h3 class="widget-title">Sort By</h3>
                                                 <div class="widget-body">
                                                     <div class="filter-items">
                                                         <div class="custom-control custom-radio">
-                                                            <input type="radio" class="custom-control-input" id="sort-default" name="sortBy" value="default" checked>
-                                                            <label class="custom-control-label" for="sort-default">Default</label>
+                                                            <input type="radio" class="custom-control-input"
+                                                                id="sort-default" name="sortBy" value="default" checked>
+                                                            <label class="custom-control-label"
+                                                                for="sort-default">Default</label>
                                                         </div>
                                                         <div class="custom-control custom-radio">
-                                                            <input type="radio" class="custom-control-input" id="sort-lowToHigh" name="sortBy" value="lowToHigh">
-                                                            <label class="custom-control-label" for="sort-lowToHigh">Low to High</label>
+                                                            <input type="radio" class="custom-control-input"
+                                                                id="sort-lowToHigh" name="sortBy" value="lowToHigh">
+                                                            <label class="custom-control-label" for="sort-lowToHigh">Low
+                                                                to High</label>
                                                         </div>
                                                         <div class="custom-control custom-radio">
-                                                            <input type="radio" class="custom-control-input" id="sort-highToLow" name="sortBy" value="highToLow">
-                                                            <label class="custom-control-label" for="sort-highToLow">High to Low</label>
+                                                            <input type="radio" class="custom-control-input"
+                                                                id="sort-highToLow" name="sortBy" value="highToLow">
+                                                            <label class="custom-control-label"
+                                                                for="sort-highToLow">High to Low</label>
                                                         </div>
                                                         <div class="custom-control custom-radio">
-                                                            <input type="radio" class="custom-control-input" id="sort-aToZ" name="sortBy" value="aToZ">
-                                                            <label class="custom-control-label" for="sort-aToZ">A to Z</label>
+                                                            <input type="radio" class="custom-control-input"
+                                                                id="sort-aToZ" name="sortBy" value="aToZ">
+                                                            <label class="custom-control-label" for="sort-aToZ">A to
+                                                                Z</label>
                                                         </div>
                                                         <div class="custom-control custom-radio">
-                                                            <input type="radio" class="custom-control-input" id="sort-zToA" name="sortBy" value="zToA">
-                                                            <label class="custom-control-label" for="sort-zToA">Z to A</label>
+                                                            <input type="radio" class="custom-control-input"
+                                                                id="sort-zToA" name="sortBy" value="zToA">
+                                                            <label class="custom-control-label" for="sort-zToA">Z to
+                                                                A</label>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        
-                                        <!-- New Footer with Apply and Clear All Buttons -->
+
+
                                         <div class="offcanvas-footer p-3 border-top">
                                             <div class="d-flex justify-content-between gap-2">
-                                                <button type="button" class="btn btn-outline-secondary flex-grow-1" onclick="clearAllFilters()">Clear All</button>
-                                                <button type="button" class="btn btn-primary flex-grow-1" onclick="applyFilters()">Apply Filters</button>
+                                                <button type="button" class="btn btn-outline-secondary flex-grow-1"
+                                                    onclick="clearAllFilters()">Clear All</button>
+                                                <button type="button" class="btn btn-primary flex-grow-1"
+                                                    onclick="applyFilters()">Apply Filters</button>
                                             </div>
                                         </div>
                                     </div>
@@ -257,7 +272,7 @@
                                         </a>
 
                                     </div>
-                                    <!-- Filter Trigger Button -->
+
 
 
                             </aside>
@@ -269,13 +284,17 @@
 
                                     <% products.forEach((item)=> { %>
                                         <div class="col-6 col-md-4 col-lg-4 col-xl-3 product-item"
-                                            data-category="<%= item.category %>" data-price="<%= item.finalPrice %>"
-                                            data-name="<%= item.productName %>">
+                                            data-category="<%= item.category %>">
                                             <div class="product product-7 text-center">
                                                 <figure class="product-media">
                                                     <a href="/productDetails/<%= item._id %>">
-                                                        <img src="uploads/<%= item.productImage[0] %>"
-                                                            alt="<%= item.productName %> image" class="product-image">
+                                                        <% if (item.offer) { %>
+                                                            <span class="product-label label-circle label-sale">
+                                                                <%=item.offer.discount %>% OFF
+                                                            </span>
+                                                            <%}%>
+                                                                <img src="/uploads/<%= item.productImage[0] %>"
+                                                                    alt="<%= item.productName %>" class="product-image">
                                                     </a>
                                                     <div class="product-action-vertical">
                                                         <a href="#" class="btn-product-icon btn-wishlist btn-expandable"
@@ -301,7 +320,6 @@
                                                                             <% } %>
                                                     </div>
                                                 </figure>
-
                                                 <div class="product-body">
                                                     <h3 class="product-title">
                                                         <a href="/productDetails/<%= item._id %>">
@@ -314,12 +332,22 @@
                                                         </a>
                                                     </div>
                                                     <div class="product-price">
-                                                        <% if (item.discount) { %>
-                                                            <span class="old-price">₹<%= item.price %></span>
-                                                            <span class="new-price">₹<%= item.finalPrice %></span>
+                                                        <% if (item.offer) { %>
+                                                            <div class="product-price">
+                                                                <span class="old-price">₹<%= item.originalPrice ?
+                                                                        item.originalPrice.toFixed(2) : 'N/A' %></span>
+                                                                <span class="new-price">₹<%= item.discountedPrice ?
+                                                                        item.discountedPrice.toFixed(2) : 'N/A' %>
+                                                                        </span>
+                                                            </div>
                                                             <% } else { %>
-                                                                ₹<%= item.price %>
-                                                                    <% } %>
+                                                                <div class="product-price">
+                                                                    <span class="price">₹<%= item.price ?
+                                                                            item.price.toFixed(2) : 'N/A' %></span>
+                                                                </div>
+                                                                <% } %>
+
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -327,7 +355,9 @@
                                         <% }); %>
 
 
-                        
+
+
+
                                 </div>
                             </div>
                         </div>
@@ -342,23 +372,7 @@
 
 
             <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link page-link-prev" href="#" aria-label="Previous" tabindex="-1"
-                            aria-disabled="true">
-                            <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Prev
-                        </a>
-                    </li>
-                    <li class="page-item active" aria-current="page"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item-total">of 6</li>
-                    <li class="page-item">
-                        <a class="page-link page-link-next" href="#" aria-label="Next">
-                            Next <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
-                        </a>
-                    </li>
-                </ul>
+
             </nav>
     </div>
     <aside class="col-lg-3 order-lg-first">
@@ -376,7 +390,7 @@
                 <div class="row">
                     <div class="col-sm-6 col-lg-3">
                         <div class="widget widget-about">
-                            <img src="assets/newimages/logo.png" class="footer-logo" alt="Footer Logo" width="150"
+                            <img src="assets/images/wonder.png" class="footer-logo" alt="Footer Logo" width="150"
                                 height="25">
                             <p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu
                                 vulputate magna eros eu erat. </p>
@@ -491,88 +505,97 @@
     <script src="assets/js/nouislider.min.js"></script>
     <!-- Main JS File -->
     <script src="assets/js/main.js"></script>
-      
+
 
 
     <script>
-       
-       document.addEventListener('DOMContentLoaded', () => {
-    initializeFilters();
-});
 
-function initializeFilters() {
-    const categoryCheckboxes = document.querySelectorAll('input[name="categoryFilter"]');
-    const sortRadios = document.querySelectorAll('input[name="sortBy"]');
-    const applyButton = document.querySelector('#applyFilters');
-    const clearButton = document.querySelector('#clearFilters');
+        (function () {
 
-    categoryCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', applyFilters);
-    });
+            let field = document.querySelector('.items');
+            let li = Array.from(field.children);
 
-    sortRadios.forEach(radio => {
-        radio.addEventListener('change', applyFilters);
-    });
+            function FilterProduct() {
+                for (let i of li) {
+                    const name = i.querySelector('product-image');
+                    const x = name.textContent;
+                    i.setAttribute("data-category", x);
+                }
 
-    if (applyButton) {
-        applyButton.addEventListener('click', applyFilters);
-    }
+                let indicator = document.querySelector('filter-item').children;
 
-    if (clearButton) {
-        clearButton.addEventListener('click', clearAllFilters);
-    }
-}
+                this.run = function () {
+                    for (let i = 0; i < indicator.length; i++) {
+                        indicator[i].onclick = function () {
+                            for (let x = 0; x < indicator.length; x++) {
+                                indicator[x].classList.remove('active');
+                            }
+                            this.classList.add('active');
+                            const displayItems = this.getAttribute('data-filter');
 
-function applyFilters() {
-    const selectedCategories = Array.from(document.querySelectorAll('input[name="categoryFilter"]:checked')).map(cb => cb.value);
-    const sortOption = document.querySelector('input[name="sortBy"]:checked')?.value || 'name_asc';
-    const minPrice = document.querySelector('#minPrice')?.value;
-    const maxPrice = document.querySelector('#maxPrice')?.value;
-    const searchQuery = document.querySelector('#searchBox')?.value.trim();
+                            for (let z = 0; z < li.length; z++) {
+                                li[z].style.transform = "scale(0)";
+                                setTimeout(() => {
+                                    li[z].style.display = "none";
+                                }, 500);
 
-    const queryParams = new URLSearchParams({
-        sort: sortOption,
-        category: selectedCategories.join(','),
-        minPrice: minPrice || '',
-        maxPrice: maxPrice || '',
-        search: searchQuery || '',
-    });
+                                if ((li[z].getAttribute('data-category') == displayItems) || displayItems == "all") {
+                                    li[z].style.transform = "scale(1)";
+                                    setTimeout(() => {
+                                        li[z].style.display = "block";
+                                    }, 500);
+                                }
+                            }
+                        };
+                    }
+                }
+            }
 
-    fetch(`/products/filter?${queryParams.toString()}`)
-        .then(response => response.json())
-        .then(data => updateProductList(data))
-        .catch(err => console.error('Error applying filters:', err));
-}
+            function SortProduct() {
+                let select = document.getElementById('select');
+                let ar = [];
+                for (let i of li) {
+                    const last = i.lastElementChild;
+                    const x = last.textContent.trim();
+                    const y = Number(x.substring(1));
+                    i.setAttribute("data-price", y);
+                    ar.push(i);
+                }
+                this.run = () => {
+                    addevent();
+                }
+                function addevent() {
+                    select.onchange = sortingValue;
+                }
+                function sortingValue() {
 
-function clearAllFilters() {
-    document.querySelectorAll('input[name="categoryFilter"]').forEach(cb => (cb.checked = false));
-    document.querySelectorAll('input[name="sortBy"]').forEach(radio => (radio.checked = radio.value === 'name_asc'));
-    document.querySelector('#minPrice').value = '';
-    document.querySelector('#maxPrice').value = '';
-    document.querySelector('#searchBox').value = '';
+                    if (this.value === 'Default') {
+                        while (field.firstChild) { field.removeChild(field.firstChild); }
+                        field.append(...ar);
+                    }
+                    if (this.value === 'LowToHigh') {
+                        SortElem(field, li, true)
+                    }
+                    if (this.value === 'HighToLow') {
+                        SortElem(field, li, false)
+                    }
+                }
+                function SortElem(field, li, asc) {
+                    let dm, sortli;
+                    dm = asc ? 1 : -1;
+                    sortli = li.sort((a, b) => {
+                        const ax = a.getAttribute('data-price');
+                        const bx = b.getAttribute('data-price');
+                        return ax > bx ? (1 * dm) : (-1 * dm);
+                    });
+                    while (field.firstChild) { field.removeChild(field.firstChild); }
+                    field.append(...sortli);
+                }
+            }
 
-    applyFilters();
-}
-
-function updateProductList(data) {
-    const productContainer = document.querySelector('#productContainer');
-    if (!productContainer) return;
-
-    productContainer.innerHTML = '';
-    data.products.forEach(product => {
-        productContainer.innerHTML += `
-            <div class="product-item" data-category="${product.category}" data-price="${product.price}" data-name="${product.name}">
-                <h3>${product.name}</h3>
-                <p>Price: $${product.price}</p>
-                <p>Category: ${product.category}</p>
-            </div>`;
-    });
-
-    const productCount = document.querySelector('.product-count');
-    if (productCount) {
-        productCount.textContent = `Showing ${data.pagination.visibleCount} of ${data.pagination.totalCount} products`;
-    }
-}
+            new FilterProduct().run();
+            new SortProduct().run();
+        })();
 
 
 
@@ -580,7 +603,7 @@ function updateProductList(data) {
     </script>
 
     <script>
-       
+
 
         document.addEventListener('DOMContentLoaded', function () {
             const addToCartButtons = document.querySelectorAll('.btn-cart');
@@ -657,7 +680,7 @@ function updateProductList(data) {
             wishlistButtons.forEach(button => {
                 button.addEventListener('click', function (e) {
                     e.preventDefault();
-                    const productId = this.dataset.productId; 
+                    const productId = this.dataset.productId;
 
                     fetch('/addWishlistItem', {
                         method: 'POST',
@@ -745,16 +768,16 @@ function updateProductList(data) {
     </script>
     <script>
 
-document.querySelector('.search-toggle').addEventListener('click', function (e) {
-    e.preventDefault();
-    const searchWrapper = document.querySelector('.header-search-wrapper');
-    if (searchWrapper.style.display === 'block') {
-        searchWrapper.style.display = 'none';
-    } else {
-        searchWrapper.style.display = 'block';
-        document.querySelector('.form-control').focus(); // Focus on the search input
-    }
-});
+        document.querySelector('.search-toggle').addEventListener('click', function (e) {
+            e.preventDefault();
+            const searchWrapper = document.querySelector('.header-search-wrapper');
+            if (searchWrapper.style.display === 'block') {
+                searchWrapper.style.display = 'none';
+            } else {
+                searchWrapper.style.display = 'block';
+                document.querySelector('.form-control').focus(); // Focus on the search input
+            }
+        });
 
 
 
@@ -763,118 +786,118 @@ document.querySelector('.search-toggle').addEventListener('click', function (e) 
 
 
         const SearchHandler = {
-    init() {
-        this.searchToggle = document.querySelector('.search-toggle');
-        this.searchWrapper = document.querySelector('.header-search');
-        this.searchForm = document.querySelector('.header-search form');
-        this.searchInput = document.getElementById('q');
-        this.productsContainer = document.querySelector('.products-container'); // Adjust selector as needed
+            init() {
+                this.searchToggle = document.querySelector('.search-toggle');
+                this.searchWrapper = document.querySelector('.header-search');
+                this.searchForm = document.querySelector('.header-search form');
+                this.searchInput = document.getElementById('q');
+                this.productsContainer = document.querySelector('.products-container'); // Adjust selector as needed
 
-        // Create loading indicator
-        this.loadingIndicator = document.createElement('div');
-        this.loadingIndicator.className = 'search-loading d-none';
-        this.loadingIndicator.innerHTML = `
+                // Create loading indicator
+                this.loadingIndicator = document.createElement('div');
+                this.loadingIndicator.className = 'search-loading d-none';
+                this.loadingIndicator.innerHTML = `
             <div class="spinner-border spinner-border-sm text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         `;
-        this.searchForm.appendChild(this.loadingIndicator);
+                this.searchForm.appendChild(this.loadingIndicator);
 
-        this.bindEvents();
-    },
+                this.bindEvents();
+            },
 
-    bindEvents() {
-        // Toggle search on click
-        this.searchToggle?.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.toggleSearch();
-        });
+            bindEvents() {
+                // Toggle search on click
+                this.searchToggle?.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.toggleSearch();
+                });
 
-        // Close search on click outside
-        document.addEventListener('click', (e) => {
-            if (!this.searchWrapper.contains(e.target)) {
-                this.searchWrapper.classList.remove('show');
-            }
-        });
+                // Close search on click outside
+                document.addEventListener('click', (e) => {
+                    if (!this.searchWrapper.contains(e.target)) {
+                        this.searchWrapper.classList.remove('show');
+                    }
+                });
 
-        // Prevent form submission and handle search
-        this.searchForm?.addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.handleSearch();
-        });
+                // Prevent form submission and handle search
+                this.searchForm?.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleSearch();
+                });
 
-        // Real-time search as user types
-        this.searchInput?.addEventListener('input', debounce(() => {
-            this.handleSearch();
-        }, 300));
+                // Real-time search as user types
+                this.searchInput?.addEventListener('input', debounce(() => {
+                    this.handleSearch();
+                }, 300));
 
-        // Handle search input clear
-        this.searchInput?.addEventListener('search', () => {
-            if (!this.searchInput.value) {
-                this.handleSearch();
-            }
-        });
+                // Handle search input clear
+                this.searchInput?.addEventListener('search', () => {
+                    if (!this.searchInput.value) {
+                        this.handleSearch();
+                    }
+                });
 
-        // Close search on escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.searchWrapper.classList.remove('show');
-            }
-        });
-    },
+                // Close search on escape key
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        this.searchWrapper.classList.remove('show');
+                    }
+                });
+            },
 
-    toggleSearch() {
-        this.searchWrapper.classList.toggle('show');
-        if (this.searchWrapper.classList.contains('show')) {
-            this.searchInput.focus();
-        }
-    },
+            toggleSearch() {
+                this.searchWrapper.classList.toggle('show');
+                if (this.searchWrapper.classList.contains('show')) {
+                    this.searchInput.focus();
+                }
+            },
 
-    async handleSearch() {
-        const query = this.searchInput.value.trim();
-        
-        // Show loading indicator
-        this.toggleLoading(true);
+            async handleSearch() {
+                const query = this.searchInput.value.trim();
 
-        try {
-            // Update URL with search query
-            const url = new URL(window.location);
-            if (query) {
-                url.searchParams.set('q', query);
-            } else {
-                url.searchParams.delete('q');
-            }
-            window.history.pushState({}, '', url);
+                // Show loading indicator
+                this.toggleLoading(true);
 
-            // Fetch search results
-            const response = await fetch(`/api/products/search?q=${encodeURIComponent(query)}`);
-            if (!response.ok) throw new Error('Search request failed');
+                try {
+                    // Update URL with search query
+                    const url = new URL(window.location);
+                    if (query) {
+                        url.searchParams.set('q', query);
+                    } else {
+                        url.searchParams.delete('q');
+                    }
+                    window.history.pushState({}, '', url);
 
-            const data = await response.json();
-            this.updateProducts(data);
+                    // Fetch search results
+                    const response = await fetch(`/api/products/search?q=${encodeURIComponent(query)}`);
+                    if (!response.ok) throw new Error('Search request failed');
 
-        } catch (error) {
-            console.error('Search error:', error);
-            this.showError('Failed to search products. Please try again.');
-        } finally {
-            this.toggleLoading(false);
-        }
-    },
+                    const data = await response.json();
+                    this.updateProducts(data);
 
-    updateProducts(data) {
-        if (!this.productsContainer) return;
+                } catch (error) {
+                    console.error('Search error:', error);
+                    this.showError('Failed to search products. Please try again.');
+                } finally {
+                    this.toggleLoading(false);
+                }
+            },
 
-        if (!data.products?.length) {
-            this.productsContainer.innerHTML = `
+            updateProducts(data) {
+                if (!this.productsContainer) return;
+
+                if (!data.products?.length) {
+                    this.productsContainer.innerHTML = `
                 <div class="no-results text-center py-5">
                     <h3>No products found</h3>
                     <p>Try different search terms or browse our categories</p>
                 </div>
             `;
-            return;
-        }
+                    return;
+                }
 
-        this.productsContainer.innerHTML = data.products.map(product => `
+                this.productsContainer.innerHTML = data.products.map(product => `
             <div class="product-item">
                 <figure class="product-media">
                     <a href="/product/${product._id}">
@@ -897,54 +920,54 @@ document.querySelector('.search-toggle').addEventListener('click', function (e) 
             </div>
         `).join('');
 
-        // Update result count if element exists
-        const countElement = document.querySelector('.search-result-count');
-        if (countElement) {
-            countElement.textContent = `${data.total} results found`;
-        }
-    },
+                // Update result count if element exists
+                const countElement = document.querySelector('.search-result-count');
+                if (countElement) {
+                    countElement.textContent = `${data.total} results found`;
+                }
+            },
 
-    toggleLoading(show) {
-        if (this.loadingIndicator) {
-            this.loadingIndicator.classList.toggle('d-none', !show);
-        }
-    },
+            toggleLoading(show) {
+                if (this.loadingIndicator) {
+                    this.loadingIndicator.classList.toggle('d-none', !show);
+                }
+            },
 
-    showError(message) {
-        // Create or update error message element
-        let errorElement = document.querySelector('.search-error');
-        if (!errorElement) {
-            errorElement = document.createElement('div');
-            errorElement.className = 'search-error alert alert-danger mt-3';
-            this.searchForm.appendChild(errorElement);
-        }
+            showError(message) {
+                // Create or update error message element
+                let errorElement = document.querySelector('.search-error');
+                if (!errorElement) {
+                    errorElement = document.createElement('div');
+                    errorElement.className = 'search-error alert alert-danger mt-3';
+                    this.searchForm.appendChild(errorElement);
+                }
 
-        errorElement.textContent = message;
-        errorElement.style.display = 'block';
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
 
-        // Hide error after 5 seconds
-        setTimeout(() => {
-            errorElement.style.display = 'none';
-        }, 5000);
-    }
-};
-
-// Debounce helper function
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
+                // Hide error after 5 seconds
+                setTimeout(() => {
+                    errorElement.style.display = 'none';
+                }, 5000);
+            }
         };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
 
-// Initialize search functionality when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    SearchHandler.init();
-});
+        // Debounce helper function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Initialize search functionality when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            SearchHandler.init();
+        });
     </script>
     <%- include ('../../layout/footer.ejs') %>

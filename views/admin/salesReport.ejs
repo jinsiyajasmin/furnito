@@ -1,0 +1,490 @@
+<%- include ('../../layout/adminlayout/header.ejs') %>
+    <style>
+        .button1 {
+            color: #ffffff;
+            padding: 11px 32px;
+            font-size: 14px;
+            border-radius: 0.5em;
+            background: #8c57ff;
+            cursor: pointer;
+            border: 1px solid #e8e8e8;
+            transition: all 0.3s;
+            box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+        }
+
+        .button1:active {
+            color: #666;
+            box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
+        }
+
+        .button2 {
+            color: #ffffff;
+            padding: 11px 32px;
+            font-size: 14px;
+            border-radius: 0.5em;
+            background: #8c57ff;
+            cursor: pointer;
+            border: 1px solid #e8e8e8;
+            transition: all 0.3s;
+            box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+        }
+
+        .button2:active {
+            color: #666;
+            box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+    <!-- ?PROD Only: Google Tag Manager (noscript) (Default ThemeSelection: GTM-5DDHKGP, PixInvent: GTM-5J3LMKC) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5DDHKGP" height="0" width="0"
+            style="display: none; visibility: hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar  ">
+        <div class="layout-container">
+
+
+
+
+
+
+
+            <!-- Menu -->
+
+            <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+
+
+                <div class="app-brand demo ">
+                    <a href="index.html" class="app-brand-link">
+                        <span class="app-brand-logo demo me-1">
+                            <span style="color:var(--bs-primary);">
+
+                            </span>
+                        </span>
+                        <img src="/assets/newimages/logo.png" width="150px" height="40px">
+                    </a>
+
+                    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
+                        <i class="menu-toggle-icon d-xl-block align-middle"></i>
+                    </a>
+                </div>
+
+                <div class="menu-inner-shadow"></div>
+
+
+
+                <ul class="menu-inner py-1">
+                  
+
+
+
+                    <!-- e-commerce-app menu start -->
+                    <li class="menu-item active open">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                          <i class='menu-icon tf-icons ri-shopping-bag-3-line'></i>
+                          <div data-i18n="woodnwonder">woodnwonder</div>
+                        </a>
+                        <ul class="menu-sub">
+                          <li class="menu-item ">
+                            <a href="/admin/dashboard" class="menu-link">
+                              <div data-i18n="Dashboard">Dashboard</div>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                              <div data-i18n="Products">Products</div>
+                            </a>
+                            <ul class="menu-sub">
+                              <li class="menu-item">
+                                <a href="/admin/product" class="menu-link">
+                                  <div data-i18n="Product List">Product List</div>
+                                </a>
+                              </li>
+                              <li class="menu-item ">
+                                <a href="/admin/addProduct" class="menu-link">
+                                  <div data-i18n="Add Product">Add Product</div>
+                                </a>
+                              </li>
+                            </ul>
+                          </li>
+                          <li class="menu-item">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                              <div data-i18n="Category">Category</div>
+                            </a>
+                            <ul class="menu-sub">
+                              <li class="menu-item">
+                                <a href="/admin/category" class="menu-link">
+                                  <div data-i18n="List all category">List all category</div>
+                                </a>
+                              </li>
+                            </ul>
+                          </li>
+                          <li class="menu-item">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                              <div data-i18n="Order">Order</div>
+                            </a>
+                            <ul class="menu-sub">
+                              <li class="menu-item">
+                                <a href="/admin/orders" class="menu-link">
+                                  <div data-i18n="Order List">Order List</div>
+                                </a>
+                              </li>
+                    
+                            </ul>
+                          </li>
+                          <li class="menu-item">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                              <div data-i18n="Customer">Customer</div>
+                            </a>
+                            <ul class="menu-sub">
+                              <li class="menu-item">
+                                <a href="/admin/customers" class="menu-link">
+                                  <div data-i18n="All Customers">All Customers</div>
+                                </a>
+                              </li>
+                            </ul>
+                          </li>
+                          <li class="menu-item ">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                              <div data-i18n="Offers">Offers</div>
+                            </a>
+                            <ul class="menu-sub">
+                    
+                              <li class="menu-item ">
+                                <a href="/admin/offers" class="menu-link">
+                                  <div data-i18n="Product Offers">Product Offers</div>
+                                </a>
+                              </li>
+                              <li class="menu-item">
+                                <a href="/admin/offers/category" class="menu-link">
+                                  <div data-i18n="Category Offers">Category Offers</div>
+                                </a>
+                              </li>
+                            </ul>
+                          </li>
+                          <li class="menu-item ">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                              <div data-i18n="Coupons Management">Coupons Management</div>
+                            </a>
+                            <ul class="menu-sub">
+                    
+                              <li class="menu-item ">
+                                <a href="/admin/coupons" class="menu-link">
+                                  <div data-i18n="Coupen">Coupen</div>
+                                </a>
+                              </li>
+                            </ul>
+                          </li>
+                          <li class="menu-item active open">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                              <div data-i18n="Sales Report">Sales Report</div>
+                            </a>
+                            <ul class="menu-sub">
+                    
+                              <li class="menu-item active">
+                                <a href="/admin/salesreport" class="menu-link">
+                                  <div data-i18n="Report">Report</div>
+                                </a>
+                              </li>
+                            </ul>
+                          </li>
+                         
+                        </ul>
+                      </li>
+                </ul>
+            </aside>
+            <!-- / Menu -->
+            <!-- Navbar -->
+            <div class="layout-page">
+                <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+                    id="layout-navbar">
+                    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+                        <ul class="navbar-nav flex-row align-items-center ms-auto">
+
+                            <!-- User -->
+                            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                                <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);"
+                                    data-bs-toggle="dropdown">
+                                    <div class="avatar avatar-online">
+                                        <img src="/dashboard-assets/img/avatars/1.png" alt
+                                            class="w-px-40 h-auto rounded-circle">
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end mt-3 py-2">
+                                    <li>
+                                        <a class="dropdown-item" href="pages-account-settings-account.html">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 me-2">
+                                                    <div class="avatar avatar-online">
+                                                        <img src="/dashboard-assets/img/avatars/1.png" alt
+                                                            class="w-px-40 h-auto rounded-circle">
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <!-- <h6 class="mb-0 small">John Doe</h6> -->
+                                                    <small class="text-muted">Admin</small>
+
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="pages-profile-user.html">
+                                            <i class="ri-user-3-line ri-22px me-2"></i>
+                                            <span class="align-middle">My Profile</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="d-grid px-4 pt-2 pb-1">
+                                            <a class="btn btn-danger d-flex" href="/admin/logout" target="_blank">
+                                                <small class="align-middle">Logout</small>
+                                                <i class="ri-logout-box-r-line ms-2 ri-16px"></i>
+                                            </a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!--/ User -->
+                        </ul>
+                    </div>
+                </nav>
+                <!-- / Navbar -->
+                <!-- Content wrapper -->
+                <div class="content-wrapper">
+
+                    <!-- Content -->
+                    
+                        
+                    <div class="container-xxl flex-grow-1 container-p-y">
+                        <div class="card">
+                            <div class="card-header">
+                                <form id="salesReportForm" method="GET" action="/admin/salesreport">
+                                   
+                                <h5 class="card-title mb-4">SALES REPORT</h5>
+                                <div class="row g-3 align-items-center">
+                                    <div class="col-md-3">
+                                        <div class="form-floating form-floating-outline">
+                                            <select id="reportType" class="form-select">
+                                                <option value="daily">Daily</option>
+                                                <option value="weekly">Weekly</option>
+                                                <option value="monthly">Monthly</option>
+                                                <option value="yearly">Yearly</option>
+                                                <option value="custom">Custom Date Range</option>
+                                            </select>
+                                            <label for="reportType">Report Type</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="date" id="startDate" name="startDate" class="form-control">
+                                            <label for="startDate">Start Date</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="date" id="endDate" name="endDate" class="form-control">
+                                            <label for="endDate">End Date</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button id="generateReport" class="btn btn-primary w-100">Generate Report</button>
+                                    </div>
+                                </div>
+                                <div class="mt-3 d-flex justify-content-end">
+                                    <button id="downloadPdf" class="btn btn-warning me-2">Download PDF</button>
+                                    <button id="downloadExcel" class="btn btn-success">Download Excel</button>
+                                </div>
+                                <input type="hidden" name="reportType" id="hiddenReportType">
+                                <input type="hidden" name="startDate" id="hiddenStartDate">
+                                <input type="hidden" name="endDate" id="hiddenEndDate">
+                                </form>
+                            </div>
+                            <div class="card-body">
+                                <table id="salesReport" class="table">
+                                    <thead>
+                                        <tr> 
+                                            <th>Order ID</th>
+                                            <th>Date</th>
+                                            <th>Items</th>
+                                            <th>Price</th>
+                                            <th>Total Amount</th>
+                                            <th>Coupon</th>
+                                            <th>Discount</th>
+                                        </tr>
+                                    </thead>
+                                    <% orders?.forEach( items=> { %>
+                                    <tbody>
+                                        <td><%= items.orderId %></td>
+                                        <td><%= new
+                                            Date(items.createdAt.getTime()).toLocaleDateString("en-US",
+                                            {year: "numeric" , month: "long" ,day: "numeric" })%></td>
+                                            
+                                            
+                                        <td><%= items.items.length %><br></td>
+                                        <% let tot_price =0; items.items.forEach(x=> { tot_price += x.total; %>
+                                       
+                                        <%})%> <td><%= tot_price%><br></td>
+                                        <td><%= items.total_amount%><br></td>
+                                        <td><% if(items.discount > 0){%>Applied<%}else{%>Not Applied<%}%></td>
+                                        <td><% if(items.discount > 0){%><%= items.discount%><%}else{%>0.00<%}%></td>
+                                    </tbody>
+                                    <%})%>
+                                </table>
+                            </div>
+                            <div class="card-footer">
+                                <div id="summary">
+                                    <p>Overall Sales Count: <span id="overallCount"></span></p>
+                                    <p>Overall Order Amount: <span id="overallAmount"></span></p>
+                                    <p>Overall Discount: <span id="overallDiscount"></span></p>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                        <!-- Modal -->
+                        <!-- Preview Modal -->
+
+
+                        <!-- //edit button modaal -->
+                        <!-- Edit Product Modal -->
+
+
+
+                        <div class="row gy-6">
+                            <!-- Footer -->
+                            <footer class="content-footer footer bg-footer-theme">
+                            </footer>
+                            <!-- / Footer -->
+
+
+                            <div class="content-backdrop fade"></div>
+                        </div>
+                        <!-- Content wrapper -->
+                    </div>
+                    <!-- / Layout page -->
+                </div>
+
+                <!-- Overlay -->
+                <div class="layout-overlay layout-menu-toggle"></div>
+
+
+                <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+                <div class="drag-target"></div>
+
+            </div>
+            <!-- / Layout wrapper -->
+
+
+
+          
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                const reportType = document.getElementById('reportType');
+                const startDate = document.getElementById('startDate');
+                const endDate = document.getElementById('endDate');
+
+                function toggleDateInputs() {
+                    const isCustom = reportType.value === 'custom';
+                    startDate.disabled = !isCustom;
+                    endDate.disabled = !isCustom;
+                }
+
+                reportType.addEventListener('change', toggleDateInputs);
+                toggleDateInputs();
+            });
+            </script>
+            <script>
+            generateReportBtn.addEventListener('click', function() {
+                const type = reportType.value;
+                document.getElementById('hiddenReportType').value = type;
+                if (type === 'custom') {
+                    document.getElementById('hiddenStartDate').value = startDate.value;
+                    document.getElementById('hiddenEndDate').value = endDate.value;
+                }
+                document.getElementById('salesReportForm').submit();
+            });
+            </script>
+            <script>
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const reportType = document.getElementById('reportType');
+                const startDate = document.getElementById('startDate');
+                const endDate = document.getElementById('endDate');
+                const generateReportBtn = document.getElementById('generateReport');
+                const downloadPdfBtn = document.getElementById('downloadPdf');
+                const downloadExcelBtn = document.getElementById('downloadExcel');
+                const salesReportForm = document.getElementById('salesReportForm');
+
+                function toggleDateInputs() {
+                    const isCustom = reportType.value === 'custom';
+                    startDate.disabled = !isCustom;
+                    endDate.disabled = !isCustom;
+                }
+
+                reportType.addEventListener('change', toggleDateInputs);
+                toggleDateInputs();
+
+                generateReportBtn.addEventListener('click', function(e) {
+                e.preventDefault(); 
+                
+                const type = reportType.value;
+                document.getElementById('hiddenReportType').value = type;
+                
+                if (type === 'custom') {
+                    if (!startDate.value || !endDate.value) {
+                        alert('Please select both start and end dates for custom range');
+                        return;
+                    }
+                    document.getElementById('hiddenStartDate').value = startDate.value;
+                    document.getElementById('hiddenEndDate').value = endDate.value;
+                } else {
+                   
+                    document.getElementById('hiddenStartDate').value = '';
+                    document.getElementById('hiddenEndDate').value = '';
+                }
+                
+                salesReportForm.submit();
+            });
+
+                function calculateSummary() {
+                    const rows = document.querySelectorAll('#salesReport tbody tr');
+                    let totalCount = rows.length;
+                    let totalAmount = 0;
+                    let totalDiscount = 0;
+
+                    rows.forEach(row => {
+                        totalAmount += parseFloat(row.querySelector('td:nth-child(5)').textContent);
+                        totalDiscount += parseFloat(row.querySelector('td:nth-child(7)').textContent);
+                    });
+
+                    document.getElementById('overallCount').textContent = totalCount;
+                    document.getElementById('overallAmount').textContent = totalAmount.toFixed(2);
+                    document.getElementById('overallDiscount').textContent = totalDiscount.toFixed(2);
+                }
+
+                calculateSummary();
+
+                downloadPdfBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = '/admin/salesreport/pdf' + window.location.search;
+            });
+
+                downloadExcelBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = '/admin/salesreport/excel' + window.location.search;
+            });
+            });
+            </script>
+
+<%- include ('../../layout/adminlayout/footer.ejs') %>

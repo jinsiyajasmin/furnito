@@ -101,7 +101,27 @@ const orderSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    razorpay_order_id: {
+        type: String
+    },razorpay_payment_id: {
+        type: String
+    },razorpay_signature: {
+        type: String
+    },
+    
+    shipping_cost: {
+        type: Number,
+        default: 0
+    },
+    tax: {
+        type: Number,
+        default: 0
+    },
+    discount: {
+        type: Number,
+        default: 0
+    },
 });
 
 module.exports = mongoose.model('Order', orderSchema);

@@ -19,7 +19,7 @@ const offerSchema = new mongoose.Schema({
   },
   products: [{
    type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product'
+      ref: 'product'
     }],
   category: [{
       type: mongoose.Schema.Types.ObjectId,
