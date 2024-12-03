@@ -30,7 +30,7 @@ const loadSales = async (req, res) => {
         } else {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-
+ 
             switch (reportType) {
                 case 'daily':
                     query.createdAt = { $gte: today };
@@ -85,29 +85,29 @@ const downloadPDF = async (req, res) => {
                 throw new Error('Invalid date format');
             }
 
-            query.created_at = { $gte: start, $lte: end };
+            query.createdAt = { $gte: start, $lte: end };
         } else {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
             switch (reportType) {
                 case 'daily':
-                    query.created_at = { $gte: today };
+                    query.createdAt = { $gte: today };
                     break;
                 case 'weekly':
                     const oneWeekAgo = new Date(today);
                     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-                    query.created_at = { $gte: oneWeekAgo };
+                    query.createdAt = { $gte: oneWeekAgo };
                     break;
                 case 'monthly':
                     const oneMonthAgo = new Date(today);
                     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-                    query.created_at = { $gte: oneMonthAgo };
+                    query.createdAt = { $gte: oneMonthAgo };
                     break;
                 case 'yearly':
                     const oneYearAgo = new Date(today);
                     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-                    query.created_at = { $gte: oneYearAgo };
+                    query.createdAt = { $gte: oneYearAgo };
                     break;
                 default:
                     break;
@@ -123,8 +123,8 @@ const downloadPDF = async (req, res) => {
             grandTotal += order.total_amount;
             grandDiscount += order.discount;
             return [
-                order.order_id,
-                new Date(order.created_at).toLocaleDateString(),
+                order.orderId,
+                new Date(order.createdAt).toLocaleDateString(),
                 order.items.map(item => item.quantity).join(', '),
                 order.items.map(item => item.price).join(', '),
                 order.total_amount.toFixed(2),
@@ -226,29 +226,29 @@ const downloadExcel = async (req, res) => {
                 throw new Error('Invalid date format');
             }
 
-            query.created_at = { $gte: start, $lte: end };
+            query.createdAt = { $gte: start, $lte: end };
         } else {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
             switch (reportType) {
                 case 'daily':
-                    query.created_at = { $gte: today };
+                    query.createdAt = { $gte: today };
                     break;
                 case 'weekly':
                     const oneWeekAgo = new Date(today);
                     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-                    query.created_at = { $gte: oneWeekAgo };
+                    query.createdAt= { $gte: oneWeekAgo };
                     break;
                 case 'monthly':
                     const oneMonthAgo = new Date(today);
                     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-                    query.created_at = { $gte: oneMonthAgo };
+                    query.createdAt = { $gte: oneMonthAgo };
                     break;
                 case 'yearly':
                     const oneYearAgo = new Date(today);
                     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-                    query.created_at = { $gte: oneYearAgo };
+                    query.createdAt = { $gte: oneYearAgo };
                     break;
                 default:
                     break;
@@ -274,8 +274,8 @@ const downloadExcel = async (req, res) => {
 
         orders.forEach(order => {
             worksheet.addRow([
-                order.order_id,
-                new Date(order.created_at).toLocaleDateString(),
+                order.orderId,
+                new Date(order.createdAt).toLocaleDateString(),
                 order.items.map(item => item.quantity).join(', '),
                 order.items.map(item => item.price).join(', '),
                 order.total_amount,

@@ -183,18 +183,25 @@ const verifyOtp = async (req, res) => {
     try {
         const { otp } = req.body;
 
-
         if (otp === req.session.userOtp) {
             const user = req.session.userData;
             const passwordHash = await securePassword(user.password);
-            const saveUserData = new User({
+
+            
+            const userData = {
                 name: user.name,
                 phone: user.phone,
                 email: user.email,
-                password: passwordHash
+                password: passwordHash,
+            };
 
-            });
+            if (user.googleId) {
+                userData.googleId = user.googleId; 
+            }
+
+            const saveUserData = new User(userData);
             await saveUserData.save();
+
             req.session.user = saveUserData._id;
             res.json({ success: true, redirectUrl: "/" });
         } else {
@@ -205,6 +212,9 @@ const verifyOtp = async (req, res) => {
         res.status(500).json({ success: false, message: "An error occurred" });
     }
 };
+
+
+
 
 const resendOtp = async (req, res) => {
     try {
@@ -302,7 +312,7 @@ const getProductList = async (req, res) => {
     try {
         const products = await Product.find({ status: 'active' });
         const categories = await Category.find();
-       
+        const message = req.query.message || '';
         const user = req.session.user;
 
 
@@ -369,6 +379,7 @@ const getProductList = async (req, res) => {
         res.render('productList', {
             products: productsWithOffers,
             categories,
+            message,
             user: userData
         });
     } catch (error) {

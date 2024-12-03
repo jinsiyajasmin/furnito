@@ -52,6 +52,7 @@ userRouter.post('/cart/add', userAuth, Cart.addToCart);
 userRouter.get('/cart', userAuth, Cart.viewCart);
 userRouter.post('/cart/remove', userAuth, Cart.removeFromCart);
 userRouter.post('/api/cart/update-quantity', userAuth, Cart.updateQuant);
+userRouter.get('/api/products/search', userAuth,Cart.searchProducts);
 
 // Wishlist Management
 userRouter.get('/wishlist', userAuth, Cart.loadWishlist);
@@ -67,11 +68,9 @@ userRouter.get('/orderSummary/:orderId', checkout.loadOrder);
 userRouter.get('/Address', checkout.getAddresses);
 userRouter.post('/applyCoupon',checkout.applyCoupon);
 userRouter.post('/removeCoupon',checkout.removeCoupon);
-userRouter.post('/verifyPayment',userAuth,checkout.verifyPayment);
-userRouter.post('/payment-failed', userAuth, checkout.paymentFailure);
-userRouter.post('/initiate-razorpay',userAuth, checkout.initiateRazorpay);
-userRouter.post('/verify-payment', userAuth, checkout.verifyPayment);
-userRouter.post('/payment-failure', userAuth, checkout.paymentFailure);
+userRouter.post('/create-razorpay-order', checkout.createRazorpayOrder);
+userRouter.post('/verify-payment', checkout.verifyPayment);
+userRouter.post('/payment-failed', checkout.paymentFailure);
 
 
 // User Dashboard
@@ -82,6 +81,7 @@ userRouter.get('/orders', userAuth, dashboard.getOrders);
 userRouter.post('/cancelOrder', userAuth, dashboard.cancelOrder);
 userRouter.post('/returnOrder', userAuth, dashboard.returnOrder);
 userRouter.get('/downloadInvoice',  userAuth,dashboard.downloadInvoice);
+
 
 // Address CRUD Operations
 userRouter.post('/add-address', dashboard.addAddress);

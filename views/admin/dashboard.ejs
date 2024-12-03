@@ -23,7 +23,7 @@
         <div class="app-brand demo ">
           <a href="index.html" class="app-brand-link">
             <a href="index.html" class="app-brand-link gap-2">
-            
+
             </a>
 
             <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
@@ -208,46 +208,7 @@
         </a>
         <ul class="menu-sub">
 
-          </a>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 
         </ul>
 
@@ -287,12 +248,7 @@
 
             <!-- Search -->
             <div class="navbar-nav align-items-center">
-              <div class="nav-item navbar-search-wrapper mb-0">
-                <a class="nav-item nav-link search-toggler fw-normal px-0" href="javascript:void(0);">
-                  <i class="ri-search-line ri-22px scaleX-n1-rtl me-1_5"></i>
-                  <span class="d-none d-md-inline-block text-muted ms-1_5">Search</span>
-                </a>
-              </div>
+              
             </div>
             <!-- /Search -->
 
@@ -387,208 +343,265 @@
 
 
         <!-- Content wrapper -->
-        <div class="content-wrapper">
-
-          <!-- Content -->
-
-          <div class="container-xxl flex-grow-1 container-p-y">
-
-
-            <div class="row gy-6">
-              <!-- Congratulations card -->
-              <div class="col-xl-8 col-lg-7 align-self-end mt-md-7 mt-lg-4 pt-md-2 pt-lg-0">
-                <div class="card">
+        <div class="container-fluid py-4">
+          <div class="row">
+            <div class="col-12">
+              <div class="card mb-4">
+                <div class="card-header pb-0 d-flex justify-content-between align-items-center">
+                  <h6>Dashboard Overview</h6>
+                  <div class="form-group mb-0">
+                    <label for="timeFrame" class="mr-2">Time Frame:</label>
+                    <select id="timeFrame" class="form-select form-select-sm" onchange="updateDashboard()">
+                      <option value="yearly" <%= timeFrame === ' yearly' ? 'selected' : '' %>>Yearly</option>
+                      <option value="monthly" '<%=timeFrame ==='monthly' ? 'selected' : '' %>'>Monthly</option>
+                      <option value="weekly" <%=timeFrame ==='weekly' ? 'selected' : '' %>>Weekly</option>
+                      <option value="daily" <%=timeFrame==='daily' ? 'selected' : '' %>>Daily</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="card-body">
                   <div class="row">
-                    <div class="col-12 col-md-6">
-                      <div class="card-body">
-                        <h4 class="card-title mb-9 text-truncate">Congratulations <span
-                            class="fw-bold">Jinsiya!</span>🎉</h4>
-                        <p class="mb-0">You have done 72% 😎 more sales today. Check your new raising badge in your
-                          profile.</p>
+                    <div class="col-md-6 mb-4">
+                      <div class="chart-container" style="position: relative; width: 344px; height: 344px;">
+                        <canvas id="orderStatusChart"></canvas>
                       </div>
                     </div>
-                    <div class="col-12 col-md-6 position-relative text-center">
-                      <img src="/adminassets/img/illustrations/illustration-john-2.png"
-                        class="card-img-position bottom-0 w-auto end-0 scaleX-n1-rtl" alt="View Profile">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!--/ Congratulations card -->
-              <!-- Cards with icon profit and loss info -->
-              <div class="col-xl-4 col-lg-5">
-                <div class="row g-6">
-                  <div class="col-sm-6">
-                    <div class="card h-100">
-                      <div class="card-header d-flex align-items-center justify-content-between">
-                        <div class="avatar">
-                          <div class="avatar-initial bg-success rounded-circle shadow-xs">
-                            <i class="ri-money-dollar-circle-line ri-24px"></i>
-                          </div>
-                        </div>
-                        <div class="dropdown">
-                          <button class="btn text-muted p-0" type="button" id="revenueID" data-bs-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                            <i class="ri-more-2-line ri-24px"></i>
-                          </button>
-                          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="revenueID">
-                            <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
-                            <a class="dropdown-item" href="javascript:void(0);">Share</a>
-                            <a class="dropdown-item" href="javascript:void(0);">Update</a>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="card-body">
-                        <h6 class="mb-1">Revenue</h6>
-                        <div class="d-flex flex-wrap mb-1 align-items-center">
-                          <h4 class="mb-0 me-2">$95.2k</h4>
-                          <p class="text-success mb-0">+12%</p>
-                        </div>
-                        <small>Revenue Increase</small>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-sm-6">
-                    <div class="card h-100">
-                      <div class="card-header d-flex align-items-center justify-content-between">
-                        <div class="avatar">
-                          <div class="avatar-initial bg-info rounded-circle shadow-xs">
-                            <i class="ri-bank-card-line ri-24px"></i>
-                          </div>
-                        </div>
-                        <div class="dropdown">
-                          <button class="btn text-muted p-0" type="button" id="transactionsID" data-bs-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                            <i class="ri-more-2-line ri-24px"></i>
-                          </button>
-                          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionsID">
-                            <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
-                            <a class="dropdown-item" href="javascript:void(0);">Share</a>
-                            <a class="dropdown-item" href="javascript:void(0);">Update</a>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="card-body">
-                        <h6 class="mb-1">Transactions</h6>
-                        <div class="d-flex flex-wrap mb-1 align-items-center">
-                          <h4 class="mb-0 me-2">1.2k</h4>
-                          <p class="text-success mb-0">+38%</p>
-                        </div>
-                        <small>Daily Transactions</small>
+                    <div class="col-md-6 mb-4">
+                      <div class="chart-container" style="position: relative; height:300px; width:100%">
+                        <canvas id="salesChart"></canvas>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <!--/ Cards with icon profit and loss info -->
-              <!-- Total Profit Chart & Last month balance -->
-              <div class="col-xl-8">
-                <div class="card h-100">
-                  <div class="row h-100">
-                    <div class="col-md-7 pe-md-0">
-                      <div class="card-header">
-                        <h5 class="mb-0">Total Profit</h5>
-                      </div>
-                      <div class="card-body">
-                        <div id="totalProfitChart"></div>
-                      </div>
-                    </div>
-                    <div class="col-md-5 border-start ps-md-0">
-                      <hr class="d-block d-md-none my-0">
-                      <div class="card-header">
-                        <div class="d-flex justify-content-between">
-                          <h5 class="mb-0">$482.85k</h5>
-                          <div class="dropdown">
-                            <button class="btn text-muted p-0" type="button" id="totalProfit" data-bs-toggle="dropdown"
-                              aria-haspopup="true" aria-expanded="false">
-                              <i class="ri-more-2-line ri-24px"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="totalProfit">
-                              <a class="dropdown-item" href="javascript:void(0);">Last 28 Days</a>
-                              <a class="dropdown-item" href="javascript:void(0);">Last Month</a>
-                              <a class="dropdown-item" href="javascript:void(0);">Last Year</a>
-                            </div>
-                          </div>
-                        </div>
-                        <p class="card-subtitle mb-0">Last month balance $234.40k</p>
-                      </div>
-                      <div class="card-body pt-7">
-                        <div class="d-flex align-items-center mb-4">
-                          <div class="avatar">
-                            <div class="avatar-initial bg-label-success rounded">
-                              <i class="ri-pie-chart-2-line ri-24px"></i>
-                            </div>
-                          </div>
-                          <div class="ms-3 d-flex flex-column">
-                            <h6 class="mb-1">$48,568.20</h6>
-                            <p class="mb-0">Total Profit</p>
-                          </div>
-                        </div>
-                        <div class="d-flex align-items-center mb-4">
-                          <div class="avatar">
-                            <div class="avatar-initial bg-label-primary rounded">
-                              <i class="ri-wallet-line ri-24px"></i>
-                            </div>
-                          </div>
-                          <div class="ms-3 d-flex flex-column">
-                            <h6 class="mb-1">$38,453.25</h6>
-                            <p class="mb-0">Total Income</p>
-                          </div>
-                        </div>
-                        <div class="d-flex align-items-center mb-4">
-                          <div class="avatar">
-                            <div class="avatar-initial bg-label-secondary rounded">
-                              <i class="ri-bank-card-line ri-24px"></i>
-                            </div>
-                          </div>
-                          <div class="ms-3 d-flex flex-column">
-                            <h6 class="mb-1">$2,453.45</h6>
-                            <p class="mb-0">Total Expense</p>
-                          </div>
-                        </div>
-                        <div>
-                          <button class="btn btn-primary w-100" type="button">View Report</button>
-                        </div>
-                      </div>
-                    </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card mb-4">
+                <div class="card-header pb-0">
+                  <h6>Best Selling Products</h6>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                  <div class="table-responsive p-0">
+                    <table class="table align-items-center mb-0">
+                      <thead>
+                        <tr>
+                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Rank</th>
+                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Product
+                            Name</th>
+                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                            Sales</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% bestSellingProducts.forEach((product, index)=> { %>
+                          <tr>
+                            <td>
+                              <div class="d-flex px-2 py-1">
+                                <div class="d-flex flex-column justify-content-center">
+                                  <h6 class="mb-0 text-sm">
+                                    <%= index + 1 %>
+                                  </h6>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <p class="text-xs font-weight-bold mb-0">
+                                <%= product.name %>
+                              </p>
+                            </td>
+                            <td class="align-middle text-center text-sm">
+                              <span class="badge badge-sm bg-gradient-success">
+                                <%= product.sales %>
+                              </span>
+                            </td>
+                          </tr>
+                          <% }); %>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
-              <!--/ Total Profit Chart & Last month balance -->
-              <!-- three chart -->
-              <div class="col-xl-4">
-                <div class="row gy-6">
-                  <!-- Total Sales -->
-                  <div class="col-xl-12 col-md-6">
-                    <div class="card h-100">
-                      <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
-                        <div class="me-3">
-                          <h5 class="mb-1">Total Sales</h5>
-                          <p class="mb-3">Calculated in last 7 days</p>
-                          <div class="d-flex align-items-center">
-                            <h4 class="mb-0 me-1">$25,980</h4>
-                            <p class="text-success mb-0"> <i class="ri-arrow-up-s-line ri-24px"></i>15.6%</p>
-                          </div>
-                        </div>
-                        <div id="totalSalesDonutChart" class="mt-3 mt-md-0"></div>
-                      </div>
-                    </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card mb-4">
+                <div class="card-header pb-0">
+                  <h6>Best Selling Categories</h6>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                  <div class="table-responsive p-0">
+                    <table class="table align-items-center mb-0">
+                      <thead>
+                        <tr>
+                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Rank</th>
+                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Category
+                            Name</th>
+                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                            Sales</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% bestSellingCategories.forEach((category, index)=> { %>
+                          <tr>
+                            <td>
+                              <div class="d-flex px-2 py-1">
+                                <div class="d-flex flex-column justify-content-center">
+                                  <h6 class="mb-0 text-sm">
+                                    <%= index + 1 %>
+                                  </h6>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <p class="text-xs font-weight-bold mb-0">
+                                <%= category.name %>
+                              </p>
+                            </td>
+                            <td class="align-middle text-center text-sm">
+                              <span class="badge badge-sm bg-gradient-info">
+                                <%= category.sales %>
+                              </span>
+                            </td>
+                          </tr>
+                          <% }); %>
+                      </tbody>
+                    </table>
                   </div>
-                  <!-- Total Sales -->
-                  <!-- Total Revenue chart -->
-                  <div class="col-xl-6 col-md-3 col-sm-6">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Sales -->
+        <!-- Total Revenue chart -->
+        <div class="col-xl-6 col-md-3 col-sm-6">
 
 
 
 
-                    <script>
-                      document.addEventListener('DOMContentLoaded', function () {
-                        var dropdownElementList = [].slice.call(document.querySelectorAll('[data-bs-toggle="dropdown"]'))
-                        var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
-                          return new bootstrap.Dropdown(dropdownToggleEl)
-                        })
-                      });
-                    </script>
+          <script>
+            document.addEventListener('DOMContentLoaded', function () {
+              var dropdownElementList = [].slice.call(document.querySelectorAll('[data-bs-toggle="dropdown"]'))
+              var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+                return new bootstrap.Dropdown(dropdownToggleEl)
+              })
+            });
+          </script>
+
+          <script>
+            const orderStatusData = JSON.parse('<%- JSON.stringify(orderStatusData) %>');
+const salesData = JSON.parse('<%- JSON.stringify(salesData) %>');
 
 
-                    <%- include ('../../layout/adminlayout/footer.ejs') %>
+            const orderStatusCtx = document.getElementById('orderStatusChart').getContext('2d');
+            new Chart(orderStatusCtx, {
+              type: 'doughnut',
+
+              data: {
+                labels: ['Delivered', 'Canceled', 'Returned'],
+                datasets: [{
+                  data: [orderStatusData.delivered, orderStatusData.canceled, orderStatusData.returned],
+                  backgroundColor: [
+                    'rgba(75, 192, 192, 0.8)',
+                    'rgba(255, 99, 132, 0.8)',
+                    'rgba(255, 205, 86, 0.8)'
+                  ]
+                }]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: true, 
+                plugins: {
+                  legend: { position: 'bottom' },
+                  title: {
+                    display: true,
+                    text: 'Order Status Distribution'
+                  }
+                }
+              }
+            });
+
+
+            const salesCtx = document.getElementById('salesChart').getContext('2d');
+            new Chart(salesCtx, {
+              type: 'bar',
+              data: {
+                labels: salesData.labels,
+                datasets: [{
+                  label: 'Sales',
+                  data: salesData.values,
+                  backgroundColor: 'rgba(255, 206, 86, 0.8)',
+                  borderColor: 'rgba(255, 206, 86, 1)',
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    ticks: {
+                      callback: function (value) {
+                        return '₹' + value.toLocaleString();
+                      }
+                    },
+                    grid: {
+                      color: 'rgba(0, 0, 0, 0.1)'
+                    }
+                  },
+                  x: {
+                    grid: {
+                      display: false
+                    },
+                    ticks: {
+                      maxRotation: 45,
+                      minRotation: 45
+                    }
+                  }
+                },
+                plugins: {
+                  title: {
+                    display: true,
+                    text: 'Sales Over Time',
+                    align: 'start',
+                    font: {
+                      size: 16,
+                      weight: 'bold'
+                    }
+                  },
+                  legend: {
+                    display: false
+                  },
+                  tooltip: {
+                    callbacks: {
+                      label: function (context) {
+                        let label = context.dataset.label || '';
+                        if (label) {
+                          label += ': ';
+                        }
+                        if (context.parsed.y !== null) {
+                          label += '₹' + context.parsed.y.toLocaleString();
+                        }
+                        return label;
+                      }
+                    }
+                  }
+                }
+              }
+            });
+
+            function updateDashboard() {
+              const timeFrame = document.getElementById('timeFrame').value;
+              window.location.href = `/admin/dashboard?timeFrame=${timeFrame}`;
+            }
+          </script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+          <%- include ('../../layout/adminlayout/footer.ejs') %>

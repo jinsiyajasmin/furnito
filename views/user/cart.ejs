@@ -205,8 +205,10 @@
                                                                 </div>
                                                                 <div id="error-message-<%= item._id %>"></div>
                                                             </td>
-                                                            <td class="total-col">₹<%= item.totalItemPrice.toFixed(2) %></td>
-                                                            <td class="remove-col">
+                                                            <td class="total-col item-total" data-item-id="<%= item._id %>">
+                                                                ₹<%= item.totalItemPrice.toFixed(2) %>
+                                                            </td>
+                                                                                                                        <td class="remove-col">
                                                                 <button class="btn-remove" data-product-id="<%= item.product._id %>">
                                                                     <i class="icon-close"></i>
                                                                 </button>
@@ -229,20 +231,7 @@
                                 
                                 
 
-	                			<div class="cart-bottom">
-			            			<div class="cart-discount">
-			            				<form action="#">
-			            					<div class="input-group">
-				        						<input type="text" class="form-control" required placeholder="coupon code">
-				        						<div class="input-group-append">
-													<button class="btn btn-outline-primary-2" type="submit"><i class="icon-long-arrow-right"></i></button>
-												</div><!-- .End .input-group-append -->
-			        						</div>
-			            				</form>
-			            			</div>
-
-			            			
-		            			</div>
+	                			
 	                		</div>
 	                		<aside class="col-lg-3">
 	                			<div class="summary summary-cart" style="max-width: 400px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
@@ -461,7 +450,7 @@
             return response.json();
         })
         .then(data => {
-            location.reload();
+          
             if (data.success) {
              
             } else {
@@ -487,42 +476,61 @@
     });
 
     function updateItemTotal(itemId, quantity, price) {
-        const total = quantity * price;
-        const itemTotalElement = document.querySelector(`.item-total[data-item-id="${itemId}"]`);
-        if (itemTotalElement) {
-            itemTotalElement.textContent =  + total.toFixed(2);
-        }
+    const total = quantity * price;
+    const itemTotalElement = document.querySelector(`.item-total[data-item-id="${itemId}"]`);
+    if (itemTotalElement) {
+        itemTotalElement.textContent = `₹${total.toFixed(2)}`;
     }
+}
+
+function updateCartTotal() {
+    const itemTotals = document.querySelectorAll('.item-total');
+    let cartTotal = 0;
+
+    itemTotals.forEach(item => {
+        const itemTotal = parseFloat(item.textContent.replace('₹', ''));
+        if (!isNaN(itemTotal)) {
+            cartTotal += itemTotal;
+        }
+    });
+
+    updateElementText('#cart-total', `₹${cartTotal.toFixed(2)}`);
+    updateElementText('.checkout-section h4', `Total Price: ₹${cartTotal.toFixed(2)}`);
+    updateSummaryTable(cartTotal);
+}
+
+function updateSummaryTable(total) {
+    updateElementText('.table-summary tbody tr:first-child td:last-child', `₹${total.toFixed(2)}`);
+    updateElementText('.table-summary tfoot tr td:last-child', `₹${total.toFixed(2)}`);
+}
+
 
 
     function removeItemFromCart(productId, buttonElement) {
-        const trimmedProductId = productId.trim();
-        console.log('Sending request to remove product:', trimmedProductId);
-        
-        fetch('/cart/remove', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ productId: trimmedProductId })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log(`Successfully removed product: ${trimmedProductId}`);
-                removeProductRow(buttonElement);
-                updateCartTotal();
-                showMessage(data.message || 'Item removed successfully', 'success');
-            } else {
-                console.error('Failed to remove item from cart:', data.message);
-                showMessage(data.message || 'Failed to remove item from cart', 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error removing item from cart:', error);
-            showMessage('Error removing item', 'error');
-        });
-    }
+    fetch('/cart/remove', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId: productId.trim() })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            removeProductRow(buttonElement);
+            updateCartTotal();
+            showMessage(data.message || 'Item removed successfully', 'success');
+        } else {
+            console.error('Failed to remove item from cart:', data.message);
+            showMessage(data.message || 'Failed to remove item from cart', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error removing item from cart:', error);
+        showMessage('Error removing item', 'error');
+    });
+}
+
 
     function removeProductRow(buttonElement) {
         const row = buttonElement.closest('tr');
@@ -540,24 +548,8 @@
         }
     }
 
-    function updateCartTotal() {
-        const itemTotals = document.querySelectorAll('.item-total');
-        let cartTotal = 0;
 
-        itemTotals.forEach(item => {
-            const itemTotal = parseFloat(item.textContent.replace('₹', ''));
-            if (!isNaN(itemTotal)) {
-                cartTotal += itemTotal;
-            }
-        });
-
-        console.log('Calculated cart total:', cartTotal);
-
-        updateElementText('#cart-total', + cartTotal.toFixed(2));
-        updateElementText('.checkout-section h4', 'Total Price: ' + cartTotal.toFixed(2));
-        updateSummaryTable(cartTotal);
-        sendCartTotalToServer(cartTotal);
-    }
+     
 
     function updateElementText(selector, text) {
         const element = document.querySelector(selector);
@@ -568,10 +560,6 @@
         }
     }
 
-    function updateSummaryTable(total) {
-        updateElementText('.table-summary tbody tr:first-child td:last-child', '₹' + total.toFixed(2));
-        updateElementText('.table-summary tfoot tr td:last-child', '₹' + total.toFixed(2));
-    }
 
     function sendCartTotalToServer(total) {
         $.ajax({

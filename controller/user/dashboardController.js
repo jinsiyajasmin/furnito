@@ -1,7 +1,7 @@
 const User = require("../../models/user/userSchema");
 const env = require ('dotenv').config;
 const PDFDocument = require('pdfkit');
-
+const Wallet = require('../../models/user/userWallet');
 const bcrypt = require('bcryptjs');
 const Order = require('../../models/user/userOrder');
 const Product = require('../../models/admin/productSchema');
@@ -282,29 +282,53 @@ const updateProfile = async (req, res) => {
     
     const cancelOrder = async (req, res) => {
         try {
-            const { _id, cancel_reason,item_id } = req.body;
-           
+            const { _id, cancel_reason, item_id } = req.body;
     
             const order = await Order.findById(_id).populate('payment_type').populate('items.product');
             if (!order) {
                 return res.status(404).json({ success: false, message: 'Order not found' });
             }
-            const products = order.items.find(product=>product._id.equals(item_id))
-            
-            
-                products.status = 'Cancelled';
-                products.cancellationReason = cancel_reason;
-                await order.save();
-            
     
-           
-            for (const item of order.items) {
-                await Product.findByIdAndUpdate(
-                    item.product,
-                    { $inc: { quantity: item.quantity } },
-                    { new: true }
+            const productToCancel = order.items.find(product => product._id.equals(item_id));
+            if (!productToCancel) {
+                return res.status(404).json({ success: false, message: 'Product not found in order' });
+            }
+    
+            // Mark product as cancelled
+            productToCancel.status = 'Cancelled';
+            productToCancel.cancellationReason = cancel_reason;
+    
+            // Restore product stock
+            await Product.findByIdAndUpdate(
+                productToCancel.product,
+                { $inc: { quantity: productToCancel.quantity } },
+                { new: true }
+            );
+    
+            // Refund logic for completed payments
+            if (order.payment_type.pay_type === "UPI PAYMENT" && order.paymentStatus === 'Completed') {
+                const refundAmount = parseFloat(productToCancel.total);
+                const randomID = Math.floor(100000 + Math.random() * 900000);
+    
+                // Upsert wallet for user
+                await Wallet.findOneAndUpdate(
+                    { user_id: req.session.user },
+                    {
+                        $inc: { balance: refundAmount },
+                        $push: {
+                            history: {
+                                amount: refundAmount,
+                                transaction_type: "Cancelled",
+                                description: "Product Cancelled Refund",
+                                transaction_id: `TRX-${randomID}`
+                            }
+                        }
+                    },
+                    { upsert: true, new: true }
                 );
             }
+    
+            await order.save();
     
             res.json({ success: true, message: "Order Cancelled Successfully and Stock Updated" });
         } catch (error) {

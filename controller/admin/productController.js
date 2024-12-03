@@ -72,12 +72,14 @@ const getEditProduct = async (req, res) => {
 
         const categories = await Category.find().exec();
 
+           console.log('product',product);
+           console.log("cat:",categories);
+         
 
-
-        res.render('editProduct', {
+           res.render('editProduct', {
             product,
             categories,
-            selectedCategoryId: product.Category ? product.Category._id : null
+            selectedCategoryId: product.Category ? product.Category._id.toString() : null 
         });
     } catch (error) {
         console.error("Error fetching product details", error);
@@ -127,14 +129,18 @@ const addProduct = async (req, res) => {
 const editProduct = async (req, res) => {
     try {
         const id = req.params.id;
+        const categories = await Category.find();
+        const product = await Product.findById(id).populate('Category');
 
-
-        const product = await Product.findById(id);
         if (!product) {
             return res.status(404).json({ success: false, message: "Product not found" });
         }
 
         const data = req.body;
+
+            // Log to verify category
+            console.log("Received category:", data.category);
+
 
 
 
@@ -168,7 +174,7 @@ const editProduct = async (req, res) => {
             productDescription: data.productDescription,
             price: data.price,
             quantity: data.quantity,
-            Category: data.category,
+           Category: data.category,
             productImage: images,
             status : data.status
         };

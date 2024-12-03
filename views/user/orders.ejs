@@ -101,7 +101,7 @@
                                         <a class="nav-link " href="/userAddress">Addresses</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#tab-account">Wallet</a>
+                                        <a class="nav-link" href="/wallet">Wallet</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" href="/logout">Sign Out</a>
@@ -230,8 +230,7 @@
                                                                                                 <%= item.quantity %>
                                                                                             </td>
                                                                                             <td data-label="Total">₹<%=
-                                                                                                    (item.price *
-                                                                                                    item.quantity).toFixed(2)
+                                                                                                        order.total_amount
                                                                                                     %>
                                                                                             </td>
                                                                                             <td data-label="Status">
@@ -471,13 +470,13 @@
 
 
 
-
+<!-- 
                             <% if (products.status==='Delivered' ) { %>
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                     data-bs-target="#returnOrderModal<%= products._id %>">
                                     Request Return
                                 </button>
-                                <% } %>
+                                <% } %> -->
 
 
 

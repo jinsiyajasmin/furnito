@@ -273,30 +273,9 @@
                 <div class="container">
                     <div class="header-left">
                         <div class="dropdown category-dropdown">
-                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false" data-display="static"
-                                title="Browse Categories">
-                                Browse Categories
-                            </a>
+                           
 
-                            <div class="dropdown-menu">
-                                <nav class="side-nav">
-                                    <ul class="menu-vertical sf-arrows">
-                                        <% if (locals.categories && categories.length > 0) { %>
-                                            <% categories.forEach(category => { %>
-                                                <li>
-                                                    <a href="#" class="category-link" data-category-id="<%= category._id %>">
-                                                        <%= category.name %>
-                                                    </a>
-                                                </li>
-                                            <% }) %>
-                                        <% } else { %>
-                                            <li><a href="#">No categories available</a></li>
-                                        <% } %>
-                                        
-                                    </ul><!-- End .menu-vertical -->
-                                </nav><!-- End .side-nav -->
-                            </div><!-- End .dropdown-menu -->
+                            
                         </div><!-- End .category-dropdown -->
                     </div><!-- End .header-left -->
 
@@ -409,9 +388,9 @@
                                                 <% if(items.quantity==0){ %>
                                                     <span class="btn-product">Out of stock</span>
                                                 <% } else { %>
-                                                    <a href="#" class="btn-product btn-cart"
-                                                        data-product-id="<%= items._id %>">
-                                                        <span>Add to cart</span>
+                                                    <a href="/productDetails/<%= items._id %>" class="btn-product "
+                                                        >
+                                                        <span>+ Explore</span>
                                                     </a>
                                                 <% } %>
                                             <% } else { %>

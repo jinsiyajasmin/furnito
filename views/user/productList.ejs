@@ -126,13 +126,15 @@
                             <form action="/search" method="get">
                                 <div class="header-search-wrapper" style="display: none;">
                                     <label for="q" class="sr-only">Search</label>
-                                    <input type="search" class="form-control" name="q" id="q"
-                                        placeholder="Search here..." required>
+                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search here..." value="default search">
                                 </div>
                             </form>
+                            
+                            
                         </div>
 
-
+                            
+    
 
 
                         <div class="dropdown cart-dropdown">
@@ -768,206 +770,42 @@
     </script>
     <script>
 
-        document.querySelector('.search-toggle').addEventListener('click', function (e) {
-            e.preventDefault();
-            const searchWrapper = document.querySelector('.header-search-wrapper');
-            if (searchWrapper.style.display === 'block') {
-                searchWrapper.style.display = 'none';
-            } else {
-                searchWrapper.style.display = 'block';
-                document.querySelector('.form-control').focus(); // Focus on the search input
-            }
-        });
+       
+document.getElementById('search-icon').addEventListener('click', function () {
+    const searchWrapper = document.querySelector('.header-search-wrapper');
+    if (searchWrapper.style.display === 'none' || !searchWrapper.style.display) {
+        searchWrapper.style.display = 'block'; // Show the search field
+    } else {
+        searchWrapper.style.display = 'none'; // Hide the search field
+    }
+});
+
+
+
+const searchInput = document.getElementById('q');
+const searchWrapper = document.querySelector('.header-search-wrapper');
+
+document.getElementById('search-icon').addEventListener('click', function () {
+    const searchWrapper = document.querySelector('.header-search-wrapper');
+    searchWrapper.classList.toggle('active');
+});
 
 
 
 
-
-
-
-        const SearchHandler = {
-            init() {
-                this.searchToggle = document.querySelector('.search-toggle');
-                this.searchWrapper = document.querySelector('.header-search');
-                this.searchForm = document.querySelector('.header-search form');
-                this.searchInput = document.getElementById('q');
-                this.productsContainer = document.querySelector('.products-container'); // Adjust selector as needed
-
-                // Create loading indicator
-                this.loadingIndicator = document.createElement('div');
-                this.loadingIndicator.className = 'search-loading d-none';
-                this.loadingIndicator.innerHTML = `
-            <div class="spinner-border spinner-border-sm text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        `;
-                this.searchForm.appendChild(this.loadingIndicator);
-
-                this.bindEvents();
-            },
-
-            bindEvents() {
-                // Toggle search on click
-                this.searchToggle?.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    this.toggleSearch();
-                });
-
-                // Close search on click outside
-                document.addEventListener('click', (e) => {
-                    if (!this.searchWrapper.contains(e.target)) {
-                        this.searchWrapper.classList.remove('show');
-                    }
-                });
-
-                // Prevent form submission and handle search
-                this.searchForm?.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.handleSearch();
-                });
-
-                // Real-time search as user types
-                this.searchInput?.addEventListener('input', debounce(() => {
-                    this.handleSearch();
-                }, 300));
-
-                // Handle search input clear
-                this.searchInput?.addEventListener('search', () => {
-                    if (!this.searchInput.value) {
-                        this.handleSearch();
-                    }
-                });
-
-                // Close search on escape key
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape') {
-                        this.searchWrapper.classList.remove('show');
-                    }
-                });
-            },
-
-            toggleSearch() {
-                this.searchWrapper.classList.toggle('show');
-                if (this.searchWrapper.classList.contains('show')) {
-                    this.searchInput.focus();
-                }
-            },
-
-            async handleSearch() {
-                const query = this.searchInput.value.trim();
-
-                // Show loading indicator
-                this.toggleLoading(true);
-
-                try {
-                    // Update URL with search query
-                    const url = new URL(window.location);
-                    if (query) {
-                        url.searchParams.set('q', query);
-                    } else {
-                        url.searchParams.delete('q');
-                    }
-                    window.history.pushState({}, '', url);
-
-                    // Fetch search results
-                    const response = await fetch(`/api/products/search?q=${encodeURIComponent(query)}`);
-                    if (!response.ok) throw new Error('Search request failed');
-
-                    const data = await response.json();
-                    this.updateProducts(data);
-
-                } catch (error) {
-                    console.error('Search error:', error);
-                    this.showError('Failed to search products. Please try again.');
-                } finally {
-                    this.toggleLoading(false);
-                }
-            },
-
-            updateProducts(data) {
-                if (!this.productsContainer) return;
-
-                if (!data.products?.length) {
-                    this.productsContainer.innerHTML = `
-                <div class="no-results text-center py-5">
-                    <h3>No products found</h3>
-                    <p>Try different search terms or browse our categories</p>
-                </div>
-            `;
-                    return;
-                }
-
-                this.productsContainer.innerHTML = data.products.map(product => `
-            <div class="product-item">
-                <figure class="product-media">
-                    <a href="/product/${product._id}">
-                        <img src="${product.image}" alt="${product.productName}" class="product-image">
-                    </a>
-                </figure>
-                <div class="product-body">
-                    <h3 class="product-title">
-                        <a href="/product/${product._id}">${product.productName}</a>
-                    </h3>
-                    <div class="product-price">
-                        $${product.price.toFixed(2)}
-                    </div>
-                    <div class="product-action">
-                        <button class="btn-product btn-cart" data-product-id="${product._id}">
-                            <span>add to cart</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-
-                // Update result count if element exists
-                const countElement = document.querySelector('.search-result-count');
-                if (countElement) {
-                    countElement.textContent = `${data.total} results found`;
-                }
-            },
-
-            toggleLoading(show) {
-                if (this.loadingIndicator) {
-                    this.loadingIndicator.classList.toggle('d-none', !show);
-                }
-            },
-
-            showError(message) {
-                // Create or update error message element
-                let errorElement = document.querySelector('.search-error');
-                if (!errorElement) {
-                    errorElement = document.createElement('div');
-                    errorElement.className = 'search-error alert alert-danger mt-3';
-                    this.searchForm.appendChild(errorElement);
-                }
-
-                errorElement.textContent = message;
-                errorElement.style.display = 'block';
-
-                // Hide error after 5 seconds
-                setTimeout(() => {
-                    errorElement.style.display = 'none';
-                }, 5000);
-            }
-        };
-
-        // Debounce helper function
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
+           
+async function handleSearch(query) {
+    try {
+        const response = await fetch(`/api/products/search?q=${encodeURIComponent(query)}`);
+        if (!response.ok) {
+            throw new Error('Search request failed');
         }
+        const products = await response.json();
+        console.log('Search results:', products);
+    } catch (error) {
+        console.error('Search error:', error);
+    }
+}
 
-        // Initialize search functionality when DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            SearchHandler.init();
-        });
     </script>
     <%- include ('../../layout/footer.ejs') %>

@@ -71,10 +71,10 @@
                                     <% } %>
                                 </ul>
                             </li>
-                        </ul><!-- End .top-menu -->
-                    </div><!-- End .header-right -->
+                        </ul>
+                    </div>
                 </div>
-            </div><!-- End .header-top -->
+            </div>
 
             <div class="header-middle sticky-header">
                 <div class="container">
@@ -168,6 +168,13 @@
                                 hour: '2-digit',
                                 minute: '2-digit'
                             }) %></span><br>
+                        
+                            <% let subtot = order.total_amount + (order.discount || 0); %>
+                            <span><strong>Subtotal:</strong> ₹<%= subtot.toFixed(2) %></span><br>
+                            <span><strong>Discount:</strong> - ₹<%= (order.discount || 0).toFixed(2) %></span><br>
+                            <span><strong>Grand Total:</strong> ₹<%= order.total_amount.toFixed(2) %></span><br>
+                            
+                           
                             <span><strong>Payment Status:</strong> <span class="highlight"><%= order.paymentStatus %></span></span><br>
                             <span><strong>Estimated Dispatch Date:</strong> <%= new Date(order.estimatedDispatchDate).toLocaleDateString('en-US', {
                                 year: 'numeric',
@@ -222,8 +229,9 @@
                                              </td>
                                              <td><%= item.product.productName%></td>
                                             <td><%= item.quantity %></td>
-                                            <td>₹<%= item.price.toFixed(2) %></td>
+                                           
                                             <td>₹<%= (item.price * item.quantity).toFixed(2) %></td>
+                                            <td>₹<%= total.toFixed(2) %></td>
                                         </tr>
                                     <% }); %>
                                 </tbody>
@@ -245,7 +253,7 @@
                     </div>
                     <div class="detail-row" style="font-size: 1.2em; font-weight: bold; margin-top: 10px;">
                         <span>Grand Total:</span>
-                        <span>₹<%= (total - (order.discount || 0)).toFixed(2) %></span>
+                        <span>₹<%= total.toFixed(2) %></span>
                     </div>
                     <div class="section" style="margin-top: 30px; text-align: center;">
                         <a href="/productList" class="btn btn-primary" style="margin-right: 10px;">Continue Shopping</a>
@@ -371,7 +379,7 @@
             <form action="#" method="get" class="mobile-search">
                 <label for="mobile-search" class="sr-only">Search</label>
                 <input type="search" class="form-control" name="mobile-search" id="mobile-search" placeholder="Search in..." required>
-                <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
+               
             </form>
             
             <nav class="mobile-nav">
