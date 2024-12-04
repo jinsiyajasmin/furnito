@@ -1197,14 +1197,16 @@
                                         modal: {
                                             ondismiss: function () {
                                                 console.log('Checkout form closed');
-                                                handlePaymentFailure('Payment cancelled by user', orderData);
+                                                handlePaymentCancellation(orderData);
                                             },
                                         },
                                         onerror: function (error) {
                                             console.error('Payment error:', error);
-                                            handlePaymentFailure('Payment failed: ' + error.description, orderData);
+                                            handlePaymentCancellation(orderData);
                                         },
+
                                     };
+
 
                                     const razorpayInstance = new Razorpay(options);
                                     razorpayInstance.open();
@@ -1227,47 +1229,53 @@
                     });
                 });
 
-                async function handlePaymentFailure(response,orderData) {
-                    try {
-                        const result = await fetch('/payment-failed', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                razorpay_order_id: response.error.metadata.order_id,
-                                orderId: orderId
-                            })
-                        });
+                async function handlePaymentCancellation(orderData) {
+    try {
+        const result = await fetch('/payment-failed', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                selectedAddress: orderData.selectedAddress,
+                payment_type: 'UPI PAYMENT',
+                couponDiscount: orderData.couponDiscount || 0,
+                totalOfferPrice: orderData.totalOfferPrice || 0,
+                razorpay_order_id: orderData.razorpayOrderId,
+                reason: 'Payment cancelled or failed',
+            }),
+        });
 
-                        const data = await result.json();
+        const data = await result.json();
 
-                        Swal.fire({
-                            title: 'Payment Failed',
-                            text: 'Your payment was not successful. Please try again or choose a different payment method.',
-                            icon: 'error',
-                            confirmButtonText: 'Retry Payment',
-                            cancelButtonText: 'Cancel',
-                            showCancelButton: true,
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                // Retry payment
-                                window.location.reload();
-                            } else {
-                                // Redirect to order summary page or home
-                                window.location.href = `/orderSummary?id=${orderId}`;
-                            }
-                        });
-                    } catch (error) {
-                        console.error('Error:', error);
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'An error occurred while processing your payment. Please try again.',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                }
+        if (data.success) {
+            Swal.fire({
+                title: 'Order Placed',
+                text: 'Your order has been placed with a pending payment status. You can complete the payment later.',
+                icon: 'info',
+                confirmButtonText: 'View Order',
+            }).then(() => {
+                window.location.href = `/orderSummary?id=${data.orderId}`;
+            });
+        } else {
+            Swal.fire({
+                title: 'Error!',
+                text: data.message || 'Failed to place order. Please try again.',
+                icon: 'error',
+                confirmButtonText: 'OK',
+            });
+        }
+    } catch (error) {
+        console.error('Error in handlePaymentCancellation:', error);
+        Swal.fire({
+            title: 'Error!',
+            text: 'An error occurred while processing your order. Please try again.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+        });
+    }
+}
+
 
 
                 function handleOrderResponse(data) {
@@ -1294,7 +1302,6 @@
                         }).then((result) => {
                             if (result.isConfirmed) {
 
-                                location.reload();
                             }
                         });
                     }

@@ -1,780 +1,806 @@
 <%- include ('../../layout/adminlayout/header.ejs') %>
 
-<style>
-  .invalid-feedback {
-  display: none;
-  color: #dc3545;
-  font-size: 0.875em;
-  margin-top: 0.25rem;
-}
+  <style>
+    .invalid-feedback {
+      display: none;
+      color: #dc3545;
+      font-size: 0.875em;
+      margin-top: 0.25rem;
+    }
 
-.is-invalid {
-  border-color: #dc3545;
-}
-</style>
+    .is-invalid {
+      border-color: #dc3545;
+    }
 
-<!-- ?PROD Only: Google Tag Manager (noscript) (Default ThemeSelection: GTM-5DDHKGP, PixInvent: GTM-5J3LMKC) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5DDHKGP" height="0" width="0" style="display: none; visibility: hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+    .offcanvas-category {
+      z-index: 1050;
+      /* Ensure this is higher than the backdrop */
+    }
 
-<!-- Layout wrapper -->
-<div class="layout-wrapper layout-content-navbar  ">
-<div class="layout-container">
+    .offcanvas-backdrop {
+      z-index: 1049;
+    }
+  </style>
 
-  
-  
+  <!-- ?PROD Only: Google Tag Manager (noscript) (Default ThemeSelection: GTM-5DDHKGP, PixInvent: GTM-5J3LMKC) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5DDHKGP" height="0" width="0"
+      style="display: none; visibility: hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
 
-
-
-
-<!-- Menu -->
-
-<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-
-
-<div class="app-brand demo ">
- 
-</div>
-
-<div class="menu-inner-shadow"></div>
-
-
-
-<ul class="menu-inner py-1">
-  <!-- Dashboards -->
-  <li class="menu-item">
-    <a href="javascript:void(0);" >
-     
-     
-    </a>
-    <ul class="menu-sub">
-      <li class="menu-item">
-        <a href="dashboards-crm.html" class="menu-link">
-          <div data-i18n="CRM">CRM</div>
-        </a>
-      </li>
-      <li class="menu-item">
-        <a href="index.html" class="menu-link">
-          <div data-i18n="Analytics">Analytics</div>
-        </a>
-      </li>
-      <li class="menu-item">
-        <a href="app-ecommerce-dashboard.html" class="menu-link">
-          <div data-i18n="eCommerce">eCommerce</div>
-        </a>
-      </li>
-      <li class="menu-item">
-        <a href="app-logistics-dashboard.html" class="menu-link">
-          <div data-i18n="Logistics">Logistics</div>
-        </a>
-      </li>
-      <li class="menu-item">
-        <a href="app-academy-dashboard.html" class="menu-link">
-          <div data-i18n="Academy">Academy</div>
-        </a>
-      </li>
-    </ul>
-  </li>
-
-  
-
- 
-
-
-  
-  <!-- e-commerce-app menu start -->
-  <li class="menu-item active open">
-    <a href="javascript:void(0);" class="menu-link menu-toggle">
-      <i class='menu-icon tf-icons ri-shopping-bag-3-line'></i>
-      <div data-i18n="woodnwonder">woodnwonder</div>
-    </a>
-    <ul class="menu-sub">
-      <li class="menu-item ">
-        <a href="/admin/dashboard" class="menu-link">
-          <div data-i18n="Dashboard">Dashboard</div>
-        </a>
-      </li>
-      <li class="menu-item">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-          <div data-i18n="Products">Products</div>
-        </a>
-        <ul class="menu-sub">
-          <li class="menu-item">
-            <a href="/admin/product" class="menu-link">
-              <div data-i18n="Product List">Product List</div>
-            </a>
-          </li>
-          <li class="menu-item">
-            <a href="/admin/addProduct" class="menu-link">
-              <div data-i18n="Add Product">Add Product</div>
-            </a>
-          </li>
-        </ul>
-      </li>
-      <li class="menu-item">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-          <div data-i18n="Category">Category</div>
-        </a>
-        <ul class="menu-sub">
-          <li class="menu-item active">
-            <a href="/admin/category" class="menu-link">
-              <div data-i18n="List all category">List all category</div>
-            </a>
-          </li>
-        </ul>
-      </li>
-      <li class="menu-item">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-          <div data-i18n="Order">Order</div>
-        </a>
-        <ul class="menu-sub">
-          <li class="menu-item">
-            <a href="/admin/orders" class="menu-link">
-              <div data-i18n="Order List">Order List</div>
-            </a>
-          </li>
-
-        </ul>
-      </li>
-      <li class="menu-item">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-          <div data-i18n="Customer">Customer</div>
-        </a>
-        <ul class="menu-sub">
-          <li class="menu-item">
-            <a href="/admin/customers" class="menu-link">
-              <div data-i18n="All Customers">All Customers</div>
-            </a>
-          </li>
-        </ul>
-      </li>
-      <li class="menu-item ">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-          <div data-i18n="Offers">Offers</div>
-        </a>
-        <ul class="menu-sub">
-
-          <li class="menu-item ">
-            <a href="/admin/offers" class="menu-link">
-              <div data-i18n="Product Offers">Product Offers</div>
-            </a>
-          </li>
-          <li class="menu-item">
-            <a href="/admin/offers/category" class="menu-link">
-              <div data-i18n="Category Offers">Category Offers</div>
-            </a>
-          </li>
-        </ul>
-      </li>
-      <li class="menu-item ">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-          <div data-i18n="Coupons Management">Coupons Management</div>
-        </a>
-        <ul class="menu-sub">
-
-          <li class="menu-item ">
-            <a href="/admin/coupons" class="menu-link">
-              <div data-i18n="Coupen">Coupen</div>
-            </a>
-          </li>
-        </ul>
-      </li>
-      <li class="menu-item">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-          <div data-i18n="Sales Report">Sales Report</div>
-        </a>
-        <ul class="menu-sub">
-
-          <li class="menu-item">
-            <a href="/admin/salesreport" class="menu-link">
-              <div data-i18n="Report">Report</div>
-            </a>
-          </li>
-        </ul>
-      </li>
-     
-    </ul>
-  </li>
-</ul>
-  <!-- e-commerce-app menu end -->
-  
- 
-  
- 
-
- 
-  
-
-  
-    
-     
-     
-     
-  
-     
- 
-      
-
-  <!-- Misc -->
- 
-  
-
-
-
-</aside>
-<!-- / Menu -->
-
-  
-
-  <!-- Layout container -->
-  <div class="layout-page">
-    
-    
-
-
-
-<!-- Navbar -->
-
-<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
+  <!-- Layout wrapper -->
+  <div class="layout-wrapper layout-content-navbar  ">
+    <div class="layout-container">
 
 
 
 
-    
-    
 
-    
-    
-    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0   d-xl-none ">
-      <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
-        <i class="ri-menu-fill ri-24px"></i>
-      </a>
-    </div>
-    
 
-    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
 
-      
-      <!-- Search -->
-      <div class="navbar-nav align-items-center">
-        <div class="nav-item navbar-search-wrapper mb-0">
-         
-          
+      <!-- Menu -->
+
+      <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+
+
+        <div class="app-brand demo ">
+
         </div>
-      </div>
-      <!-- /Search -->
-      
-      
 
-      
+        <div class="menu-inner-shadow"></div>
 
-      <ul class="navbar-nav flex-row align-items-center ms-auto">
 
-        
-        
-       
-        
-       
-        
 
-        
-        
+        <ul class="menu-inner py-1">
+          <!-- Dashboards -->
+          <li class="menu-item">
+            <a href="javascript:void(0);">
 
-        <!-- User -->
-        <li class="nav-item navbar-dropdown dropdown-user dropdown">
-          <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
-            <div class="avatar avatar-online">
-              <img src="/adminassets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle">
-            </div>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end mt-3 py-2">
-            <li>
-              <a class="dropdown-item" href="pages-account-settings-account.html">
-                <div class="d-flex align-items-center">
-                  <div class="flex-shrink-0 me-2">
-                    <div class="avatar avatar-online">
-                      <img src="/adminassets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle">
-                    </div>
-                  </div>
-                  <div class="flex-grow-1">
-                    <h6 class="mb-0 small">John Doe</h6>
-                    <small class="text-muted">Admin</small>
 
-                  </div>
-                </div>
-              </a>
-            </li>
-            <li>
-              <div class="dropdown-divider"></div>
-            </li>
-            <li>
-              <a class="dropdown-item" href="pages-profile-user.html">
-                <i class="ri-user-3-line ri-22px me-2"></i>
-                <span class="align-middle">My Profile</span>
-              </a>
-            </li>
-           
-           
-            <li>
-              <div class="dropdown-divider"></div>
-            </li>
-            
-           
-            <li>
-              <div class="d-grid px-4 pt-2 pb-1">
-                <a class="btn btn-danger d-flex" href="auth-login-cover.html" target="_blank">
-                  <small class="align-middle">Logout</small>
-                  <i class="ri-logout-box-r-line ms-2 ri-16px"></i>
+            </a>
+            <ul class="menu-sub">
+              <li class="menu-item">
+                <a href="dashboards-crm.html" class="menu-link">
+                  <div data-i18n="CRM">CRM</div>
                 </a>
+              </li>
+              <li class="menu-item">
+                <a href="index.html" class="menu-link">
+                  <div data-i18n="Analytics">Analytics</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="app-ecommerce-dashboard.html" class="menu-link">
+                  <div data-i18n="eCommerce">eCommerce</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="app-logistics-dashboard.html" class="menu-link">
+                  <div data-i18n="Logistics">Logistics</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="app-academy-dashboard.html" class="menu-link">
+                  <div data-i18n="Academy">Academy</div>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+
+
+
+
+
+
+          <!-- e-commerce-app menu start -->
+          <li class="menu-item active open">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+              <i class='menu-icon tf-icons ri-shopping-bag-3-line'></i>
+              <div data-i18n="woodnwonder">woodnwonder</div>
+            </a>
+            <ul class="menu-sub">
+              <li class="menu-item ">
+                <a href="/admin/dashboard" class="menu-link">
+                  <div data-i18n="Dashboard">Dashboard</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                  <div data-i18n="Products">Products</div>
+                </a>
+                <ul class="menu-sub">
+                  <li class="menu-item">
+                    <a href="/admin/product" class="menu-link">
+                      <div data-i18n="Product List">Product List</div>
+                    </a>
+                  </li>
+                  <li class="menu-item">
+                    <a href="/admin/addProduct" class="menu-link">
+                      <div data-i18n="Add Product">Add Product</div>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                  <div data-i18n="Category">Category</div>
+                </a>
+                <ul class="menu-sub">
+                  <li class="menu-item active">
+                    <a href="/admin/category" class="menu-link">
+                      <div data-i18n="List all category">List all category</div>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                  <div data-i18n="Order">Order</div>
+                </a>
+                <ul class="menu-sub">
+                  <li class="menu-item">
+                    <a href="/admin/orders" class="menu-link">
+                      <div data-i18n="Order List">Order List</div>
+                    </a>
+                  </li>
+
+                </ul>
+              </li>
+              <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                  <div data-i18n="Customer">Customer</div>
+                </a>
+                <ul class="menu-sub">
+                  <li class="menu-item">
+                    <a href="/admin/customers" class="menu-link">
+                      <div data-i18n="All Customers">All Customers</div>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item ">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                  <div data-i18n="Offers">Offers</div>
+                </a>
+                <ul class="menu-sub">
+
+                  <li class="menu-item ">
+                    <a href="/admin/offers" class="menu-link">
+                      <div data-i18n="Product Offers">Product Offers</div>
+                    </a>
+                  </li>
+                  <li class="menu-item">
+                    <a href="/admin/offers/category" class="menu-link">
+                      <div data-i18n="Category Offers">Category Offers</div>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item ">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                  <div data-i18n="Coupons Management">Coupons Management</div>
+                </a>
+                <ul class="menu-sub">
+
+                  <li class="menu-item ">
+                    <a href="/admin/coupons" class="menu-link">
+                      <div data-i18n="Coupen">Coupen</div>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                  <div data-i18n="Sales Report">Sales Report</div>
+                </a>
+                <ul class="menu-sub">
+
+                  <li class="menu-item">
+                    <a href="/admin/salesreport" class="menu-link">
+                      <div data-i18n="Report">Report</div>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+            </ul>
+          </li>
+        </ul>
+        <!-- e-commerce-app menu end -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!-- Misc -->
+
+
+
+
+
+      </aside>
+      <!-- / Menu -->
+
+
+
+      <!-- Layout container -->
+      <div class="layout-page">
+
+
+
+
+
+        <!-- Navbar -->
+
+        <nav
+          class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+          id="layout-navbar">
+
+
+
+
+
+
+
+
+
+          <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0   d-xl-none ">
+            <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
+              <i class="ri-menu-fill ri-24px"></i>
+            </a>
+          </div>
+
+
+          <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+
+
+            <!-- Search -->
+            <div class="navbar-nav align-items-center">
+              <div class="nav-item navbar-search-wrapper mb-0">
+
+
               </div>
-            </li>
-          </ul>
-        </li>
-        <!--/ User -->
-        
+            </div>
+            <!-- /Search -->
 
 
-      </ul>
-    </div>
 
-    
-    <!-- Search Small Screens -->
-    <div class="navbar-search-wrapper search-input-wrapper  d-none">
-      <i class="ri-close-fill search-toggler cursor-pointer"></i>
-    </div>
-    
-    
 
-</nav>
 
-            
-            
-    
-  
+            <ul class="navbar-nav flex-row align-items-center ms-auto">
 
-    <div class="container-xxl flex-grow-1 container-p-y">
-     
-        <div class="d-flex justify-content-between align-items-center mb-4">
+
+
+
+
+
+
+
+
+
+
+              <!-- User -->
+              <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
+                  <div class="avatar avatar-online">
+                    <img src="/adminassets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle">
+                  </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end mt-3 py-2">
+                  <li>
+                    <a class="dropdown-item" href="pages-account-settings-account.html">
+                      <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-2">
+                          <div class="avatar avatar-online">
+                            <img src="/adminassets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle">
+                          </div>
+                        </div>
+                        <div class="flex-grow-1">
+                          <h6 class="mb-0 small">John Doe</h6>
+                          <small class="text-muted">Admin</small>
+
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <div class="dropdown-divider"></div>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="pages-profile-user.html">
+                      <i class="ri-user-3-line ri-22px me-2"></i>
+                      <span class="align-middle">My Profile</span>
+                    </a>
+                  </li>
+
+
+                  <li>
+                    <div class="dropdown-divider"></div>
+                  </li>
+
+
+                  <li>
+                    <div class="d-grid px-4 pt-2 pb-1">
+                      <a class="btn btn-danger d-flex" href="auth-login-cover.html" target="_blank">
+                        <small class="align-middle">Logout</small>
+                        <i class="ri-logout-box-r-line ms-2 ri-16px"></i>
+                      </a>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+              <!--/ User -->
+
+
+
+            </ul>
+          </div>
+
+
+          <!-- Search Small Screens -->
+          <div class="navbar-search-wrapper search-input-wrapper  d-none">
+            <i class="ri-close-fill search-toggler cursor-pointer"></i>
+          </div>
+
+
+
+        </nav>
+
+
+
+
+
+
+        <div class="container-xxl flex-grow-1 container-p-y">
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
             <div class="navbar-search-wrapper search-input-wrapper">
             </div>
             <div>
-                <button class="btn btn-primary" id="addCategoryBtn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCategory">+ Add Category</button>
+              <button class="btn btn-primary" id="addCategoryBtn" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasCategory">+ Add Category</button>
             </div>
-        </div>
+          </div>
 
-      <!-- Category List Table -->
-<div class="card">
-  <div class="card-datatable table-responsive">
-      <table class="datatables-category-list table">
-          <thead>
-              <tr>
-                  <th><input type="checkbox" id="selectAll"></th>
-                  <th>Categories</th>
-                  <th class="text-nowrap text-sm-end">Description</th>
-                  <th class="text-nowrap text-sm-end">Status</th>
-                  <th class="text-lg-center">Actions</th>
-              </tr>
-          </thead>
-          <tbody id="categoryTableBody">
-              <% categories.forEach(category => { %>
-                  <tr data-id="<%= category._id %>">
-                      <td><input type="checkbox" class="category-checkbox" value="<%= category._id %>"></td>
-                      <td><%= category.name %></td>
-                      <td class="text-nowrap text-sm-end"><%= category.description %></td>
-                    <td class="text-nowrap text-sm-end">
-  <%= category.isListed ? 'Active' : 'Inactive' %>
-</td>
-                      <td class="text-lg-center">
-                          <button class="btn btn-primary btn-sm edit-btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasEditCategory" data-id="<%= category._id %>">Edit</button>
-                          
-                      </td>
+          <!-- Category List Table -->
+          <div class="card">
+            <div class="card-datatable table-responsive">
+              <table class="datatables-category-list table">
+                <thead>
+                  <tr>
+                    <th><input type="checkbox" id="selectAll"></th>
+                    <th>Categories</th>
+                    <th class="text-nowrap text-sm-end">Description</th>
+                    <th class="text-nowrap text-sm-end">Status</th>
+                    <th class="text-lg-center">Actions</th>
                   </tr>
-              <% }) %>
-          </tbody>
-      </table>
-  </div>
-</div>
+                </thead>
+                <tbody id="categoryTableBody">
+                  <% categories.forEach(category=> { %>
+                    <tr data-id="<%= category._id %>">
+                      <td><input type="checkbox" class="category-checkbox" value="<%= category._id %>"></td>
+                      <td>
+                        <%= category.name %>
+                      </td>
+                      <td class="text-nowrap text-sm-end">
+                        <%= category.description %>
+                      </td>
+                      <td class="text-nowrap text-sm-end">
+                        <%= category.isListed ? 'Active' : 'Inactive' %>
+                      </td>
+                      <td class="text-lg-center">
+                        <button class="btn btn-primary btn-sm edit-btn" data-bs-toggle="offcanvas"
+                          data-bs-target="#offcanvasEditCategory" data-id="<%= category._id %>">Edit</button>
+
+                      </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+              </table>
+            </div>
+          </div>
 
 
-        <!-- Add Category Offcanvas -->
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCategory" aria-labelledby="offcanvasCategoryLabel">
+          <!-- Add Category Offcanvas -->
+          <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCategory"
+            aria-labelledby="offcanvasCategoryLabel">
             <div class="offcanvas-header py-6">
-                <h5 id="offcanvasCategoryLabel" class="offcanvas-title">Add Category</h5>
-                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+              <h5 id="offcanvasCategoryLabel" class="offcanvas-title">Add Category</h5>
+              <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
             </div>
             <div class="offcanvas-body border-top">
-                <form class="pt-0" id="categoryForm">
-                    <div class="form-floating form-floating-outline mb-5">
-                        <input type="text" class="form-control" id="category-name" placeholder="Enter category name" name="categoryName" onkeyup="validatename()" aria-label="Category name" required>
-                        <label for="category-name">Name</label>
-                        <small id="name-error" style="color: red; display: none;">Please enter a valid name (letters only).</small>
+              <form class="pt-0" id="categoryForm">
+                <div class="form-floating form-floating-outline mb-5">
+                  <input type="text" class="form-control" id="category-name" placeholder="Enter category name"
+                    name="categoryName" onkeyup="validatename()" aria-label="Category name" required>
+                  <label for="category-name">Name</label>
+                  <small id="name-error" style="color: red; display: none;">Please enter a valid name (letters
+                    only).</small>
 
-                        <div class="invalid-feedback" id="nameError"></div>
-                    </div>
-                    
-                    <div class="form-floating form-floating-outline mb-5">
-                      <textarea id="category-description" class="form-control" placeholder="Enter category description" aria-label="Category description" name="description" onkeyup="validatedescription()" required></textarea>
-                      <label for="category-description">Description</label>
-                      <small id="description-error" style="color: red; display: none;">Please enter a valid description (letters only).</small>
-                        <div class="invalid-feedback" id="descriptionError"></div>
-                    </div>
-                    
-                    <div class="form-floating form-floating-outline mb-5">
-                        <select id="category-status" class="form-select" aria-label="Category status" name="status" >
-                            <option value="" selected disabled>Select status</option>
-                            <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
-                        </select>
-                        <label for="category-status">Status</label>
-                        <div class="invalid-feedback">Please select a category status.</div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <span class="text-danger" id="categoryExistsError" style="display:none;">Category already exists.</span>
-                        <button type="submit" class="btn btn-primary me-2">Add</button>
-                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="offcanvas">Discard</button>
-                    </div>
-                </form>
+                  <div class="invalid-feedback" id="nameError"></div>
+                </div>
+
+                <div class="form-floating form-floating-outline mb-5">
+                  <textarea id="category-description" class="form-control" placeholder="Enter category description"
+                    aria-label="Category description" name="description" onkeyup="validatedescription()"
+                    required></textarea>
+                  <label for="category-description">Description</label>
+                  <small id="description-error" style="color: red; display: none;">Please enter a valid description
+                    (letters only).</small>
+                  <div class="invalid-feedback" id="descriptionError"></div>
+                </div>
+
+                <div class="form-floating form-floating-outline mb-5">
+                  <select id="category-status" class="form-select" aria-label="Category status" name="status" required>
+                    <option value="" selected disabled>Select status</option>
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                  </select>
+
+                  <label for="category-status">Status</label>
+                  <div class="invalid-feedback">Please select a category status.</div>
+                </div>
+
+                <div class="mb-4">
+                  <span class="text-danger" id="categoryExistsError" style="display:none;">Category already
+                    exists.</span>
+                  <button type="submit" class="btn btn-primary me-2">Add</button>
+                  <button type="button" class="btn btn-outline-danger" data-bs-dismiss="offcanvas">Discard</button>
+                </div>
+              </form>
             </div>
+          </div>
+
+          <!-- Edit Category Offcanvas -->
+          <div class="offcanvas offcanvas-end " tabindex="-1" id="offcanvasEditCategory"
+            aria-labelledby="offcanvasEditCategoryLabel">
+            <div class="offcanvas-header py-6">
+              <h5 id="offcanvasEditCategoryLabel" class="offcanvas-title">Edit Category</h5>
+              <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body border-top">
+              <form class="pt-0" id="editCategoryForm">
+                <div class="form-floating form-floating-outline mb-5">
+                  <input type="text" class="form-control" id="edit-category-name" placeholder="Enter category name"
+                    name="editCategoryName" onkeyup="validateEditName()" aria-label="Category name">
+                  <label for="edit-category-name">Name</label>
+                  <small id="edit-name-error" style="color: red; display: none;">Please enter a valid name (letters
+                    only).</small>
+                  <div class="invalid-feedback" id="editNameError"></div>
+                </div>
+                <div class="form-floating form-floating-outline mb-5">
+                  <input id="edit-category-description" class="form-control" placeholder="Enter category description"
+                    name="editDescription" onkeyup="validateEditDescription()"></input>
+                  <label for="edit-category-description">Description</label>
+                  <small id="edit-description-error" style="color: red; display: none;">Please enter a valid description
+                    (letters only).</small>
+                  <div class="invalid-feedback" id="editDescriptionError"></div>
+                </div>
+
+                <div class="form-floating form-floating-outline mb-5">
+                  <select id="edit-category-status" class="form-select" aria-label="Category status" name="editStatus">
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                  </select>
+                  <label for="edit-category-status">Status</label>
+                </div>
+                <div class="mb-4">
+                  <div id="editCategoryExistsError" style="display: none;"></div>
+                  <button type="submit" class="btn btn-primary me-2">Save</button>
+                  <button type="button" class="btn btn-outline-danger" data-bs-dismiss="offcanvas">Discard</button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
 
-        <!-- Edit Category Offcanvas -->
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasEditCategory" aria-labelledby="offcanvasEditCategoryLabel">
-          <div class="offcanvas-header py-6">
-              <h5 id="offcanvasEditCategoryLabel" class="offcanvas-title">Edit Category</h5>
-              <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-          </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
 
-          <%categories.forEach((category, index) => {%>
-          <div class="offcanvas-body border-top">
-              <form class="pt-0" id="editCategoryForm">
-                  <div class="form-floating form-floating-outline mb-5">
-                    <input type="text"  value="<%=category.name %>"  class="form-control" id="edit-category-name" placeholder="Enter category name" name="editCategoryName" onkeyup="validateEditName()" aria-label="Category name">
-                    <label for="edit-category-name">Name</label>
-                    <small id="edit-name-error" style="color: red; display: none;">Please enter a valid name (letters only).</small>
-                      <div class="invalid-feedback" id="editNameError"></div>
-                  </div>
-      
-                  <div class="form-floating form-floating-outline mb-5">
-                    <input id="edit-category-description" class="form-control"  value="<%=category.description%>"  placeholder="Enter category description"  name="editDescription" onkeyup="validateEditDescription()"></input>
-                    <label for="edit-category-description">Description</label>
-                    <small id="edit-description-error" style="color: red; display: none;">Please enter a valid description (letters only).</small>
-                      <div class="invalid-feedback" id="editDescriptionError"></div>
-                  </div>
-      
-                  <div class="form-floating form-floating-outline mb-5">
-                      <select id="edit-category-status" class="form-select" aria-label="Category status" name="editStatus" >
-                          <option value="true" "<%= category.isListed === true ? 'selected' : '' %>"  >Active</option>
-                          <option value="false" "<%= category.isListed === false ? 'selected' : '' %>" >Inactive</option>
-                      </select>
-                      <label for="edit-category-status">Status</label>
-                  </div>
-      
-                  <div class="mb-4">
-                      <div id="editCategoryExistsError" style="display: none;"></div>
-                      <button type="submit" class="btn btn-primary me-2">Save</button>
-                      <button type="button" class="btn btn-outline-danger" data-bs-dismiss="offcanvas">Discard</button>
-                  </div>
-              </form>
-          </div>
-          <%})%>
-      </div>
+          document.querySelectorAll('.offcanvas-backdrop').forEach(backdrop => backdrop.remove());
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-           
+          document.addEventListener('DOMContentLoaded', function () {
+            const categoryTableBody = document.getElementById('categoryTableBody');
+            const categoryForm = document.getElementById('categoryForm');
+            const nameInput = document.getElementById('category-name');
+            const descriptionInput = document.getElementById('category-description');
+            const nameError = document.getElementById('nameError');
+            const descriptionError = document.getElementById('descriptionError');
+            const categoryExistsError = document.getElementById('categoryExistsError');
+            const editButtons = document.querySelectorAll('.edit-btn');
+            const editCategoryForm = document.getElementById('editCategoryForm');
+            function loadCategories() {
+              fetch('/get-categories')
+                .then(response => response.json())
+                .then(data => {
+                  renderCategories(data.categories);
+                })
+                .catch(error => console.error('Error loading categories:', error));
+            }
 
-           document.addEventListener('DOMContentLoaded', function () {
-    const categoryTableBody = document.getElementById('categoryTableBody');
-    const categoryForm = document.getElementById('categoryForm');
-    const nameInput = document.getElementById('category-name');
-    const descriptionInput = document.getElementById('category-description');
-    const nameError = document.getElementById('nameError');
-    const descriptionError = document.getElementById('descriptionError');
-    const categoryExistsError = document.getElementById('categoryExistsError');
-    const editButtons = document.querySelectorAll('.edit-btn');
-    const editCategoryForm = document.getElementById('editCategoryForm');
-    function loadCategories() {
-        fetch('/get-categories')
-            .then(response => response.json())
-            .then(data => {
-                renderCategories(data.categories);
-            })
-            .catch(error => console.error('Error loading categories:', error));
-    }
 
-    
-    loadCategories();
+            loadCategories();
 
-    function validateInput(input, errorElement, regex, errorMessage) {
-        const value = input.value.trim();
-        if (value === '') {
-            errorElement.textContent = 'This field is required.';
-            errorElement.style.display = 'block';
-            input.classList.add('is-invalid');
-            return false;
-        } else if (!regex.test(value)) {
-            errorElement.textContent = errorMessage;
-            errorElement.style.display = 'block';
-            input.classList.add('is-invalid');
-            return false;
-        } else {
-            errorElement.style.display = 'none';
-            input.classList.remove('is-invalid');
-            return true;
-        }
-    }
+            function validateInput(input, errorElement, regex, errorMessage) {
+              const value = input.value.trim();
+              if (value === '') {
+                errorElement.textContent = 'This field is required.';
+                errorElement.style.display = 'block';
+                input.classList.add('is-invalid');
+                return false;
+              } else if (!regex.test(value)) {
+                errorElement.textContent = errorMessage;
+                errorElement.style.display = 'block';
+                input.classList.add('is-invalid');
+                return false;
+              } else {
+                errorElement.style.display = 'none';
+                input.classList.remove('is-invalid');
+                return true;
+              }
+            }
 
-    nameInput.addEventListener('input', () => 
-        validateInput(nameInput, nameError, /^[A-Za-z\s]+$/, 'Please enter only alphabets and spaces.')
-    );
+            nameInput.addEventListener('input', () =>
+              validateInput(nameInput, nameError, /^[A-Za-z\s]+$/, 'Please enter only alphabets and spaces.')
+            );
 
-    descriptionInput.addEventListener('input', () => 
-        validateInput(descriptionInput, descriptionError, /^[A-Za-z0-9\s.,!?-]+$/, 'Please enter a valid description.')
-    );
+            descriptionInput.addEventListener('input', () =>
+              validateInput(descriptionInput, descriptionError, /^[A-Za-z0-9\s.,!?-]+$/, 'Please enter a valid description.')
+            );
 
-    categoryForm.addEventListener('submit', function (e) {
-        e.preventDefault();
+            categoryForm.addEventListener('submit', function (e) {
+              e.preventDefault();
 
-        const isNameValid = validateInput(nameInput, nameError, /^[A-Za-z\s]+$/, 'Please enter only alphabets and spaces.');
-        const isDescriptionValid = validateInput(descriptionInput, descriptionError, /^[A-Za-z0-9\s.,!?-]+$/, 'Please enter a valid description.');
-        const categoryStatus = document.getElementById('category-status').value;
+              const isNameValid = validateInput(nameInput, nameError, /^[A-Za-z\s]+$/, 'Please enter only alphabets and spaces.');
+              const isDescriptionValid = validateInput(descriptionInput, descriptionError, /^[A-Za-z0-9\s.,!?-]+$/, 'Please enter a valid description.');
+              const categoryStatus = document.getElementById('category-status').value;
 
-        if (isNameValid && isDescriptionValid && categoryStatus) {
-            const newCategory = {
-                name: nameInput.value.trim(),
-                description: descriptionInput.value.trim(),
-                status: categoryStatus
-            };
+              if (isNameValid && isDescriptionValid && categoryStatus) {
+                const newCategory = {
+                  name: nameInput.value.trim(),
+                  description: descriptionInput.value.trim(),
+                  isListed: categoryStatus
+                };
 
-            fetch('/admin/add-category', {
-                method: 'POST',
-                headers: {
+                fetch('/admin/add-category', {
+                  method: 'POST',
+                  headers: {
                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newCategory),
-            })
-            .then(response => {
-                console.log('Response status:', response.status);
-                console.log('Response headers:', response.headers);
-                return response.text().then(text => {
-                    try {
+                  },
+                  body: JSON.stringify(newCategory),
+                })
+                  .then(response => {
+
+                    return response.text().then(text => {
+                      try {
                         return JSON.parse(text);
-                    } catch (e) {
+                      } catch (e) {
                         console.error('Error parsing JSON:', e);
                         console.log('Raw response:', text);
                         throw new Error('Invalid JSON response from server bbbbb');
+                      }
+                    });
+                  })
+                  .then(data => {
+                    if (data.error) {
+                      throw new Error(data.error);
                     }
-                });
-            })
-            .then(data => {
-                if (data.error) {
-                    throw new Error(data.error);
+                    loadCategories();
+                    categoryForm.reset();
+                    const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasCategory'));
+                    offcanvas.hide();
+                    Swal.fire({
+                      icon: 'success',
+                      title: 'Success!',
+                      text: 'Category added successfully',
+                    }).then(() => {
+                      location.reload();
+
+                    });
+
+                  })
+                  .catch(error => {
+                    console.error('Error adding category:', error);
+                    Swal.fire({
+                      icon: 'error',
+                      title: 'Error',
+                      text: `Failed to add category: ${error.message}`,
+                    }).then(() => {
+                      location.reload();
+
+                    });
+                  });
+              }
+            });
+            document.querySelectorAll('.edit-btn').forEach(button => {
+              button.addEventListener('click', async (event) => {
+                const categoryId = button.getAttribute('data-id');
+
+                try {
+                  const response = await fetch(`/admin/api/categories/${categoryId}`);
+                  const category = await response.json();
+
+                  document.getElementById('edit-category-name').value = category.name;
+                  document.getElementById('edit-category-description').value = category.description;
+                  document.getElementById('edit-category-status').value = category.isListed === 'Active' ? 'true' : 'false';
+
+                  document.getElementById('editCategoryForm').setAttribute('data-id', categoryId);
+                } catch (error) {
+                  console.error('Error fetching category details:', error);
                 }
-                loadCategories();
-                categoryForm.reset();
-                const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasCategory'));
+              });
+            });
+
+
+
+
+
+            document.getElementById('addCategoryBtn').addEventListener('click', function () {
+              categoryForm.reset();
+              categoryExistsError.style.display = 'none';
+              nameError.style.display = 'none';
+              descriptionError.style.display = 'none';
+              nameInput.classList.remove('is-invalid');
+              descriptionInput.classList.remove('is-invalid');
+            });
+          });
+
+
+
+          document.addEventListener('DOMContentLoaded', function () {
+            const editButtons = document.querySelectorAll('.edit-btn');
+
+            editButtons.forEach(button => {
+              button.addEventListener('click', async (event) => {
+                const categoryId = button.getAttribute('data-id');
+
+                try {
+                  const response = await fetch(`/admin/api/categories/${categoryId}`);
+                  const category = await response.json();
+
+
+                  document.getElementById('edit-category-name').value = category.name;
+                  document.getElementById('edit-category-description').value = category.description;
+                  document.getElementById('edit-category-status').value = category.isListed;
+
+
+                  document.getElementById('editCategoryForm').setAttribute('data-id', categoryId);
+
+
+                  button.parentElement.querySelector('.delete-btn').style.display = 'none';
+                } catch (error) {
+                  console.error('Error fetching category details:', error);
+                }
+              });
+            });
+          });
+
+          editCategoryForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const categoryId = document.getElementById('editCategoryForm').getAttribute('data-id');
+            const formData = new FormData(editCategoryForm);
+            const categoryData = {
+              name: formData.get('editCategoryName'),
+              description: formData.get('editDescription'),
+              isListed: formData.get('editStatus')
+            };
+
+            try {
+              const response = await fetch(`/admin/api/categories/${categoryId}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(categoryData)
+              });
+
+              if (response.ok) {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Success!',
+                  text: 'Category updated successfully',
+                });
+
+                const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasEditCategory'));
                 offcanvas.hide();
+
+                loadCategories();
+              } else {
+                const errorData = await response.json();
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Category added successfully',
+                  icon: 'error',
+                  title: 'Error',
+                  text: `Failed to update category: ${errorData.error}`,
                 });
-            })
-            .catch(error => {
-                console.error('Error adding category:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: `Failed to add category: ${error.message}`,
-                });
-            });
-        }
-    });
-    document.addEventListener('DOMContentLoaded', function () {
-    const editButtons = document.querySelectorAll('.edit-btn');
-
-    editButtons.forEach(button => {
-        button.addEventListener('click', async (event) => {
-            const categoryId = button.getAttribute('data-id');
-
-            try {
-                const response = await fetch(`/api/categories/${categoryId}`);
-                const category = await response.json();
-
-                // Populate the offcanvas form with category details
-                document.getElementById('edit-category-name').value = category.name;
-                document.getElementById('edit-category-description').value = category.description;
-                document.getElementById('edit-category-status').value = category.status;
-                
-                // Set a data attribute on the form for easy access later
-                document.getElementById('editCategoryForm').setAttribute('data-id', categoryId);
-
-                // Remove the delete button if needed
-                button.parentElement.querySelector('.delete-btn').style.display = 'none';
+              }
             } catch (error) {
-                console.error('Error fetching category details:', error);
+              console.error('Category already exists:', error);
             }
-        });
-    });
-});
+          });
+          function validatename() {
+            const nameInput = document.getElementById('category-name').value;
+            const errorElement = document.getElementById('name-error');
 
 
-    
-   
+            const validName = /^[A-Za-z\s]+$/i;
 
+            if (validName.test(nameInput)) {
 
-    document.getElementById('addCategoryBtn').addEventListener('click', function() {
-        categoryForm.reset();
-        categoryExistsError.style.display = 'none';
-        nameError.style.display = 'none';
-        descriptionError.style.display = 'none';
-        nameInput.classList.remove('is-invalid');
-        descriptionInput.classList.remove('is-invalid');
-    });
-});
+              errorElement.style.display = 'none';
+            } else {
 
-
-
-document.addEventListener('DOMContentLoaded', function () {
-    const editButtons = document.querySelectorAll('.edit-btn');
-
-    editButtons.forEach(button => {
-        button.addEventListener('click', async (event) => {
-            const categoryId = button.getAttribute('data-id');
-
-            try {
-                const response = await fetch(`/admin/api/categories/${categoryId}`);
-                const category = await response.json();
-
-               
-                document.getElementById('edit-category-name').value = category.name;
-                document.getElementById('edit-category-description').value = category.description;
-                document.getElementById('edit-category-status').value = category.status;
-                
-               
-                document.getElementById('editCategoryForm').setAttribute('data-id', categoryId);
-
-                
-                button.parentElement.querySelector('.delete-btn').style.display = 'none';
-            } catch (error) {
-                console.error('Error fetching category details:', error);
+              errorElement.style.display = 'block';
             }
-        });
-    });
-});
+          }
+          function validatedescription() {
+            const descriptionInput = document.getElementById('category-description').value;
+            const errorElement = document.getElementById('description-error');
 
-editCategoryForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
 
-    const categoryId = document.getElementById('editCategoryForm').getAttribute('data-id');
-    const formData = new FormData(editCategoryForm);
-    const categoryData = {
-        name: formData.get('editCategoryName'),
-        description: formData.get('editDescription'),
-        status: formData.get('editStatus')
-    };
+            const validDescription = /^[A-Za-z\s]+$/i;
 
-    try {
-        const response = await fetch(`/admin/api/categories/${categoryId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(categoryData)
-        });
+            if (validDescription.test(descriptionInput)) {
 
-        if (response.ok) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: 'Category updated successfully',
-            });
+              errorElement.style.display = 'none';
+            } else {
 
-            const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasEditCategory'));
-            offcanvas.hide();
-            
-            loadCategories(); 
-        } else {
-            const errorData = await response.json();
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: `Failed to update category: ${errorData.error}`,
-            });
-        }
-    } catch (error) {
-        console.error('Category already exists:', error);
-    }
-});
-function validatename() {
-    const nameInput = document.getElementById('category-name').value;
-    const errorElement = document.getElementById('name-error');
-    
-   
-    const validName = /^[A-Za-z\s]+$/i;
-    
-    if (validName.test(nameInput)) {
-       
-        errorElement.style.display = 'none';
-    } else {
-        
-        errorElement.style.display = 'block';
-    }
-}
-function validatedescription() {
-    const descriptionInput = document.getElementById('category-description').value;
-    const errorElement = document.getElementById('description-error');
-    
-    
-    const validDescription = /^[A-Za-z\s]+$/i;
-    
-    if (validDescription.test(descriptionInput)) {
-       
-        errorElement.style.display = 'none';
-    } else {
-        
-        errorElement.style.display = 'block';
-    }
-}
+              errorElement.style.display = 'block';
+            }
+          }
 
-function validateEditName() {
-    const nameInput = document.getElementById('edit-category-name').value;
-    const errorElement = document.getElementById('edit-name-error');
-    
-   
-    const validName = /^[A-Za-z\s]+$/i;
-    
-    if (validName.test(nameInput)) {
-       
-        errorElement.style.display = 'none';
-    } else {
-       
-        errorElement.style.display = 'block';
-    }
-}
-function validateEditDescription() {
-    const descriptionInput = document.getElementById('edit-category-description').value;
-    const errorElement = document.getElementById('edit-description-error');
-    
-    
-    const validDescription = /^[A-Za-z\s]+$/i;
-    
-    if (validDescription.test(descriptionInput)) {
-        
-        errorElement.style.display = 'none';
-    } else {
-       
-        errorElement.style.display = 'block';
-    }
-}
+          function validateEditName() {
+            const nameInput = document.getElementById('edit-category-name').value;
+            const errorElement = document.getElementById('edit-name-error');
+
+
+            const validName = /^[A-Za-z\s]+$/i;
+
+            if (validName.test(nameInput)) {
+
+              errorElement.style.display = 'none';
+            } else {
+
+              errorElement.style.display = 'block';
+            }
+          }
+          function validateEditDescription() {
+            const descriptionInput = document.getElementById('edit-category-description').value;
+            const errorElement = document.getElementById('edit-description-error');
+
+
+            const validDescription = /^[A-Za-z\s]+$/i;
+
+            if (validDescription.test(descriptionInput)) {
+
+              errorElement.style.display = 'none';
+            } else {
+
+              errorElement.style.display = 'block';
+            }
+          }
 
 
 
-</script>
+        </script>
 
-   
-  
-</div>
-<%- include ('../../layout/adminlayout/footer.ejs') %>
+
+
+      </div>
+      <%- include ('../../layout/adminlayout/footer.ejs') %>

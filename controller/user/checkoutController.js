@@ -502,7 +502,7 @@ const createRazorpayOrder = async (req, res) => {
 
         const { couponDiscount, totalOfferPrice } = req.body;
 
-        // Calculate the total cart amount if required
+       
         const totalCartAmount = cart.items.reduce(
             (sum, item) => sum + item.product.price * item.quantity,
             0
@@ -513,12 +513,12 @@ const createRazorpayOrder = async (req, res) => {
                 ? totalCartAmount - couponDiscount
                 : totalOfferPrice - couponDiscount;
         
-        // Ensure the total amount is not negative
+       
         const finalAmount = Math.max(totalAmount, 0);
         
-        // Create Razorpay order
+      
         const razorpayOrder = await razorpay.orders.create({
-            amount: finalAmount * 100, // Convert to paise
+            amount: finalAmount * 100, 
             currency: "INR",
             receipt: "order_" + Date.now(),
             notes: {
@@ -565,16 +565,15 @@ const verifyPayment = async (req, res) => {
             totalOfferPrice,
         } = req.body;
 
-        let paymentStatus = 'Pending'; // Default status for failed verification
+        let paymentStatus = 'Pending'; 
         let isAuthentic = false;
-
         try {
             const body = razorpay_order_id + "|" + razorpay_payment_id;
             const expectedSignature = crypto
                 .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
                 .update(body.toString())
                 .digest("hex");
-
+        
             isAuthentic = expectedSignature === razorpay_signature;
             if (isAuthentic) {
                 const payment = await razorpay.payments.fetch(razorpay_payment_id);
@@ -680,25 +679,114 @@ const verifyPayment = async (req, res) => {
 
 const paymentFailure = async (req, res) => {
     try {
-        const { razorpay_order_id, orderId } = req.body;
-
-        const updatedOrder = await Order.findByIdAndUpdate(
+        const {
+            razorpay_order_id,
             orderId,
-            {
-                paymentStatus: 'Pending', // Update status to Pending instead of Failed
-                'payment_details.razorpay_order_id': razorpay_order_id,
-            },
-            { new: true }
-        );
+            selectedAddress,
+            couponDiscount = 0,
+            totalOfferPrice = 0,
+        } = req.body;
 
+        if (!razorpay_order_id || !selectedAddress) {
+            return res.status(400).json({
+                success: false,
+                message: 'Missing required fields: razorpay_order_id or selectedAddress',
+            });
+        }
+
+        let updatedOrder;
+
+        // Check if the order exists and update payment status
+        if (orderId) {
+            updatedOrder = await Order.findByIdAndUpdate(
+                orderId,
+                {
+                    payment_status: 'Pending',
+                    'payment_details.razorpay_order_id': razorpay_order_id,
+                },
+                { new: true }
+            );
+        }
+
+        // Create a new order if none exists
         if (!updatedOrder) {
-            return res.status(404).json({ success: false, message: 'Order not found' });
+            const userId = req.session.user;
+
+            const [cart, selectedAddressDoc] = await Promise.all([
+                Cart.findOne({ user: userId }).populate('items.product'),
+                Address.findById(selectedAddress),
+            ]);
+
+            if (!cart || cart.items.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Your cart is empty. Please add items before placing an order.',
+                });
+            }
+
+            const totalCartAmount = cart.items.reduce(
+                (sum, item) => sum + item.product.price * item.quantity,
+                0
+            );
+            const finalAmount = Math.max(
+                totalOfferPrice || totalCartAmount - couponDiscount,
+                0
+            );
+
+            const orderItems = cart.items.map((item) => ({
+                product: item.product._id,
+                name: item.product.productName,
+                quantity: item.quantity,
+                price: item.product.price,
+                total: item.product.price * item.quantity,
+                status: 'pending',
+            }));
+
+            const orderAddress = {
+                name: selectedAddressDoc.name,
+                phone: selectedAddressDoc.phone,
+                pincode: selectedAddressDoc.pincode,
+                city: selectedAddressDoc.city,
+                address: selectedAddressDoc.address,
+                landmark: selectedAddressDoc.landmark,
+                state: selectedAddressDoc.state,
+            };
+
+            const newOrderId = `ORD-${Math.floor(10000 + Math.random() * 90000)}`;
+            const upiPaymentType = await PaymentType.findOne({ pay_type: 'UPI PAYMENT' });
+
+            updatedOrder = new Order({
+                orderId: newOrderId,
+                user: userId,
+                items: orderItems,
+                address: orderAddress,
+                total_amount: finalAmount,
+                discount: couponDiscount,
+                payment_type: upiPaymentType?._id || null,
+                payment_status: 'Pending',
+                status: 'pending',
+                razorpay_order_id,
+                estimatedDispatchDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), 
+            });
+
+            await updatedOrder.save();
+
+            await Promise.all([
+                ...cart.items.map((item) =>
+                    Product.findByIdAndUpdate(
+                        item.product._id,
+                        { $inc: { quantity: -item.quantity } },
+                        { new: true }
+                    )
+                ),
+                Cart.findOneAndUpdate({ user: userId }, { $set: { items: [] } }),
+            ]);
         }
 
         res.json({
             success: true,
-            message: 'Order updated with pending payment status',
-            order: updatedOrder,
+            message: 'Order placed with pending payment status',
+            orderId: updatedOrder._id,
         });
     } catch (error) {
         console.error('Error in handlePaymentFailure:', error);
@@ -709,6 +797,9 @@ const paymentFailure = async (req, res) => {
         });
     }
 };
+
+
+
 
 
 

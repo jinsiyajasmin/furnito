@@ -11,10 +11,10 @@ const categoryInfo = async (req, res) => {
 };
 
 const addCategory = async (req, res) => {
-    const { name, description, status } = req.body;
+    const { name, description, isListed } = req.body;
     try {
 
-        if (!name || !description || !status) {
+        if (!name || !description || !isListed) {
             return res.status(400).json({ error: "All fields are required." });
         }
 
@@ -23,7 +23,7 @@ const addCategory = async (req, res) => {
             return res.status(400).json({ error: "Category already exists." });
         }
 
-        const newCategory = new Category({ name, description, status });
+        const newCategory = new Category({ name, description, isListed });
         await newCategory.save();
 
         return res.status(201).json({ message: "Category added successfully" });
@@ -34,22 +34,17 @@ const addCategory = async (req, res) => {
 };
 const editCategory = async (req, res) => {
     const { id } = req.params;
-    let { name, description, status } = req.body;
-    try {
+    let { name, description, isListed } = req.body;
 
-        if (!name || !description || !status) {
+    try {
+        if (!name || !description || isListed === undefined) {
             return res.status(400).json({ error: "All fields are required." });
         }
 
-
+       
         name = name.trim().toLowerCase();
-
-
-        const validNameRegex = /^[a-z0-9\s-]+$/i;
-        if (!validNameRegex.test(name)) {
-            return res.status(400).json({ error: "Category name can only contain lowercase letters, numbers, spaces, and hyphens." });
-        }
-
+        description = description.trim();
+        isListed = isListed === 'true' ? 'Active' : 'Inactive'; 
 
         const categoryToEdit = await Category.findById(id);
         if (!categoryToEdit) {
@@ -57,22 +52,15 @@ const editCategory = async (req, res) => {
         }
 
         if (name !== categoryToEdit.name.toLowerCase()) {
-
-            const existingCategory = await Category.findOne({
-                name: name.trim(),
-                _id: { $ne: id }
-            });
-
-
-
+            const existingCategory = await Category.findOne({ name, _id: { $ne: id } });
             if (existingCategory) {
                 return res.status(400).json({ error: "A category with this name already exists." });
             }
         }
 
         categoryToEdit.name = name;
-        categoryToEdit.description = description.trim();
-        categoryToEdit.status = status.trim();
+        categoryToEdit.description = description;
+        categoryToEdit.isListed = isListed;
 
         await categoryToEdit.save();
 
@@ -86,11 +74,12 @@ const editCategory = async (req, res) => {
 
 
 
+
 const updateCategory = async (req, res) => {
     const { id } = req.params;
     const { name, description, isListed } = req.body;
     try {
-        const updatedCategory = await Category.findByIdAndUpdate(id, { name, description, isListed}, { new: true });
+        const updatedCategory = await Category.findByIdAndUpdate(id, { name, description, isListed }, { new: true });
         if (!updatedCategory) {
             return res.status(404).json({ error: "Category not found." });
         }
