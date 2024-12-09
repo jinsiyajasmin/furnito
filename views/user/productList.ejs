@@ -101,11 +101,11 @@
 
                         <nav class="main-nav">
                             <ul class="menu sf-arrows">
-                                <li class="megamenu-container active">
+                                <li >
                                     <a href="/" class="sf-with-ul">Home</a>
 
 
-                                <li>
+                                <li class="megamenu-container active">
                                     <a href="/productList" class="sf-with-ul">Shop</a>
 
 
@@ -123,12 +123,17 @@
                             <a href="#" class="search-toggle" role="button" title="Search">
                                 <i class="icon-search"></i>
                             </a>
+                            
                             <form action="/search" method="get">
-                                <div class="header-search-wrapper" style="display: none;">
+                                <div class="header-search-wrapper">
                                     <label for="q" class="sr-only">Search</label>
-                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search here..." value="default search">
+                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search here..."
+                                        value="<%= searchQuery || '' %>">
+                                    <button type="submit" class="btn btn-primary">Search</button>
                                 </div>
                             </form>
+                            
+                            
                             
                             
                         </div>
@@ -283,85 +288,63 @@
 
                             <div class="products">
                                 <div class="row">
-
-                                    <% products.forEach((item)=> { %>
-                                        <div class="col-6 col-md-4 col-lg-4 col-xl-3 product-item"
-                                            data-category="<%= item.category %>">
-                                            <div class="product product-7 text-center">
-                                                <figure class="product-media">
-                                                    <a href="/productDetails/<%= item._id %>">
-                                                        <% if (item.offer) { %>
-                                                            <span class="product-label label-circle label-sale">
-                                                                <%=item.offer.discount %>% OFF
-                                                            </span>
-                                                            <%}%>
-                                                                <img src="/uploads/<%= item.productImage[0] %>"
-                                                                    alt="<%= item.productName %>" class="product-image">
-                                                    </a>
-                                                    <div class="product-action-vertical">
-                                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable"
-                                                            data-product-id="<%= item._id %>">
-                                                            <span>Add to wishlist</span>
-                                                        </a>
-                                                    </div>
-                                                    <div class="product-action">
-                                                        <% if (user) { %>
-                                                            <% if (item.quantity===0) { %>
-                                                                <span class="btn-product">Out of stock</span>
-                                                                <% } else { %>
-                                                                    <a href="#" class="btn-product btn-cart"
-                                                                        data-product-id="<%= item._id %>">
-                                                                        <span>Add to cart</span>
-                                                                    </a>
-                                                                    <% } %>
-                                                                        <% } else { %>
-                                                                            <a href="/login"
-                                                                                class="btn-product btn-login">
-                                                                                <span>Login</span>
-                                                                            </a>
-                                                                            <% } %>
-                                                    </div>
-                                                </figure>
-                                                <div class="product-body">
-                                                    <h3 class="product-title">
+                                    <% if (products.length > 0) { %>
+                                        <% products.forEach((item) => { %>
+                                            <div class="col-6 col-md-4 col-lg-4 col-xl-3 product-item" data-category="<%= item.category %>">
+                                                <!-- Product Card HTML -->
+                                                <div class="product product-7 text-center">
+                                                    <figure class="product-media">
                                                         <a href="/productDetails/<%= item._id %>">
-                                                            <%= item.productName %>
+                                                            <% if (item.offer) { %>
+                                                                <span class="product-label label-circle label-sale"><%= item.offer.discount %>% OFF</span>
+                                                            <% } %>
+                                                            <img src="/uploads/<%= item.productImage[0] %>" alt="<%= item.productName %>" class="product-image">
                                                         </a>
-                                                    </h3>
-                                                    <div class="product-cat">
-                                                        <a href="#">
-                                                            <%= item.productDescription %>
-                                                        </a>
-                                                    </div>
-                                                    <div class="product-price">
-                                                        <% if (item.offer) { %>
-                                                            <div class="product-price">
-                                                                <span class="old-price">₹<%= item.originalPrice ?
-                                                                        item.originalPrice.toFixed(2) : 'N/A' %></span>
-                                                                <span class="new-price">₹<%= item.discountedPrice ?
-                                                                        item.discountedPrice.toFixed(2) : 'N/A' %>
-                                                                        </span>
-                                                            </div>
+                                                        <div class="product-action-vertical">
+                                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"
+                                                                data-product-id="<%= item._id %>">
+                                                                <span>Add to wishlist</span>
+                                                            </a>
+                                                        </div>
+                                                        <div class="product-action">
+                                                            <% if (user) { %>
+                                                                <% if (item.quantity===0) { %>
+                                                                    <span class="btn-product">Out of stock</span>
+                                                                    <% } else { %>
+                                                                        <a href="#" class="btn-product btn-cart"
+                                                                            data-product-id="<%= item._id %>">
+                                                                            <span>Add to cart</span>
+                                                                        </a>
+                                                                        <% } %>
+                                                                            <% } else { %>
+                                                                                <a href="/login"
+                                                                                    class="btn-product btn-login">
+                                                                                    <span>Login</span>
+                                                                                </a>
+                                                                                <% } %>
+                                                        </div>
+                                                    </figure>
+                                                    <div class="product-body">
+                                                        <h3 class="product-title"><%= item.productName %></h3>
+                                                        <div class="product-cat"><%= item.productDescription %></div>
+                                                        <div class="product-price">
+                                                            <% if (item.offer) { %>
+                                                                <span class="old-price">₹<%= item.originalPrice.toFixed(2) %></span>
+                                                                <span class="new-price">₹<%= item.discountedPrice.toFixed(2) %></span>
                                                             <% } else { %>
-                                                                <div class="product-price">
-                                                                    <span class="price">₹<%= item.price ?
-                                                                            item.price.toFixed(2) : 'N/A' %></span>
-                                                                </div>
-                                                                <% } %>
-
-
+                                                                <span class="price">₹<%= item.price.toFixed(2) %></span>
+                                                            <% } %>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
                                         <% }); %>
-
-
-
-
-
+                                    <% } else { %>
+                                        <p>No products found matching "<%= searchQuery %>".</p>
+                                    <% } %>
                                 </div>
                             </div>
+                            
                         </div>
                     </div>
                 </div>

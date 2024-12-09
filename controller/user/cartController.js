@@ -372,27 +372,8 @@ const removeFromWishlist = async (req, res) => {
 
 
 
- const searchProducts = async (req, res) => {
-    const searchQuery = req.query.q;
-    if (!searchQuery) {
-        return res.status(400).json({ error: 'Search query is missing' });
-    }
 
-    try {
-        const products = await Product.find({
-            name: { $regex: searchQuery, $options: 'i' } // Case-insensitive search
-        });
 
-        if (!products.length) {
-            return res.status(404).json({ message: 'No products found' });
-        }
-
-        res.status(200).json(products);
-    } catch (error) {
-        console.error('Search error:', error);
-        res.status(500).json({ error: 'An error occurred while searching' });
-    }
-};
 
 module.exports = {
   addToCart,
@@ -402,5 +383,5 @@ module.exports = {
   loadWishlist,
   addWishlistItem ,
   removeFromWishlist,
-  searchProducts
+
 };

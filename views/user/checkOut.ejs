@@ -50,7 +50,7 @@
 
                         <nav class="main-nav">
                             <ul class="menu sf-arrows">
-                                <li class="megamenu-container active">
+                                <li>
                                     <a href="/" class="sf-with-ul">Home</a>
 
 
@@ -275,7 +275,9 @@
                                                 style="color: black;">
                                                 <option value="COD">CASH ON DELIVERY</option>
                                                 <option value="UPI PAYMENT">UPI PAYMENT</option>
-                                                <!-- <option value="WALLET">WALLET</option> -->
+
+                                                <option value="WALLET">WALLET</option>
+
 
 
 
@@ -1132,6 +1134,58 @@
                                     break;
 
 
+                                case 'WALLET':
+                                    const totalAmountTextWallet = document.getElementById('cart-total')?.innerText || '0';
+                                    const totalAmountWallet = parseFloat(totalAmountTextWallet.replace(/[^0-9.]/g, ''));
+
+                                    try {
+                                        const walletResponse = await fetch('/check-wallet-balance', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({
+                                                user_id: '<%= user._id %>',
+                                                totalAmount: totalAmountWallet,
+
+                                            })
+                                        });
+
+                                        const walletResult = await walletResponse.json();
+
+                                        if (walletResult.success) {
+                                            const placeOrderResponse = await fetch('/place-order', {
+                                                method: 'POST',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify({
+                                                    user_id: '<%= user._id %>',
+                                                    address_id: selectedAddress.value,
+                                                    payment_type: 'WALLET',
+                                                    couponDiscount: couponDiscount || 0,
+                                                    totalOfferPrice: totalOfferPrice || totalAmountWallet,
+                                                    totalAmount: totalAmountWallet
+                                                })
+                                            });
+
+                                            const orderResult = await placeOrderResponse.json();
+                                            handleOrderResponse(orderResult);
+                                        } else {
+                                            Swal.fire({
+                                                title: 'Insufficient Balance',
+                                                text: walletResult.message,
+                                                icon: 'error',
+                                                confirmButtonText: 'OK'
+                                            });
+                                        }
+                                    } catch (error) {
+                                        Swal.fire({
+                                            title: 'Error!',
+                                            text: 'An error occurred while processing your wallet payment.',
+                                            icon: 'error',
+                                            confirmButtonText: 'OK'
+                                        });
+                                        console.error(error);
+                                    }
+                                    break;
+
 
                                 case 'UPI PAYMENT':
                                     // First, get order details and Razorpay order ID
@@ -1230,51 +1284,51 @@
                 });
 
                 async function handlePaymentCancellation(orderData) {
-    try {
-        const result = await fetch('/payment-failed', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                selectedAddress: orderData.selectedAddress,
-                payment_type: 'UPI PAYMENT',
-                couponDiscount: orderData.couponDiscount || 0,
-                totalOfferPrice: orderData.totalOfferPrice || 0,
-                razorpay_order_id: orderData.razorpayOrderId,
-                reason: 'Payment cancelled or failed',
-            }),
-        });
+                    try {
+                        const result = await fetch('/payment-failed', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                selectedAddress: orderData.selectedAddress,
+                                payment_type: 'UPI PAYMENT',
+                                couponDiscount: orderData.couponDiscount || 0,
+                                totalOfferPrice: orderData.totalOfferPrice || 0,
+                                razorpay_order_id: orderData.razorpayOrderId,
+                                reason: 'Payment cancelled or failed',
+                            }),
+                        });
 
-        const data = await result.json();
+                        const data = await result.json();
 
-        if (data.success) {
-            Swal.fire({
-                title: 'Order Placed',
-                text: 'Your order has been placed with a pending payment status. You can complete the payment later.',
-                icon: 'info',
-                confirmButtonText: 'View Order',
-            }).then(() => {
-                window.location.href = `/orderSummary?id=${data.orderId}`;
-            });
-        } else {
-            Swal.fire({
-                title: 'Error!',
-                text: data.message || 'Failed to place order. Please try again.',
-                icon: 'error',
-                confirmButtonText: 'OK',
-            });
-        }
-    } catch (error) {
-        console.error('Error in handlePaymentCancellation:', error);
-        Swal.fire({
-            title: 'Error!',
-            text: 'An error occurred while processing your order. Please try again.',
-            icon: 'error',
-            confirmButtonText: 'OK',
-        });
-    }
-}
+                        if (data.success) {
+                            Swal.fire({
+                                title: 'Order Placed',
+                                text: 'Your order has been placed with a pending payment status. You can complete the payment later.',
+                                icon: 'info',
+                                confirmButtonText: 'View Order',
+                            }).then(() => {
+                                window.location.href = `/orderSummary?id=${data.orderId}`;
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: data.message || 'Failed to place order. Please try again.',
+                                icon: 'error',
+                                confirmButtonText: 'OK',
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error in handlePaymentCancellation:', error);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An error occurred while processing your order. Please try again.',
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                        });
+                    }
+                }
 
 
 

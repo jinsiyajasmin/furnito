@@ -19,7 +19,8 @@
     "pdfkit": "^0.15.1",
     "pdfmake": "^0.2.15",
     "razorpay": "^2.9.5",
-    "sharp": "^0.33.5"
+    "sharp": "^0.33.5",
+    "uuid": "^11.0.3"
   },
   "scripts": {
     "start": "nodemon app",

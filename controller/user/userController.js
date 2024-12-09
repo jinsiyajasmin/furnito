@@ -310,11 +310,20 @@ const logout = async (req, res) => {
 
 const getProductList = async (req, res) => {
     try {
-        const products = await Product.find({ status: 'active' });
+      
         const categories = await Category.find();
         const message = req.query.message || '';
         const user = req.session.user;
+        const searchQuery = req.query.q || ''; // Capture the search query from the request
 
+        const products = await Product.find({
+            status: 'active', 
+            $or: [
+                { productName: { $regex: searchQuery, $options: 'i' } },
+                { productDescription: { $regex: searchQuery, $options: 'i' } },
+
+            ],
+        });
 
         const offers = await Offer.find({ status: 'active' })
             .populate('products')
@@ -380,7 +389,8 @@ const getProductList = async (req, res) => {
             products: productsWithOffers,
             categories,
             message,
-            user: userData
+            user: userData,
+            searchQuery
         });
     } catch (error) {
         console.error('Error fetching product list or categories:', error);
@@ -404,7 +414,6 @@ const getProductDetails = async (req, res) => {
             return res.status(404).render('404', { message: 'Product not found' });
         }
 
-        // Calculate best offer
         let bestOffer = null;
 
         const matchingOffers = offers.filter(offer => {
@@ -433,7 +442,6 @@ const getProductDetails = async (req, res) => {
             discountedPrice = originalPrice - discountedPrice;
         }
 
-        // Attach offer details
         const productWithOffer = {
             ...product.toObject(),
             originalPrice,
@@ -474,92 +482,35 @@ const getCategory = async (req, res) => {
 }
 
 
-const filterProducts = async (req, res) => {
+
+
+
+
+
+
+
+const getSearchResults = async (req, res) => {
     try {
-        const {
-            sort = 'name_asc',
-            category = '',
-            minPrice,
-            maxPrice,
-            search = ''
-        } = req.query;
+        const searchQuery = req.query.q || ''; 
 
-
-        const filterQuery = {};
-
-
-        if (category) {
-            filterQuery.category = { $in: category.split(',') };
-        }
-
-        if (minPrice || maxPrice) {
-            filterQuery.price = {};
-            if (minPrice) filterQuery.price.$gte = parseFloat(minPrice);
-            if (maxPrice) filterQuery.price.$lte = parseFloat(maxPrice);
-        }
-
-
-        if (search) {
-            filterQuery.$or = [
-                { name: { $regex: search, $options: 'i' } },
-                { description: { $regex: search, $options: 'i' } }
-            ];
-        }
-
-
-        const sortOptions = {
-            name_asc: { name: 1 },
-            name_desc: { name: -1 },
-            price_asc: { price: 1 },
-            price_desc: { price: -1 },
-            newest: { createdAt: -1 },
-            oldest: { createdAt: 1 },
-        };
-
-        const sortQuery = sortOptions[sort] || { name: 1 };
-
-
-        const products = await Product.find(filterQuery).sort(sortQuery);
-
-        res.json({
-            products,
-            pagination: {
-                visibleCount: products.length,
-                totalCount: await Product.countDocuments()
-            },
-            appliedFilters: {
-                sort,
-                category,
-                minPrice,
-                maxPrice,
-                search
-            }
-        });
-    } catch (error) {
-        console.error('Error fetching products:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-};
-
-
-const searchProducts = async (req, res) => {
-    const query = req.query.q || '';
-    try {
-
+        
         const products = await Product.find({
-            name: { $regex: query, $options: 'i' }
+            $or: [
+                { productName: { $regex: searchQuery, $options: 'i' } },
+                { productDescription: { $regex: searchQuery, $options: 'i' } }
+            ]
         });
 
-
-        res.render('search-results', { products });
+        res.render('user/productList', {
+            products,
+            searchQuery, 
+            user: req.user, 
+        });
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Error occurred while searching.');
+        console.error('Error fetching search results:', error);
+        res.status(500).send('Internal Server Error');
     }
 };
-
-
-
 
 
 
@@ -581,9 +532,10 @@ module.exports = {
     logout,
     getProductList,
     getProductDetails,
-    filterProducts,
+
     getCategory,
-    searchProducts
+  
+    getSearchResults
 
 
 };

@@ -5,6 +5,7 @@ const Cart = require('../controller/user/cartController');
 const dashboard = require('../controller/user/dashboardController');
 const checkout = require('../controller/user/checkoutController');
 const Wallet = require('../controller/user/walletController');
+const env = require ("dotenv").config();
 const passport = require("passport"); 
 const path = require('path');
 const { userAuth, adminAuth } = require("../middlewares/auth");
@@ -30,7 +31,7 @@ userRouter.use(session({
 userRouter.use(nocache());
 userRouter.use('/assets', express.static(path.join(__dirname, "../public/assets")));
 
-// Error handling routes
+
 userRouter.get("/pageNotFound", user.pageNotFound);
 
 // User Authentication and Signup
@@ -38,9 +39,8 @@ userRouter.get('/', user.loadHome);
 userRouter.get('/register', user.loadSignup);
 userRouter.post('/signup', user.signup);
 userRouter.post('/verify-otp', user.verifyOtp); 
-userRouter.post('/resend-otp', user.resendOtp);
-userRouter.get('/products/filter',user.filterProducts);
-userRouter.get('/search',user. searchProducts);
+userRouter.post('/resend-otp', user.resendOtp); 
+
 
 // Product and Category
 userRouter.get('/productList', user.getProductList);
@@ -52,7 +52,8 @@ userRouter.post('/cart/add', userAuth, Cart.addToCart);
 userRouter.get('/cart', userAuth, Cart.viewCart);
 userRouter.post('/cart/remove', userAuth, Cart.removeFromCart);
 userRouter.post('/api/cart/update-quantity', userAuth, Cart.updateQuant);
-userRouter.get('/api/products/search', userAuth,Cart.searchProducts);
+userRouter.get('/search', userAuth,user.getSearchResults);
+
 
 // Wishlist Management
 userRouter.get('/wishlist', userAuth, Cart.loadWishlist);
@@ -71,6 +72,8 @@ userRouter.post('/removeCoupon',checkout.removeCoupon);
 userRouter.post('/create-razorpay-order', checkout.createRazorpayOrder);
 userRouter.post('/verify-payment', checkout.verifyPayment);
 userRouter.post('/payment-failed', checkout.paymentFailure);
+userRouter.post('/check-wallet-balance', checkout.checkWalletBalance);
+
 
 
 // User Dashboard

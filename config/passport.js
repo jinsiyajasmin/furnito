@@ -3,10 +3,10 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/user/userSchema");
 const dotenv = require("dotenv");
 
-// Load environment variables from .env file
+
 dotenv.config();
 
-// Use GoogleStrategy for Google OAuth
+
 passport.use(
   new GoogleStrategy(
     {
@@ -35,25 +35,25 @@ passport.use(
           }
         } catch (error) {
           console.error("Error during authentication:", error);
-          return done(error, null);  // Log the error
+          return done(error, null);  
         }
       }
       
   )
 );
 
-// Serialize the user to store in the session
+
 passport.serializeUser((user, done) => {
-  done(null, user.id); // Store user ID in the session
+  done(null, user.id); 
 });
 
-// Deserialize the user from the session
+
 passport.deserializeUser(async (id, done) => {
   try {
     const user = await User.findById(id);
-    done(null, user); // Attach user to req.user
+    done(null, user); 
   } catch (error) {
-    done(error, null); // Handle errors
+    done(error, null); 
   }
 });
 

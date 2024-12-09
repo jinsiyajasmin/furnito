@@ -1,35 +1,46 @@
 <%- include ('../../layout/header.ejs') %>
-<style>
+    <style>
         body {
             background-color: #f6f6f6;
             padding: 20px;
         }
+
         .wallet-container {
             background-color: white;
             border-radius: 10px;
             padding: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
         .balance-header {
             background-color: #f8f9fa;
             border-radius: 5px;
             padding: 15px;
             margin-bottom: 20px;
         }
+
         .transaction-type-deposit {
             background-color: #d4edda;
             color: #155724;
         }
+
         .transaction-type-withdrawal {
             background-color: #f8d7da;
             color: #721c24;
         }
+
         .transaction-type-pending {
             background-color: #fff3cd;
             color: #856404;
         }
+
+        .transaction-type-debit {
+            background-color: #95f3ab;
+            color: #04501e;
+
+        }
     </style>
-</head>
+    </head>
 
     <body>
         <div class="page-wrapper">
@@ -71,7 +82,7 @@
 
                             <nav class="main-nav">
                                 <ul class="menu sf-arrows">
-                                    <li class="megamenu-container active">
+                                    <li>
                                         <a href="/" class="sf-with-ul">Home</a>
 
 
@@ -79,7 +90,7 @@
                                     <li>
                                         <a href="/productList" class="sf-with-ul">Shop</a>
 
-                                        
+
                                     </li>
                                 </ul><!-- End .menu -->
                             </nav><!-- End .main-nav -->
@@ -89,15 +100,7 @@
 
                         <div class="header-right">
                             <div class="header-search">
-                                <a href="#" class="search-toggle" role="button" title="Search"><i
-                                        class="icon-search"></i></a>
-                                <form action="#" method="get">
-                                    <div class="header-search-wrapper">
-                                        <label for="q" class="sr-only">Search</label>
-                                        <input type="search" class="form-control" name="q" id="q"
-                                            placeholder="Search in..." required>
-                                    </div><!-- End .header-search-wrapper -->
-                                </form>
+                              
                             </div><!-- End .header-search -->
 
 
@@ -108,91 +111,101 @@
                     </div><!-- End .container -->
                 </div><!-- End .header-middle -->
             </header><!-- End .header -->
-           
 
-                    <main class="main">
-                    <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
-                        <div class="container">
+
+            <main class="main">
+                <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+                    <div class="container">
                         <h1 class="page-title">Wallet</h1>
+                    </div>
+                </div>
+                <div class="container wallet-container">
+                    <div class="row balance-header">
+                        <div class="col-md-6">
+                            <h2>Wallet Balance</h2>
+                            <% if(wallet[0]?.balance){%>
+                                <h4>Current Balance: ₹ <%= wallet[0]?.balance %>
+                                </h4>
+                                <%}else{%>
+                                    <h4>Current Balance: ₹ 0</h4>
+                                    <%}%>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <!-- <button class="btn btn-primary me-2">Add Funds</button>
+                                <button class="btn btn-secondary">Withdraw</button> -->
                         </div>
                     </div>
-                    <div class="container wallet-container">
-                        <div class="row balance-header">
-                            <div class="col-md-6">
-                                <h2>Wallet Balance</h2>
-                                <% if(wallet[0]?.balance){%>
-                                <h4>Current Balance: ₹ <%= wallet[0]?.balance %></h4><%}else{%><h4>Current Balance: ₹ 0</h4>
-                                    <%}%>
-                            </div>
-                            <div class="col-md-6 text-end">
-                                <!-- <button class="btn btn-primary me-2">Add Funds</button>
-                                <button class="btn btn-secondary">Withdraw</button> -->
-                            </div>
-                        </div>
-                
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <!-- <select class="form-select">
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <!-- <select class="form-select">
                                     <option selected>Transaction Type: Show All</option>
                                     <option>Deposit</option>
                                     <option>Withdrawal</option>
                                     <option>Purchase</option>
                                 </select> -->
-                            </div>
-                            <div class="col-md-4">
-                                <!-- <select class="form-select">
+                        </div>
+                        <div class="col-md-4">
+                            <!-- <select class="form-select">
                                     <option selected>Date Range: Show All</option>
                                     <option>Last 7 days</option>
                                     <option>Last 30 days</option>
                                     <option>Last 90 days</option>
                                 </select> -->
-                            </div>
-                            <div class="col-md-4">
-                                <!-- <input type="text" class="form-control" placeholder="Search transactions"> -->
-                            </div>
                         </div>
-                
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>TRANSACTION ID</th>
-                                    <th>DATE</th>
-                                    <th>DESCRIPTION</th>
-                                    <th>AMOUNT</th>
-                                   
-                                    <th>TYPE</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% wallet?.forEach(item=>{ %>
-                                    <% item.history.forEach(hist=>{ %>
-                                <tr>
-                                    <td><%=hist.transaction_id%></td>
-                                    <td> <%= 
-                                        new Date(hist.date.getTime() ).toLocaleDateString("en-US", {
-                                          year: "numeric",
-                                          month: "long",
-                                          day: "numeric",
-                                        }) 
-                                      %></td>
-                                    <td><%=hist.description%></td>
-                                    <td><%=hist.amount%></td>
-                                   <% if(hist.transaction_type == 'Cancelled')%>
-                                    <td><span class="badge transaction-type-withdrawal">Credit</span></td>
-                                </tr>
-                                <%})%>
-                               <%})%>
-                            </tbody>
-                        </table>
+                        <div class="col-md-4">
+                            <!-- <input type="text" class="form-control" placeholder="Search transactions"> -->
+                        </div>
                     </div>
-                
-                    </main>
 
-            
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>TRANSACTION ID</th>
+                                <th>DATE</th>
+                                <th>DESCRIPTION</th>
+                                <th>AMOUNT</th>
+
+                                <th>TYPE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% wallet?.forEach(item=>{ %>
+                                <% item.history.forEach(hist=>{ %>
+                                    <tr>
+                                        <td>
+                                            <%=hist.transaction_id%>
+                                        </td>
+                                        <td>
+                                            <%= new Date(hist.date.getTime() ).toLocaleDateString("en-US", {
+                                                year: "numeric" , month: "long" , day: "numeric" , }) %>
+                                        </td>
+                                        <td>
+                                            <%=hist.description%>
+                                        </td>
+                                        <td>
+                                            <%=hist.amount%>
+                                        </td>
+                                        <% if(hist.transaction_type==='Cancelled' ) { %>
+                                            <td><span class="badge transaction-type-withdrawal">Credit</span></td>
+                                            <% } else { %>
+                                                <td><span class="badge transaction-type-debit">Debit</span></td>
+                                                <% } %>
+
+                                    </tr>
+                                    <%})%>
+                                        <%})%>
+                        </tbody>
+                    </table>
+                </div>
+
+            </main>
 
 
 
-            
+
+
+
             <footer class="footer">
 
                 <div class="footer-middle">
@@ -286,19 +299,19 @@
 
                         </li>
                         <li>
-                            <a href="/">Home</a>  
+                            <a href="/">Home</a>
                         </li>
                         <li>
-                            <a href="/shop">Shop</a>  
+                            <a href="/shop">Shop</a>
                         </li>
                         <li>
-                            <a href="/wishlist">Wishlist</a>  
+                            <a href="/wishlist">Wishlist</a>
                         </li>
                         <li>
-                            <a href="/cart">Cart</a>  
+                            <a href="/cart">Cart</a>
                         </li>
                         <li>
-                            <a href="/dashboard">My Account</a>  
+                            <a href="/dashboard">My Account</a>
                         </li>
                     </ul>
                 </nav>
@@ -316,7 +329,7 @@
         <!-- Sign in / Register Modal -->
 
         <!-- Plugins JS File -->
-       
 
 
-    <%- include ('../../layout/footer.ejs') %>
+
+        <%- include ('../../layout/footer.ejs') %>

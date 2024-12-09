@@ -84,7 +84,7 @@
 
                         <nav class="main-nav">
                             <ul class="menu sf-arrows">
-                                <li class="megamenu-container active">
+                                <li >
                                     <a href="/" class="sf-with-ul">Home</a>
 
 
@@ -104,8 +104,8 @@
 
                     <div class="header-right">
                         <div class="header-search">
-                            <a href="#" class="search-toggle" role="button" title="Search"><i
-                                    class="icon-search"></i></a>
+                            <a href="#" class="search-toggle" role="button" title="Search">
+                                   
                             <form action="#" method="get">
 
                             </form>
@@ -113,13 +113,17 @@
 
 
                         <div class="dropdown cart-dropdown">
-                            <a href="/cart" class="dropdown-toggle" role="button" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
-                                <i class="icon-shopping-cart"></i>
+                            <a href="/cart" class="dropdown-toggle">
 
+                                <div class="icon">
+                                    <i class="icon-shopping-cart"></i>
+
+
+                                </div>
+                              
                             </a>
 
-                            <!-- End .dropdown-menu -->
+
                         </div><!-- End .cart-dropdown -->
                     </div><!-- End .header-right -->
                 </div><!-- End .container -->
@@ -265,11 +269,11 @@
                                                     </div><!-- End .details-action-col -->
 
 
-                                                    <div class="details-action-wrapper">
+                                                    <!-- <div class="details-action-wrapper">
                                                         <% if(typeof userData !=='undefined' ){ %>
                                                             <button class="btn-product-icon btn-wishlist" title="Add to wishlist" data-product-id="<%= productData?._id %>"  data-user-id="<%= userData._id %>"></button><span>Add to wishlist</span>
                                                         <%}%>
-                                                    </div><!-- End .details-action-wrapper -->
+                                                    </div>End .details-action-wrapper -->
                                                 </div><!-- End .product-details-action -->
 
                                                 <div class="product-details-footer">
@@ -491,9 +495,9 @@
                     <% } %>
                 </a>
     
-                <div class="product-action-vertical">
+                <!-- <div class="product-action-vertical">
                     <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>Add to wishlist</span></a>
-                </div><!-- End .product-action-vertical -->
+                </div> -->
     
                 <div class="product-action">
                     
