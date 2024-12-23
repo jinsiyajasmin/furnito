@@ -101,7 +101,7 @@
 
                         <nav class="main-nav">
                             <ul class="menu sf-arrows">
-                                <li >
+                                <li>
                                     <a href="/" class="sf-with-ul">Home</a>
 
 
@@ -123,23 +123,23 @@
                             <a href="#" class="search-toggle" role="button" title="Search">
                                 <i class="icon-search"></i>
                             </a>
-                            
+
                             <form action="/search" method="get">
                                 <div class="header-search-wrapper">
                                     <label for="q" class="sr-only">Search</label>
-                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search here..."
-                                        value="<%= searchQuery || '' %>">
+                                    <input type="search" class="form-control" name="q" id="q"
+                                        placeholder="Search here..." value="<%= searchQuery || '' %>">
                                     <button type="submit" class="btn btn-primary">Search</button>
                                 </div>
                             </form>
-                            
-                            
-                            
-                            
+
+
+
+
                         </div>
 
-                            
-    
+
+
 
 
                         <div class="dropdown cart-dropdown">
@@ -177,108 +177,55 @@
                                 <div class="sidebar sidebar-shop">
 
                                     <!-- Off-Canvas Sidebar for Sorting and Categories -->
-                                    <div class="offcanvas offcanvas-start" tabindex="-1" id="filterSidebar"
-                                        aria-labelledby="filterSidebarLabel">
+                                    <!-- Offcanvas for Filter and Sort -->
+                                    <div class="offcanvas offcanvas-start" tabindex="-1" id="filterSortOffcanvas"
+                                        aria-labelledby="filterSortLabel">
                                         <div class="offcanvas-header">
-                                            <h5 class="offcanvas-title" id="filterSidebarLabel">Filters</h5>
+                                            <h5 class="offcanvas-title" id="filterSortLabel">Filter & Sort</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="offcanvas-body">
-                                            <!-- Category Filter Section -->
-                                            <div class="widget widget-collapsible">
-                                                <h3 class="widget-title">
-                                                    <a data-toggle="collapse" href="#widget-1" role="button"
-                                                        aria-expanded="true" aria-controls="widget-1">
-                                                        Category
-                                                    </a>
-                                                </h3>
-                                                <div class="collapse show" id="widget-1">
-                                                    <div class="widget-body">
-                                                        <div class="filter-items filter-items-count">
-                                                            <% if (categories && categories.length> 0) { %>
-                                                                <% categories.forEach((category, index)=> { %>
-                                                                    <div class="filter-item">
-                                                                        <div class="custom-control custom-checkbox">
-                                                                            <input type="checkbox"
-                                                                                class="custom-control-input"
-                                                                                id="cat-<%= index %>"
-                                                                                name="categoryFilter"
-                                                                                value="<%= category.name %>">
-                                                                            <label class="custom-control-label"
-                                                                                for="cat-<%= index %>">
-                                                                                <%= category.name %>
-                                                                            </label>
-                                                                        </div>
-                                                                        <span class="item-count">
-                                                                            <%= category.count %>
-                                                                        </span>
-                                                                    </div>
-                                                                    <% }); %>
-                                                                        <% } else { %>
-                                                                            <p>No categories available</p>
-                                                                            <% } %>
-                                                        </div>
+                                            <!-- Filter Section -->
+                                            <h6>Filter by Category</h6>
+                                            <div>
+                                                <% categories.forEach(category=> { %>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input category-filter" type="checkbox"
+                                                            value="<%= category.name %>" id="<%= category._id %>">
+                                                        <label class="form-check-label" for="<%= category._id %>">
+                                                            <%= category.name %>
+                                                        </label>
                                                     </div>
-                                                </div>
+                                                    <% }) %>
                                             </div>
 
-                                            <div class="widget widget-collapsible">
-                                                <h3 class="widget-title">Sort By</h3>
-                                                <div class="widget-body">
-                                                    <div class="filter-items">
-                                                        <div class="custom-control custom-radio">
-                                                            <input type="radio" class="custom-control-input"
-                                                                id="sort-default" name="sortBy" value="default" checked>
-                                                            <label class="custom-control-label"
-                                                                for="sort-default">Default</label>
-                                                        </div>
-                                                        <div class="custom-control custom-radio">
-                                                            <input type="radio" class="custom-control-input"
-                                                                id="sort-lowToHigh" name="sortBy" value="lowToHigh">
-                                                            <label class="custom-control-label" for="sort-lowToHigh">Low
-                                                                to High</label>
-                                                        </div>
-                                                        <div class="custom-control custom-radio">
-                                                            <input type="radio" class="custom-control-input"
-                                                                id="sort-highToLow" name="sortBy" value="highToLow">
-                                                            <label class="custom-control-label"
-                                                                for="sort-highToLow">High to Low</label>
-                                                        </div>
-                                                        <div class="custom-control custom-radio">
-                                                            <input type="radio" class="custom-control-input"
-                                                                id="sort-aToZ" name="sortBy" value="aToZ">
-                                                            <label class="custom-control-label" for="sort-aToZ">A to
-                                                                Z</label>
-                                                        </div>
-                                                        <div class="custom-control custom-radio">
-                                                            <input type="radio" class="custom-control-input"
-                                                                id="sort-zToA" name="sortBy" value="zToA">
-                                                            <label class="custom-control-label" for="sort-zToA">Z to
-                                                                A</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                            <!-- Sorting Section -->
+                                            <h6 class="mt-4">Sort by</h6>
+                                            <select id="sortOption" class="form-select">
+                                                <option value="">Select</option>
+                                                <option value="atoz">Name: A to Z</option>
+                                                <option value="ztoa">Name: Z to A</option>
+                                                <option value="lowtohigh">Price: Low to High</option>
+                                                <option value="hightolow">Price: High to Low</option>
+                                            </select>
 
-
-                                        <div class="offcanvas-footer p-3 border-top">
-                                            <div class="d-flex justify-content-between gap-2">
-                                                <button type="button" class="btn btn-outline-secondary flex-grow-1"
-                                                    onclick="clearAllFilters()">Clear All</button>
-                                                <button type="button" class="btn btn-primary flex-grow-1"
-                                                    onclick="applyFilters()">Apply Filters</button>
+                                            <!-- Buttons -->
+                                            <div class="mt-4 d-flex justify-content-between">
+                                                <button id="clearFilters" class="btn btn-secondary">Clear</button>
+                                                <button id="applyFilters" class="btn btn-primary">Apply</button>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="toolbox-left">
-                                        <a href="#" data-bs-toggle="offcanvas" data-bs-target="#filterSidebar"
-                                            aria-controls="filterSidebar" class="filter-btn">
-                                            <i class="icon-bars"></i> Filters
-                                        </a>
 
+                                    <!-- Button to Open Offcanvas -->
+                                    <div class="d-flex justify-content-end mb-3">
+                                        <button class="btn btn-outline-primary" data-bs-toggle="offcanvas"
+                                            data-bs-target="#filterSortOffcanvas">
+                                            Filter & Sort
+                                        </button>
                                     </div>
+
 
 
 
@@ -288,20 +235,26 @@
 
                             <div class="products">
                                 <div class="row">
-                                    <% if (products.length > 0) { %>
-                                        <% products.forEach((item) => { %>
-                                            <div class="col-6 col-md-4 col-lg-4 col-xl-3 product-item" data-category="<%= item.category %>">
+                                    <% if (products.length> 0) { %>
+                                        <% products.forEach((item)=> { %>
+                                            <div class="col-6 col-md-4 col-lg-4 col-xl-3 product-item"
+                                                data-category="<%= item.category %>">
                                                 <!-- Product Card HTML -->
                                                 <div class="product product-7 text-center">
                                                     <figure class="product-media">
                                                         <a href="/productDetails/<%= item._id %>">
                                                             <% if (item.offer) { %>
-                                                                <span class="product-label label-circle label-sale"><%= item.offer.discount %>% OFF</span>
-                                                            <% } %>
-                                                            <img src="/uploads/<%= item.productImage[0] %>" alt="<%= item.productName %>" class="product-image">
+                                                                <span class="product-label label-circle label-sale">
+                                                                    <%= item.offer.discount %>% OFF
+                                                                </span>
+                                                                <% } %>
+                                                                    <img src="/uploads/<%= item.productImage[0] %>"
+                                                                        alt="<%= item.productName %>"
+                                                                        class="product-image">
                                                         </a>
                                                         <div class="product-action-vertical">
-                                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"
+                                                            <a href="#"
+                                                                class="btn-product-icon btn-wishlist btn-expandable"
                                                                 data-product-id="<%= item._id %>">
                                                                 <span>Add to wishlist</span>
                                                             </a>
@@ -325,26 +278,33 @@
                                                         </div>
                                                     </figure>
                                                     <div class="product-body">
-                                                        <h3 class="product-title"><%= item.productName %></h3>
-                                                        <div class="product-cat"><%= item.productDescription %></div>
+                                                        <h3 class="product-title">
+                                                            <%= item.productName %>
+                                                        </h3>
+                                                        <div class="product-cat">
+                                                            <%= item.productDescription %>
+                                                        </div>
                                                         <div class="product-price">
                                                             <% if (item.offer) { %>
-                                                                <span class="old-price">₹<%= item.originalPrice.toFixed(2) %></span>
-                                                                <span class="new-price">₹<%= item.discountedPrice.toFixed(2) %></span>
-                                                            <% } else { %>
-                                                                <span class="price">₹<%= item.price.toFixed(2) %></span>
-                                                            <% } %>
+                                                                <span class="old-price">₹<%=
+                                                                        item.originalPrice.toFixed(2) %></span>
+                                                                <span class="new-price">₹<%=
+                                                                        item.discountedPrice.toFixed(2) %></span>
+                                                                <% } else { %>
+                                                                    <span class="price">₹<%= item.price.toFixed(2) %>
+                                                                            </span>
+                                                                    <% } %>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        <% }); %>
-                                    <% } else { %>
-                                        <p>No products found matching "<%= searchQuery %>".</p>
-                                    <% } %>
+                                            <% }); %>
+                                                <% } else { %>
+                                                    <p>No products found matching "<%= searchQuery %>".</p>
+                                                    <% } %>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -493,94 +453,52 @@
 
 
 
-    <script>
+   
 
-        (function () {
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const applyButton = document.getElementById("applyFilters");
+    const clearButton = document.getElementById("clearFilters");
+    const searchInput = document.getElementById("searchBox");
+    const sortOption = document.getElementById("sortOption");
 
-            let field = document.querySelector('.items');
-            let li = Array.from(field.children);
+  
+    function fetchProducts() {
+        const selectedCategories = Array.from(document.querySelectorAll(".category-filter:checked"))
+            .map(input => input.value);
+        const sortBy = sortOption.value;
 
-            function FilterProduct() {
-                for (let i of li) {
-                    const name = i.querySelector('product-image');
-                    const x = name.textContent;
-                    i.setAttribute("data-category", x);
-                }
+        const query = new URLSearchParams({
+            categories: selectedCategories.join(","),
+            sort: sortBy,
+            q: searchInput ? searchInput.value : ""
+        });
 
-                let indicator = document.querySelector('filter-item').children;
+        fetch(`/products?${query.toString()}`)
+            .then(response => response.text())
+            .then(html => {
+                const productContainer = document.querySelector(".products .row");
+                productContainer.innerHTML = html;
+            })
+            .catch(err => console.error("Error fetching products:", err));
+    }
 
-                this.run = function () {
-                    for (let i = 0; i < indicator.length; i++) {
-                        indicator[i].onclick = function () {
-                            for (let x = 0; x < indicator.length; x++) {
-                                indicator[x].classList.remove('active');
-                            }
-                            this.classList.add('active');
-                            const displayItems = this.getAttribute('data-filter');
+   
+    applyButton.addEventListener("click", () => {
+        fetchProducts();
+        const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('filterSortOffcanvas'));
+        offcanvas.hide();
+    });
 
-                            for (let z = 0; z < li.length; z++) {
-                                li[z].style.transform = "scale(0)";
-                                setTimeout(() => {
-                                    li[z].style.display = "none";
-                                }, 500);
 
-                                if ((li[z].getAttribute('data-category') == displayItems) || displayItems == "all") {
-                                    li[z].style.transform = "scale(1)";
-                                    setTimeout(() => {
-                                        li[z].style.display = "block";
-                                    }, 500);
-                                }
-                            }
-                        };
-                    }
-                }
-            }
+    clearButton.addEventListener("click", () => {
+        document.querySelectorAll(".category-filter").forEach(input => (input.checked = false));
+        sortOption.value = "";
+        fetchProducts();
+    });
+});
 
-            function SortProduct() {
-                let select = document.getElementById('select');
-                let ar = [];
-                for (let i of li) {
-                    const last = i.lastElementChild;
-                    const x = last.textContent.trim();
-                    const y = Number(x.substring(1));
-                    i.setAttribute("data-price", y);
-                    ar.push(i);
-                }
-                this.run = () => {
-                    addevent();
-                }
-                function addevent() {
-                    select.onchange = sortingValue;
-                }
-                function sortingValue() {
 
-                    if (this.value === 'Default') {
-                        while (field.firstChild) { field.removeChild(field.firstChild); }
-                        field.append(...ar);
-                    }
-                    if (this.value === 'LowToHigh') {
-                        SortElem(field, li, true)
-                    }
-                    if (this.value === 'HighToLow') {
-                        SortElem(field, li, false)
-                    }
-                }
-                function SortElem(field, li, asc) {
-                    let dm, sortli;
-                    dm = asc ? 1 : -1;
-                    sortli = li.sort((a, b) => {
-                        const ax = a.getAttribute('data-price');
-                        const bx = b.getAttribute('data-price');
-                        return ax > bx ? (1 * dm) : (-1 * dm);
-                    });
-                    while (field.firstChild) { field.removeChild(field.firstChild); }
-                    field.append(...sortli);
-                }
-            }
-
-            new FilterProduct().run();
-            new SortProduct().run();
-        })();
 
 
 
@@ -753,42 +671,42 @@
     </script>
     <script>
 
-       
-document.getElementById('search-icon').addEventListener('click', function () {
-    const searchWrapper = document.querySelector('.header-search-wrapper');
-    if (searchWrapper.style.display === 'none' || !searchWrapper.style.display) {
-        searchWrapper.style.display = 'block'; // Show the search field
-    } else {
-        searchWrapper.style.display = 'none'; // Hide the search field
-    }
-});
+
+        document.getElementById('search-icon').addEventListener('click', function () {
+            const searchWrapper = document.querySelector('.header-search-wrapper');
+            if (searchWrapper.style.display === 'none' || !searchWrapper.style.display) {
+                searchWrapper.style.display = 'block'; // Show the search field
+            } else {
+                searchWrapper.style.display = 'none'; // Hide the search field
+            }
+        });
 
 
 
-const searchInput = document.getElementById('q');
-const searchWrapper = document.querySelector('.header-search-wrapper');
+        const searchInput = document.getElementById('q');
+        const searchWrapper = document.querySelector('.header-search-wrapper');
 
-document.getElementById('search-icon').addEventListener('click', function () {
-    const searchWrapper = document.querySelector('.header-search-wrapper');
-    searchWrapper.classList.toggle('active');
-});
-
-
+        document.getElementById('search-icon').addEventListener('click', function () {
+            const searchWrapper = document.querySelector('.header-search-wrapper');
+            searchWrapper.classList.toggle('active');
+        });
 
 
-           
-async function handleSearch(query) {
-    try {
-        const response = await fetch(`/api/products/search?q=${encodeURIComponent(query)}`);
-        if (!response.ok) {
-            throw new Error('Search request failed');
+
+
+
+        async function handleSearch(query) {
+            try {
+                const response = await fetch(`/api/products/search?q=${encodeURIComponent(query)}`);
+                if (!response.ok) {
+                    throw new Error('Search request failed');
+                }
+                const products = await response.json();
+                console.log('Search results:', products);
+            } catch (error) {
+                console.error('Search error:', error);
+            }
         }
-        const products = await response.json();
-        console.log('Search results:', products);
-    } catch (error) {
-        console.error('Search error:', error);
-    }
-}
 
     </script>
     <%- include ('../../layout/footer.ejs') %>

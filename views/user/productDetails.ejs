@@ -487,7 +487,7 @@
     <% for(let i = 0; i < allProductData.length; i++){ %>
         <div class="product product-7 text-center">
             <figure class="product-media">
-                <a href="/showProduct?id=<%= allProductData[i]._id %>">
+                <a href="/productDetails?id=<%= allProductData[i]._id %>">
                     <% if(allProductData[i].productImage && allProductData[i].productImage.length > 0){ %>
                         <img src="/uploads/<%= allProductData[i].productImage[0] %>" alt="Product image" class="product-image">
                     <% } else { %>

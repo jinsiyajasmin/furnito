@@ -218,7 +218,7 @@
         function resendOTP() {
             $.ajax({
                 type: "POST",
-                url: "/resendOtp",
+                url: "/resend-otp",
                 success: function(response) {
                     if (response.success) {
                         showMessage("OTP resent successfully", "success");

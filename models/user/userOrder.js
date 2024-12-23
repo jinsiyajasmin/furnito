@@ -12,7 +12,7 @@ const orderSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    items: [{
+    items: [{  
         product: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'product',
@@ -33,7 +33,7 @@ const orderSchema = new mongoose.Schema({
         },
         status :{
             type :String,
-            enum :['pending','Shipped','Delivered','Cancelled','Processing','Return Requested','Returned','Rejected'],
+            enum :['pending','Shipped','Delivered','Cancelled','Processing','Return Requested','Returned','Rejected','failed'],
             default :'pending',
         },
         cancellationReason :{
@@ -91,12 +91,12 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['pending', 'processing', 'shipped', 'delivered', 'Cancelled'],
+        enum: ['pending', 'processing', 'shipped', 'delivered', 'Cancelled','failed'],
         default: 'pending'
     },
     estimatedDispatchDate: {
         type: Date,
-        required: true
+       
     },
     createdAt: {
         type: Date,

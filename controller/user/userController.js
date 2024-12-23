@@ -3,6 +3,7 @@ const nodemailer = require('nodemailer');
 const env = require('dotenv').config;
 const bcrypt = require('bcryptjs');
 const Product = require('../../models/admin/productSchema');
+const Cart = require('../../models/user/cartSchema');
 const Address = require('../../models/user/addressSchema')
 const Offer = require('../../models/admin/offerSchema');
 const Category = require('../../models/admin/categorySchema');
@@ -29,7 +30,7 @@ const loadHome = async (req, res) => {
 
         const user = req.session.user;
 
-        // Calculate the best offer for each product
+     
         const productsWithOffers = products.map(product => {
             let bestOffer = null;
 
@@ -195,9 +196,8 @@ const verifyOtp = async (req, res) => {
                 password: passwordHash,
             };
 
-            if (user.googleId) {
-                userData.googleId = user.googleId; 
-            }
+         
+            
 
             const saveUserData = new User(userData);
             await saveUserData.save();
@@ -226,10 +226,10 @@ const resendOtp = async (req, res) => {
 
 
         const newOtp = generateOtp();
-        console.log(`Generated OTP: ${newOtp} for email: ${req.session.userData.email}`); // Debugging
+        console.log(`Generated OTP: ${newOtp} for email: ${req.session.userData.email}`); 
 
 
-        const emailSent = await sendVerificationEmail(req.session.userData.email, newOtp);
+          const emailSent = await sendVerificationEmail(req.session.userData.email, newOtp);
 
         if (emailSent) {
 
@@ -314,7 +314,7 @@ const getProductList = async (req, res) => {
         const categories = await Category.find();
         const message = req.query.message || '';
         const user = req.session.user;
-        const searchQuery = req.query.q || ''; // Capture the search query from the request
+        const searchQuery = req.query.q || ''; 
 
         const products = await Product.find({
             status: 'active', 

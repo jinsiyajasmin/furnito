@@ -59,6 +59,7 @@ userRouter.get('/search', userAuth,user.getSearchResults);
 userRouter.get('/wishlist', userAuth, Cart.loadWishlist);
 userRouter.post('/addWishlistItem', userAuth, Cart.addWishlistItem);
 userRouter.post('/remove-from-wishlist', userAuth, Cart.removeFromWishlist);
+userRouter.delete('/wishlist/remove',userAuth,Cart.removeitemWishlist);
 
 
 // Checkout  Management
@@ -71,8 +72,9 @@ userRouter.post('/applyCoupon',checkout.applyCoupon);
 userRouter.post('/removeCoupon',checkout.removeCoupon);
 userRouter.post('/create-razorpay-order', checkout.createRazorpayOrder);
 userRouter.post('/verify-payment', checkout.verifyPayment);
-userRouter.post('/payment-failed', checkout.paymentFailure);
+
 userRouter.post('/check-wallet-balance', checkout.checkWalletBalance);
+userRouter.post('/save-failed-order',checkout.failedOrder)
 
 
 

@@ -363,77 +363,101 @@
         <script>
        
        document.addEventListener('DOMContentLoaded', function () {
-                const addToCartButtons = document.querySelectorAll('.addtocart'); // Changed selector to match your HTML
+    const addToCartButtons = document.querySelectorAll('.addtocart');
 
-                addToCartButtons.forEach(button => {
-                    button.addEventListener('click', async function (e) {
-                        e.preventDefault();
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', async function (e) {
+            e.preventDefault();
 
-                        const productId = this.getAttribute('data-product-id');
-                        const button = this;
-                        if (!productId) {
-                            console.error('Product ID is not defined.');
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'Error: Product ID is missing.'
-                            });
-                            return;
-                        }
+            const productId = this.getAttribute('data-product-id');
+            const userId = this.getAttribute('data-user-id'); // Fetch user ID
+            const wishlistRow = this.closest('tr'); // Reference to the table row
+            const button = this;
 
-                        button.disabled = true;
-                        button.innerHTML = '<i class="icon-cart-plus"></i>Adding...';
-
-                        try {
-                            const response = await fetch('/cart/add', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({ productId })
-                            });
-
-                            if (!response.ok) {
-                                throw new Error('Network response was not OK');
-                            }
-
-                            const data = await response.json();
-
-                            if (data.success) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Added!',
-                                    text: 'Product added to cart successfully',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                });
-
-                                button.innerHTML = '<i class="icon-cart-plus"></i>In Cart';
-                                button.classList.add('added-to-cart');
-                            } else {
-                                Swal.fire({
-                                    icon: 'info',
-                                    title: 'Note',
-                                    text: data.message || 'Could not add product to cart'
-                                });
-                            }
-                        } catch (error) {
-                            console.error('Error:', error);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'An error occurred. Please try again.'
-                            });
-                        } finally {
-
-                            button.disabled = false;
-                            if (!button.classList.contains('added-to-cart')) {
-                                button.innerHTML = '<i class="icon-cart-plus"></i>Add to Cart';
-                            }
-                        }
-                    });
+            if (!productId || !userId) {
+                console.error('Product ID or User ID is missing.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Error: Product or User ID is missing.'
                 });
-            });
+                return;
+            }
+
+            button.disabled = true;
+            button.innerHTML = '<i class="icon-cart-plus"></i>Adding...';
+
+            try {
+                // Step 1: Add product to cart
+                const addToCartResponse = await fetch('/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ productId, userId })
+                });
+
+                if (!addToCartResponse.ok) throw new Error('Failed to add product to cart.');
+
+                const cartData = await addToCartResponse.json();
+
+                if (cartData.success) {
+                    // Step 2: Remove product from wishlist
+                    const removeWishlistResponse = await fetch('/wishlist/remove', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ productId, userId })
+                    });
+
+                    if (!removeWishlistResponse.ok) throw new Error('Failed to remove product from wishlist.');
+
+                    const wishlistData = await removeWishlistResponse.json();
+
+                    if (wishlistData.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Product added to cart and removed from wishlist.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+
+                        wishlistRow.remove();
+                        setTimeout(()=>{
+                            location.reload();
+                        },1600);
+
+                    } else {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Note',
+                            text: 'Could not remove product from wishlist.'
+                        });
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Note',
+                        text: cartData.message || 'Could not add product to cart.'
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'An error occurred. Please try again.'
+                });
+            } finally {
+                button.disabled = false;
+                button.innerHTML = '<i class="icon-cart-plus"></i>Move to Cart';
+            }
+        });
+    });
+});
+
 
           
             document.addEventListener('DOMContentLoaded', function () {

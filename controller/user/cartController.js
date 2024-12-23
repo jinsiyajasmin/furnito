@@ -127,54 +127,111 @@ const viewCart = async (req, res) => {
 
 
 const updateQuant = async (req, res) => {
-    const { itemId, quantity } = req.body;
+  const { itemId, quantity } = req.body;
 
-    try {
-        if (!itemId || isNaN(quantity) || quantity < 1) {
-            return res.status(400).json({ success: false, message: 'Invalid input' });
-        }
+  try {
+      // Comprehensive input validation
+      if (!itemId || isNaN(quantity) || quantity < 1) {
+          return res.status(400).json({ 
+              success: false, 
+              errorType: 'INVALID_INPUT',
+              message: 'Invalid input. Quantity must be a positive number.' 
+          });
+      }
 
-        const cart = await Cart.findOne({ 'items._id': itemId });
-        if (!cart) {
-            return res.status(404).json({ success: false, message: 'Item not found in cart' });
-        }
+      // Find the cart containing the item
+      const cart = await Cart.findOne({ 'items._id': itemId })
+          .populate({
+              path: 'items.product',
+              select: 'name quantity price discountedPrice'
+          });
 
-        const item = cart.items.find(item => item._id.toString() === itemId);
-        if (!item) {
-            return res.status(404).json({ success: false, message: 'Item not found in cart' });
-        }
+      if (!cart) {
+          return res.status(404).json({ 
+              success: false, 
+              errorType: 'CART_NOT_FOUND',
+              message: 'Item not found in cart' 
+          });
+      }
 
-        const product = await Product.findById(item.product);
-        if (!product) {
-            return res.status(404).json({ success: false, message: 'Product not found' });
-        }
+      // Find the specific cart item
+      const cartItemIndex = cart.items.findIndex(
+          item => item._id.toString() === itemId
+      );
 
-        if (quantity > product.quantity) {
-            return res.status(400).json({
-                success: false,
-                message: `Requested quantity exceeds available stock. Only ${product.quantity} left.`,
-                availableQuantity: product.quantity
-            });
-        }
+      if (cartItemIndex === -1) {
+          return res.status(404).json({ 
+              success: false, 
+              errorType: 'ITEM_NOT_FOUND',
+              message: 'Item not found in cart' 
+          });
+      }
 
-        item.quantity = quantity;
-        item.total = item.quantity * item.discountedPrice;
+      const item = cart.items[cartItemIndex];
+      const product = item.product;
 
-        await cart.save();
+      // Comprehensive stock validation
+      if (!product) {
+          return res.status(404).json({ 
+              success: false, 
+              errorType: 'PRODUCT_NOT_FOUND',
+              message: 'Associated product not found' 
+          });
+      }
 
-        const cartSubtotal = cart.items.reduce((sum, item) => sum + item.total, 0);
+      // Check if requested quantity exceeds available stock
+      if (quantity > product.quantity) {
+          return res.status(400).json({
+              success: false,
+              errorType: 'INSUFFICIENT_STOCK',
+              message: `Insufficient stock for ${product.name}`,
+              details: {
+                  requestedQuantity: quantity,
+                  availableStock: product.quantity,
+                  productName: product.name
+              }
+          });
+      }
 
-        res.json({
-            success: true,
-            message: 'Quantity updated successfully',
-            cartItem: item,
-            cartSubtotal
-        });
+      // Update cart item
+      item.quantity = quantity;
+      item.total = item.quantity * (item.discountedPrice || product.price);
 
-    } catch (error) {
-        console.error('Error updating cart:', error);
-        res.status(500).json({ success: false, message: 'Server error' });
-    }
+      // Save updated cart
+      await cart.save();
+
+      // Recalculate cart subtotal
+      const cartSubtotal = cart.items.reduce((sum, cartItem) => 
+          sum + cartItem.total, 0);
+
+      // Prepare response
+      res.json({
+          success: true,
+          message: 'Quantity updated successfully',
+          data: {
+              cartItem: item,
+              cartSubtotal,
+              updatedProductDetails: {
+                  name: product.name,
+                  quantity: product.quantity,
+                  price: product.price
+              }
+          }
+      });
+
+  } catch (error) {
+      console.error('Error updating cart:', error);
+      
+      // Detailed error response
+      res.status(500).json({ 
+          success: false, 
+          errorType: 'SERVER_ERROR',
+          message: 'An unexpected error occurred while updating cart',
+          errorDetails: process.env.NODE_ENV === 'development' 
+              ? error.message 
+              : undefined
+      });
+  }
 };
 
 
@@ -370,7 +427,19 @@ const removeFromWishlist = async (req, res) => {
   }
 };
 
+const removeitemWishlist = async (req, res) => {
+  const { productId, userId } = req.body;
 
+  try {
+ 
+      await Wishlist.deleteOne({ 'product_id': productId, 'user_id': userId });
+
+      res.json({ success: true, message: 'Product removed from wishlist.' });
+  } catch (error) {
+      console.error('Error removing from wishlist:', error);
+      res.status(500).json({ success: false, message: 'Failed to remove product from wishlist.' });
+  }
+};
 
 
 
@@ -383,5 +452,6 @@ module.exports = {
   loadWishlist,
   addWishlistItem ,
   removeFromWishlist,
+  removeitemWishlist
 
 };

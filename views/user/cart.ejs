@@ -221,6 +221,9 @@
                                                     <td colspan="5">Your cart is empty.</td>
                                                 </tr>
                                             <% } %>
+                                            <!-- Placeholder for error message -->
+                                            <div id="error-message" style="display: none;"></div>
+
                                             
                                         </tbody>
                                     </table>
@@ -412,7 +415,8 @@
 
 
     <script>
-      
+  
+
       document.addEventListener('DOMContentLoaded', function() {
     const quantityInputs = document.querySelectorAll('.quantity-input');
     const removeButtons = document.querySelectorAll('.btn-remove');
@@ -450,9 +454,9 @@
             return response.json();
         })
         .then(data => {
-          
             if (data.success) {
-             
+                console.log('Quantity updated successfully:', data);
+           
             } else {
                 throw new Error(data.message || 'Failed to update quantity');
             }
@@ -460,9 +464,11 @@
         .catch(error => {
             console.error('Error updating quantity:', error);
             alert('There was a problem updating the quantity: ' + (error.message || 'Unknown error'));
-           
+            // Revert the input to the previous value if needed
         });
     }
+
+
 
 
 
