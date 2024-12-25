@@ -57,12 +57,11 @@ const viewCart = async (req, res) => {
           return res.render("cart", { cart: [], totalPrice: 0, user });
       }
 
-      // Fetch active offers
       const offers = await Offer.find({ status: 'active' })
           .populate('products')
           .populate('category');
 
-      // Process cart items
+     
       const validItems = cart.items.filter(item => item.product);
       let subTotal = 0;
 
@@ -70,7 +69,7 @@ const viewCart = async (req, res) => {
           const product = item.product;
           let bestOffer = null;
 
-          // Find matching offers for the product
+        
           const matchingOffers = offers.filter(offer => {
               const productMatch = offer.products.some(p => p && p._id.equals(product._id));
               const categoryMatch =
@@ -83,7 +82,7 @@ const viewCart = async (req, res) => {
               return productMatch || categoryMatch;
           });
 
-          // Determine the best offer (highest discount)
+      
           if (matchingOffers.length > 0) {
               bestOffer = matchingOffers.reduce((max, offer) =>
                   max.discount > offer.discount ? max : offer

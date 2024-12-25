@@ -194,17 +194,19 @@
                                                                     ₹<%= item.product.price.toFixed(2) %>
                                                                 <% } %>
                                                             </td>
-                                                            <td class="quantity-col">
-                                                                <div class="cart-product-quantity">
-                                                                    <input type="number" class="form-control quantity-input" 
-                                                                        value="<%= item.quantity %>" 
-                                                                        min="1" max="<%= Math.min(item.product.quantity, 10) %>" step="1" required
-                                                                        data-price="<%= item.discountedPrice %>"
-                                                                        data-item-id="<%= item._id %>"
-                                                                        data-max-quantity="<%= item.product.quantity %>">
-                                                                </div>
-                                                                <div id="error-message-<%= item._id %>"></div>
-                                                            </td>
+                                                          
+                                                                <td class="quantity-col">
+                                                                    <div class="cart-product-quantity">
+                                                                        <input type="number" class="form-control quantity-input" 
+                                                                            value="<%= item.quantity %>" 
+                                                                            min="1" max="<%= Math.min(item.product.quantity, 10) %>" step="1" required
+                                                                            data-price="<%= item.discountedPrice %>"
+                                                                            data-item-id="<%= item._id %>"
+                                                                            data-max-quantity="<%= item.product.quantity %>">
+                                                                    </div>
+                                                                    <div id="error-message-<%= item._id %>"></div>
+                                                                </td>
+                                                           
                                                             <td class="total-col item-total" data-item-id="<%= item._id %>">
                                                                 ₹<%= item.totalItemPrice.toFixed(2) %>
                                                             </td>
@@ -417,7 +419,7 @@
     <script>
   
 
-      document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function() {
     const quantityInputs = document.querySelectorAll('.quantity-input');
     const removeButtons = document.querySelectorAll('.btn-remove');
 
@@ -509,6 +511,18 @@ function updateSummaryTable(total) {
     updateElementText('.table-summary tbody tr:first-child td:last-child', `₹${total.toFixed(2)}`);
     updateElementText('.table-summary tfoot tr td:last-child', `₹${total.toFixed(2)}`);
 }
+
+
+
+
+
+
+   
+
+
+
+
+
 
 
 

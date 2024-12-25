@@ -171,7 +171,7 @@
                         
                             <% let subtot = order.total_amount + (order.discount || 0); %>
                             <span><strong>Subtotal:</strong> ₹<%= subtot.toFixed(2) %></span><br>
-                            <span><strong>Discount:</strong> - ₹<%= (order.discount || 0).toFixed(2) %></span><br>
+                            <!-- <span><strong>Discount:</strong> - ₹<%= (order.discount || 0).toFixed(2) %></span><br> -->
                             <span><strong>Grand Total:</strong> ₹<%= order.total_amount.toFixed(2) %></span><br>
                             
                            

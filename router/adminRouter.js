@@ -67,11 +67,11 @@ const upload = multer({
 adminRouter.get("/login", admin.loadLogin);
 adminRouter.post("/login", admin.login);
 adminRouter.get("/logout", admin.logout);
-adminRouter.get("/dashboard", admin.loadDashboard);
+adminRouter.get("/dashboard",adminAuth, admin.loadDashboard);
 
 
 // Customer Management
-adminRouter.get("/customers", customer.customerInfo);
+adminRouter.get("/customers",adminAuth, customer.customerInfo);
 adminRouter.get("/users", adminAuth, customer.customerInfo);
 adminRouter.get("/blockCustomer", adminAuth, customer.customerBlocked);
 adminRouter.get("/unblockCustomer", adminAuth, customer.customerunBlocked);
@@ -86,11 +86,11 @@ adminRouter.put("/api/categories/:id", adminAuth, Category.updateCategory);
 
 
 // Product Management
-adminRouter.get("/product", Product.getProductAddPage);
-adminRouter.get("/get-products", Product.getProducts);
-adminRouter.get("/addProduct", Product.getAddProductPage);
+adminRouter.get("/product",adminAuth, Product.getProductAddPage);
+adminRouter.get("/get-products",adminAuth, Product.getProducts);
+adminRouter.get("/addProduct",adminAuth, Product.getAddProductPage);
 adminRouter.post("/addProduct", adminAuth, upload.array("images", 3), Product.addProduct);
-adminRouter.get("/editProduct", Product.getEditProduct);
+adminRouter.get("/editProduct",adminAuth, Product.getEditProduct);
 adminRouter.post("/editProduct/:id", upload.array("images", 3), Product.editProduct);
 
 
@@ -99,7 +99,8 @@ adminRouter.post("/editProduct/:id", upload.array("images", 3), Product.editProd
 adminRouter.get("/orders", adminAuth, Orders.getAdminOrders);
 adminRouter.get("/updateStatus", adminAuth, Orders.loadupdateStatus);
 adminRouter.post("/updateOrderStatus", adminAuth, Orders.updateOrderStatus);
-adminRouter.put("/admin/cancelOrder", Orders.cancelOrder);
+adminRouter.put("/orders/:orderId/cancel", Orders.cancelOrder);
+
 
 
 // Offer Management

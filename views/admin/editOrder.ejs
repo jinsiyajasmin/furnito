@@ -496,7 +496,9 @@
                                                       id="product-status" 
                                                       class="form-select select2" 
                                                       data-placeholder="Select product status">
-                                              
+                                                      <option value="Pending" <%= product?.status === 'failed' ? 'selected' : '' %>>
+                                                       failed
+                                                    </option>
                                                   <option value="Pending" <%= product?.status === 'Pending' ? 'selected' : '' %>>
                                                       Pending
                                                   </option>

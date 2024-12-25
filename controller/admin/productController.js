@@ -91,7 +91,6 @@ const addProduct = async (req, res) => {
     try {
         const { productName, description, price, category, quantity, status } = req.body;
 
-
         const images = [];
         if (req.files && req.files.length > 0) {
             for (let i = 0; i < req.files.length; i++) {
@@ -111,6 +110,10 @@ const addProduct = async (req, res) => {
         });
 
         await newProduct.save();
+      
+
+       
+        res.json({ success: true, message: 'Product added successfully!' });
         res.redirect('/admin/product');
     } catch (error) {
         console.error("Error saving product", error);
@@ -153,7 +156,7 @@ const editProduct = async (req, res) => {
             return res.status(400).json({ success: false, message: "Product with the same name already exists" });
         }
 
-
+   
         let images = [...product.productImage];
 
 

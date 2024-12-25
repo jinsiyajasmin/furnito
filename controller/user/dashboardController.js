@@ -265,7 +265,7 @@ const updateProfile = async (req, res) => {
 
 
 
-            const orders = await Order.find()
+            const orders = await Order.find({user: userData})
                 .populate('items.product')
                 .populate('address')
                 .sort({ createdAt: -1 });
@@ -298,19 +298,18 @@ const updateProfile = async (req, res) => {
             productToCancel.status = 'Cancelled';
             productToCancel.cancellationReason = cancel_reason;
     
-            // Restore product stock
+           
             await Product.findByIdAndUpdate(
                 productToCancel.product,
                 { $inc: { quantity: productToCancel.quantity } },
                 { new: true }
             );
     
-            // Refund logic for completed payments
             if (order.payment_type.pay_type === "UPI PAYMENT" && order.paymentStatus === 'Completed') {
                 const refundAmount = parseFloat(productToCancel.total);
                 const randomID = Math.floor(100000 + Math.random() * 900000);
     
-                // Upsert wallet for user
+               
                 await Wallet.findOneAndUpdate(
                     { user_id: req.session.user },
                     {

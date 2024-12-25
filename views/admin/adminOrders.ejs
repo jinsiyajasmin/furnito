@@ -308,7 +308,8 @@
 
                         </td>
                         <td class="align-middle">
-                          <%= order.payment_type.pay_type %>
+                          <%= order.payment_type ? order.payment_type.pay_type || 'UPI PAYMENT' : 'UPI PAYMENT' %>
+                      
                         </td>
                         <td class="align-middle">
                           <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -350,7 +351,9 @@
                             </span></p>
                           <p>Total Amount: <span>₹<%= orders[i].total_amount %></span></p>
                           <p>Payment Type: <span>
-                              <%= orders[i].payment_type.pay_type %>
+                            <%= (orders[i] && orders[i].payment_type && orders[i].payment_type.pay_type) || 'UPI PAYMENT' %>
+
+
                             </span></p>
                           <p>Payment Status: <span>
                               <%=orders[i].paymentStatus%>
@@ -411,7 +414,7 @@
                                 <td>
                                   <% if(product.status !=='Cancelled' && product.status !=='Delivered' && product.status
                                     !=='Returned' && product.status !=='Return Requested' && product.status
-                                    !=='Return Rejected' ) { %>
+                                    !=='Return Rejected'&& product.status !=='failed'  ) { %>
                                     <div class="d-flex justify-content-start align-items-center customer-country">
                                       <div>
                                         <a href="/admin/updateStatus?itemid=<%= product._id%>&orderid=<%= orders[i].orderId %>">
@@ -426,7 +429,7 @@
                                 <td>
                                   <% if(product.status !=='Cancelled' && product.status !=='Delivered' && product.status
                                     !=='Returned' && product.status !=='Return Requested' && product.status
-                                    !=='Return Rejected' ) { %>
+                                    !=='Return Rejected'&& product.status !=='failed' ) { %>
                                     <button id="cancel-order" class="btn btn-danger cancel-order" data-bs-toggle="modal"
                                       data-order-id="<%= orders[i].orderId %>">
                                       CANCEL
@@ -482,7 +485,7 @@
 
             </script>
             <script>
-              
+    
           
               document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.cancel-order').forEach(button => {

@@ -120,18 +120,9 @@
 
                     <div class="header-right">
                         <div class="header-search">
-                            <a href="#" class="search-toggle" role="button" title="Search">
-                                <i class="icon-search"></i>
-                            </a>
+                            
 
-                            <form action="/search" method="get">
-                                <div class="header-search-wrapper">
-                                    <label for="q" class="sr-only">Search</label>
-                                    <input type="search" class="form-control" name="q" id="q"
-                                        placeholder="Search here..." value="<%= searchQuery || '' %>">
-                                    <button type="submit" class="btn btn-primary">Search</button>
-                                </div>
-                            </form>
+                          
 
 
 
@@ -176,55 +167,61 @@
                             <aside class="col-lg-3 order-lg-first">
                                 <div class="sidebar sidebar-shop">
 
-                                    <!-- Off-Canvas Sidebar for Sorting and Categories -->
-                                    <!-- Offcanvas for Filter and Sort -->
-                                    <div class="offcanvas offcanvas-start" tabindex="-1" id="filterSortOffcanvas"
-                                        aria-labelledby="filterSortLabel">
+                                   
+                                    <div class="offcanvas offcanvas-end" tabindex="-1" id="filterSortOffcanvas" aria-labelledby="filterSortOffcanvasLabel">
                                         <div class="offcanvas-header">
-                                            <h5 class="offcanvas-title" id="filterSortLabel">Filter & Sort</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
-                                                aria-label="Close"></button>
+                                            <h5 class="offcanvas-title" id="filterSortOffcanvasLabel">Filters & Sorting</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                                         </div>
                                         <div class="offcanvas-body">
-                                            <!-- Filter Section -->
-                                            <h6>Filter by Category</h6>
-                                            <div>
-                                                <% categories.forEach(category=> { %>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input category-filter" type="checkbox"
-                                                            value="<%= category.name %>" id="<%= category._id %>">
-                                                        <label class="form-check-label" for="<%= category._id %>">
-                                                            <%= category.name %>
-                                                        </label>
-                                                    </div>
-                                                    <% }) %>
-                                            </div>
-
-                                            <!-- Sorting Section -->
-                                            <h6 class="mt-4">Sort by</h6>
-                                            <select id="sortOption" class="form-select">
-                                                <option value="">Select</option>
-                                                <option value="atoz">Name: A to Z</option>
-                                                <option value="ztoa">Name: Z to A</option>
-                                                <option value="lowtohigh">Price: Low to High</option>
-                                                <option value="hightolow">Price: High to Low</option>
-                                            </select>
-
-                                            <!-- Buttons -->
-                                            <div class="mt-4 d-flex justify-content-between">
-                                                <button id="clearFilters" class="btn btn-secondary">Clear</button>
-                                                <button id="applyFilters" class="btn btn-primary">Apply</button>
-                                            </div>
+                                            <form id="filterForm" method="GET" action="/productList">
+                                               
+                                                <div class="mb-3">
+                                                    <label for="searchQuery" class="form-label" style="font-size: 18px;">Search</label>
+                                                    <input type="text" name="q" id="searchQuery" class="form-control" placeholder="Search products">
+                                                </div>
+                                    
+                                               
+                                                <div class="mb-3">
+                                                    <label for="category" class="form-label" style="font-size: 18px;">Category</label>
+                                                    <select name="category" id="category" class="form-select" style="font-size: 16px;">
+                                                        <option value="">All Categories</option>
+                                                        <% categories.forEach(category => { %>
+                                                            <option value="<%= category._id %>"><%= category.name %></option>
+                                                        <% }); %>
+                                                    </select>
+                                                </div>
+                                    
+                                             
+                                                <div class="mb-3">
+                                                    <label for="sortBy" class="form-label" style="font-size: 18px;">Sort By</label>
+                                                    <select name="sort" id="sortBy" class="form-select" style="font-size: 16px;">
+                                                        <option value="">Default</option>
+                                                        <option value="priceLowToHigh">Price: Low to High</option>
+                                                        <option value="priceHighToLow">Price: High to Low</option>
+                                                        <option value="AtoZ">Name: A to Z</option>
+                                                        <option value="ZtoA">Name: Z to A</option>
+                                                    </select>
+                                                </div>
+                                    
+                                                <button type="submit" class="btn btn-primary mt-3">Apply Filters</button>
+                                            </form>
                                         </div>
                                     </div>
+                                    
+                                    
 
-                                    <!-- Button to Open Offcanvas -->
-                                    <div class="d-flex justify-content-end mb-3">
-                                        <button class="btn btn-outline-primary" data-bs-toggle="offcanvas"
-                                            data-bs-target="#filterSortOffcanvas">
-                                            Filter & Sort
-                                        </button>
-                                    </div>
+
+                                    <button class="btn btn-outline-primary mb-3" type="button" 
+                                    data-bs-toggle="offcanvas" 
+                                    data-bs-target="#filterSortOffcanvas" 
+                                    aria-controls="filterSortOffcanvas" 
+                                    style="font-size: 1.2rem;">
+                                    FILTER & SORT
+                                </button>
+                                
+
+
 
 
 
@@ -239,7 +236,7 @@
                                         <% products.forEach((item)=> { %>
                                             <div class="col-6 col-md-4 col-lg-4 col-xl-3 product-item"
                                                 data-category="<%= item.category %>">
-                                                <!-- Product Card HTML -->
+                                       
                                                 <div class="product product-7 text-center">
                                                     <figure class="product-media">
                                                         <a href="/productDetails/<%= item._id %>">
@@ -344,13 +341,13 @@
                                 <i class="icon-phone"></i>
                                 Got Question? Call us 24/7
                                 <a href="tel:#">+0123 456 789</a>
-                            </div><!-- End .widget-call -->
-                        </div><!-- End .widget about-widget -->
-                    </div><!-- End .col-sm-6 col-lg-3 -->
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="col-sm-6 col-lg-3">
                         <div class="widget">
-                            <h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
+                            <h4 class="widget-title">Useful Links</h4>
 
                             <ul class="widget-list">
                                 <li><a href="about.html">About furnicom</a></li>
@@ -360,7 +357,7 @@
                                 <li><a href="contact.html">Contact us</a></li>
                             </ul><!-- End .widget-list -->
                         </div><!-- End .widget -->
-                    </div><!-- End .col-sm-6 col-lg-3 -->
+                    </div>
 
                     <div class="col-sm-6 col-lg-3">
                         <div class="widget">
@@ -455,55 +452,41 @@
 
    
 
+
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-    const applyButton = document.getElementById("applyFilters");
-    const clearButton = document.getElementById("clearFilters");
-    const searchInput = document.getElementById("searchBox");
-    const sortOption = document.getElementById("sortOption");
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
 
-  
-    function fetchProducts() {
-        const selectedCategories = Array.from(document.querySelectorAll(".category-filter:checked"))
-            .map(input => input.value);
-        const sortBy = sortOption.value;
+        // Set category filter
+        const categoryFilter = document.getElementById('categoryFilter');
+        if (urlParams.has('category')) {
+            categoryFilter.value = urlParams.get('category');
+        }
 
-        const query = new URLSearchParams({
-            categories: selectedCategories.join(","),
-            sort: sortBy,
-            q: searchInput ? searchInput.value : ""
-        });
+        // Set price filters
+        const minPrice = document.getElementById('minPrice');
+        const maxPrice = document.getElementById('maxPrice');
+        if (urlParams.has('minPrice')) {
+            minPrice.value = urlParams.get('minPrice');
+        }
+        if (urlParams.has('maxPrice')) {
+            maxPrice.value = urlParams.get('maxPrice');
+        }
 
-        fetch(`/products?${query.toString()}`)
-            .then(response => response.text())
-            .then(html => {
-                const productContainer = document.querySelector(".products .row");
-                productContainer.innerHTML = html;
-            })
-            .catch(err => console.error("Error fetching products:", err));
-    }
+        // Set sorting option
+        const sort = document.getElementById('sort');
+        if (urlParams.has('sort')) {
+            sort.value = urlParams.get('sort');
+        }
+    });
+</script>
+
+
+
+
+
 
    
-    applyButton.addEventListener("click", () => {
-        fetchProducts();
-        const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('filterSortOffcanvas'));
-        offcanvas.hide();
-    });
-
-
-    clearButton.addEventListener("click", () => {
-        document.querySelectorAll(".category-filter").forEach(input => (input.checked = false));
-        sortOption.value = "";
-        fetchProducts();
-    });
-});
-
-
-
-
-
-
-    </script>
 
     <script>
 

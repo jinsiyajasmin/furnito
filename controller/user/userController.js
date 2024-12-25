@@ -310,31 +310,58 @@ const logout = async (req, res) => {
 
 const getProductList = async (req, res) => {
     try {
-      
         const categories = await Category.find();
         const message = req.query.message || '';
         const user = req.session.user;
-        const searchQuery = req.query.q || ''; 
+        const searchQuery = req.query.q || '';
+        const selectedCategory = req.query.category || ''; // Get selected category
 
-        const products = await Product.find({
-            status: 'active', 
-            $or: [
+        // **Sorting Logic**
+        let sortOption = {};
+        const sortBy = req.query.sort || '';
+
+        switch (sortBy) {
+            case 'priceLowToHigh':
+                sortOption = { price: 1 };
+                break;
+            case 'priceHighToLow':
+                sortOption = { price: -1 };
+                break;
+            case 'AtoZ':
+                sortOption = { productName: 1 };
+                break;
+            case 'ZtoA':
+                sortOption = { productName: -1 };
+                break;
+            default:
+                sortOption = {};
+        }
+
+        // **Filter Products by Search and Category**
+        let filterOptions = { status: 'active' };
+
+        if (searchQuery) {
+            filterOptions.$or = [
                 { productName: { $regex: searchQuery, $options: 'i' } },
                 { productDescription: { $regex: searchQuery, $options: 'i' } },
+            ];
+        }
 
-            ],
-        });
+        if (selectedCategory) {
+            filterOptions.Category = selectedCategory; // Filter by category
+        }
+
+        const products = await Product.find(filterOptions).sort(sortOption);
 
         const offers = await Offer.find({ status: 'active' })
             .populate('products')
             .populate('category');
-            
+
         const productsWithOffers = products.map(product => {
             let bestOffer = null;
 
             const matchingOffers = offers.filter(offer => {
                 const productMatch = offer.products.some(p => p && p._id.equals(product._id));
-
 
                 const categoryMatch =
                     product.Category &&
@@ -342,8 +369,7 @@ const getProductList = async (req, res) => {
                     offer.category.some(cat =>
                         cat && cat._id && product.Category._id.equals(cat._id)
                     );
-                          
-                
+
                 return productMatch || categoryMatch;
             });
 
@@ -355,14 +381,12 @@ const getProductList = async (req, res) => {
 
             const originalPrice = product.price || 0;
             let discountedPrice = originalPrice;
-           
+
             if (bestOffer) {
                 discountedPrice = (originalPrice * bestOffer.discount) / 100;
                 discountedPrice = originalPrice - discountedPrice;
             }
-            
-                   
-             
+
             return {
                 ...product.toObject(),
                 originalPrice,
@@ -377,8 +401,7 @@ const getProductList = async (req, res) => {
                     : null,
             };
         });
-
-
+        
 
         let userData = null;
         if (user) {
@@ -390,13 +413,17 @@ const getProductList = async (req, res) => {
             categories,
             message,
             user: userData,
-            searchQuery
+            searchQuery,
+            sortBy,
+            selectedCategory, 
         });
     } catch (error) {
         console.error('Error fetching product list or categories:', error);
         res.status(500).send('Internal Server Error');
     }
 };
+
+
 
 const getProductDetails = async (req, res) => {
     try {

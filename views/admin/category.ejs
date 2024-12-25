@@ -716,7 +716,10 @@
                   icon: 'success',
                   title: 'Success!',
                   text: 'Category updated successfully',
-                });
+                }).then(() => {
+                     window.location.reload();
+
+                    });
 
                 const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasEditCategory'));
                 offcanvas.hide();

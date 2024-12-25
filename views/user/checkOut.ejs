@@ -1109,7 +1109,7 @@
                             });
 
 
-                            
+
 
                             switch (paymentType) {
                                 case 'COD':
@@ -1153,10 +1153,11 @@
 
 
 
-                              
-                                    case 'WALLET':
+
+                                case 'WALLET':
                                     const totalAmountTextWallet = document.getElementById('cart-total')?.innerText || '0';
                                     const totalAmountWallet = parseFloat(totalAmountTextWallet.replace(/[^0-9.]/g, ''));
+                                    
 
                                     try {
                                         const walletResponse = await fetch('/check-wallet-balance', {
@@ -1206,7 +1207,7 @@
                                     }
                                     break;
 
-                                    case 'UPI PAYMENT':
+                                case 'UPI PAYMENT':
                                     try {
                                         // Step 1: Create Razorpay order
                                         const orderDetailsResponse = await fetch('/create-razorpay-order', {
@@ -1216,7 +1217,9 @@
                                             },
                                             body: JSON.stringify({
                                                 selectedAddress: selectedAddress.value,
-                                                payment_type: paymentType
+                                                payment_type: paymentType,
+                                                totalAmount: parseFloat(document.getElementById('cart-total').innerText.replace('₹', '').trim()) // Pass the total amount
+
                                             })
                                         });
 
@@ -1275,7 +1278,7 @@
 
                                         razorpayInstance.open();
                                     } catch (error) {
-                                      
+
                                         console.error('Error:', error);
                                         handlePaymentFailure('An unexpected error occurred. Please try again.', {
                                             selectedAddress: selectedAddress.value,
@@ -1312,7 +1315,10 @@
 
                 async function verifyPayment(response, orderData) {
                     try {
-                        const { razorpay_payment_id, razorpay_order_id, razorpay_signature,  address_id, paymentType } = response;
+                        if (!response.razorpay_payment_id || !response.razorpay_order_id || !response.razorpay_signature) {
+                            throw new Error('Missing required payment verification parameters');
+                        }
+
                         const verificationResponse = await fetch('/verify-payment', {
                             method: 'POST',
                             headers: {
@@ -1322,47 +1328,61 @@
                                 razorpay_payment_id: response.razorpay_payment_id,
                                 razorpay_order_id: response.razorpay_order_id,
                                 razorpay_signature: response.razorpay_signature,
-                                address_id: selectedAddress.value,
-                                payment_type: paymentType
+                                address_id: response.selectedAddress,
+                                couponDiscount: orderData.couponDiscount || 0,
+                                totalOfferPrice: orderData.totalOfferPrice || 0,
+                                totalAmount: parseFloat(document.getElementById('cart-total').innerText.replace('₹', '').trim()) // Pass the total amount
+
                             })
                         });
 
                         const verificationData = await verificationResponse.json();
 
-                        if (verificationData.success) {
-                           
+                        if (verificationData.success && verificationData.id) {
                             handleOrderResponse(verificationData);
                         } else {
-                         
-                            handlePaymentFailure(verificationData.message, {});
+                            throw new Error(verificationData.message || 'Payment verification failed');
                         }
                     } catch (error) {
                         console.error('Payment verification error:', error);
-                        handlePaymentFailure('Payment verification failed. Please try again.', {});
+                        handlePaymentFailure(error.message || 'Payment verification failed. Please try again.', orderData);
                     }
                 }
+
+
                 function handleOrderResponse(data) {
-                    if (data.success) {
+                    if (data.success && data.id) {
+
                         Swal.fire({
-                            title: 'Success!',
-                            text: data.message,
+                            title: 'Order Placed Successfully!',
+
                             icon: 'success',
                             confirmButtonText: 'View Order',
                             showCancelButton: false,
                             allowOutsideClick: false
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.href = `/orderSummary/${data.orderId}`;
+                                window.location.href = `/orderSummary/${data.id}`;
                             }
                         });
                     } else {
-                        handlePaymentFailure(data.message);
+                        handlePaymentFailure(data.message || 'Order processing failed');
                     }
+                }
+
+                function handlePaymentFailure(errorMessage, orderData = {}) {
+                    console.error('Payment failed:', errorMessage);
+                    Swal.fire({
+                        title: 'Payment Failed',
+                        text: errorMessage,
+                        icon: 'error',
+                        confirmButtonText: 'Try Again'
+                    });
                 }
 
                 async function handlePaymentFailure(errorMessage, orderData) {
                     try {
-                      
+
                         Swal.fire({
                             title: 'Processing...',
                             text: 'Handling payment failure. Please wait.',
@@ -1372,7 +1392,7 @@
                             timerProgressBar: true
                         });
 
-                        // Save the failed order
+
                         const failedOrderResponse = await fetch('/save-failed-order', {
                             method: 'POST',
                             headers: {
@@ -1380,7 +1400,9 @@
                             },
                             body: JSON.stringify({
                                 ...orderData,
-                                errorMessage: errorMessage
+                                errorMessage: errorMessage,
+                                totalAmount: parseFloat(document.getElementById('cart-total').innerText.replace('₹', '').trim()) // Pass the total amount
+
                             })
                         });
 
@@ -1408,7 +1430,6 @@
             </script>
             <script>
 
-
                 document.addEventListener('DOMContentLoaded', () => {
 
                     const couponForm = document.getElementById('couponForm');
@@ -1420,12 +1441,12 @@
                     function displayCouponMessage(message, isSuccess) {
                         const messageElement = document.getElementById('couponMessage');
                         messageElement.innerHTML = `
-                    <p style="color: ${isSuccess ? 'green' : 'red'}; font-weight: bold;">${message}</p>
-                `;
+<p style="color: ${isSuccess ? 'green' : 'red'}; font-weight: bold;">${message}</p>
+`;
                     }
 
                     function showAppliedCoupon(couponCode) {
-                        appliedCouponCode.textContent = `Applied Coupon: ${couponCode}`;
+                        appliedCouponCode.textContent = `Applied Coupon: ${ couponCode }`;
                         appliedCouponDiv.style.display = 'block';
                         couponInput.disabled = true;
                     }
@@ -1466,7 +1487,7 @@
                                         if (discountRow) discountRow.style.display = 'table-row';
                                         if (discountAmountElem) discountAmountElem.textContent = data.discountAmount.toFixed(2);
                                         if (discountPercentElem) discountPercentElem.textContent = data.discountPercent;
-                                        if (cartTotalElem) cartTotalElem.textContent = `₹${data.newTotal.toFixed(2)}`;
+                                        if (cartTotalElem) cartTotalElem.textContent = `₹${ data.newTotal.toFixed(2) }`; // Update the subtotal dynamically
 
                                         displayCouponMessage(data.message, true);
                                         showAppliedCoupon(couponCode);
@@ -1508,7 +1529,7 @@
                                     const cartTotalElem = document.getElementById('cart-total');
 
                                     if (discountRow) discountRow.style.display = 'none';
-                                    if (cartTotalElem) cartTotalElem.textContent = `₹${data.newTotal.toFixed(2)}`;
+                                    if (cartTotalElem) cartTotalElem.textContent = `₹${ data.newTotal.toFixed(2) }`;
 
                                     // Display success message
                                     displayCouponMessage('Coupon removed successfully', true);
@@ -1527,6 +1548,7 @@
                     });
 
                 });
+
             </script>
 
 
