@@ -6,12 +6,12 @@ const categoryInfo = async (req, res) => {
         res.render('category', { categories });
     } catch (error) {
         console.error("Error fetching categories:", error);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send("Internal Server Error");   
     }
-};
+};  
 
 const addCategory = async (req, res) => {
-    const { name, description, isListed } = req.body;
+    const { name, description, isListed } = req.body;  
     try {
 
         if (!name || !description || !isListed) {

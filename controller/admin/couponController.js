@@ -3,7 +3,7 @@ const Coupon = require('../../models/admin/couponSchema');
 
 
 
-const loadCoupon = async (req, res) => {
+const loadCoupon = async (req, res) => { 
     try {
 
         const coupons = await Coupon.find({})
@@ -23,8 +23,8 @@ const addCoupon = async (req, res) => {
             expiryDate,
             min_purchase_amount,
             max_amount,
-            is_active
-        } = req.body;
+            is_active  
+        } = req.body;   
 
         const newCoupon = new Coupon({
             couponId,
@@ -33,7 +33,7 @@ const addCoupon = async (req, res) => {
             expiryDate,
             min_purchase_amount,
             max_amount,
-            is_active
+            is_active   
         });
 
         await newCoupon.save();

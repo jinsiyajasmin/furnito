@@ -20,7 +20,7 @@ passport.use(
 
         if (user) {
           console.log("User found:", user);
-          return done(null, user);
+         return res.status
         } else {
           console.log("Creating new user");
           const newUser = new User({
