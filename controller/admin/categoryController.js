@@ -11,7 +11,7 @@ const categoryInfo = async (req, res) => {
 };  
 
 const addCategory = async (req, res) => {
-    const { name, description, isListed } = req.body;  
+    const { name, description, isListed } = req.body; 
     try {
 
         if (!name || !description || !isListed) {
