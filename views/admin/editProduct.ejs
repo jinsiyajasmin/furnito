@@ -277,93 +277,83 @@
       <!-- / Menu -->
 
       <div class="layout-page">
-        <form id="editProductForm" method="POST" action="/admin/editProduct/<%= product._id %>" enctype="multipart/form-data" class="form" onsubmit="return validateForm()">
+        <form id="editProductForm" method="POST" action="/admin/editProduct/<%= product._id %>" enctype="multipart/form-data" class="form">
 
-            <input type="hidden" id="editProductId" name="productId" value="<%= product._id %>">
-    
-            <!-- Name Field -->
-            <div class="mb-4">
-                <label for="editProductName" class="form-label">Name</label>
-                <input type="text" id="editProductName" name="productName" value="<%= product.productName %>" class="form-control border">
-                <div id="name-error" class="error-message"></div>
-            </div>
-    
-            <!-- Description Field -->
-            <div class="mb-6">
-                <label for="editProductDescription" class="form-label">Description</label>
-                <textarea id="editProductDescription" name="productDescription" class="form-control border" rows="4"><%= product.productDescription %></textarea>
-                <div id="description-error" class="error-message"></div>
-            </div>
-    
-            <!-- Price, Stock, and Category Fields in Same Line -->
-            <div class="row mb-4">
-                <div class="col-lg-4">
-                    <label class="form-label">Price</label>
-                    <div class="input-group">
-                        <span class="input-group-text">₹</span>
-                        <input type="number" step="0.01" id="editProductPrice" name="price" value="<%= product.price %>" class="form-control border" placeholder="0.00">
-                    </div>
-                    <div id="price-error" class="error-message"></div>
-                </div>
-    
-                <div class="col-lg-4">
-                    <label class="form-label">Stock</label>
-                    <input id="editProductQuantity" name="quantity" type="number" value="<%= product.quantity %>" class="form-control border">
-                    <div id="quantity-error" class="error-message"></div>
-                </div>
-    
-                <div class="col-lg-4">
+          <input type="hidden" id="editProductId" name="productId" value="<%= product._id %>">
+      
+          <!-- Name Field -->
+          <div class="mb-4">
+              <label for="editProductName" class="form-label">Name</label>
+              <input type="text" id="editProductName" name="productName" value="<%= product.productName %>" class="form-control border" required>
+              <div id="name-error" class="error-message"></div>
+          </div>
+      
+          <!-- Description Field -->
+          <div class="mb-4">
+              <label for="editProductDescription" class="form-label">Description</label>
+              <textarea id="editProductDescription" name="productDescription" class="form-control border" rows="4" required><%= product.productDescription %></textarea>
+              <div id="description-error" class="error-message"></div>
+          </div>
+      
+          <!-- Price, Stock, and Category Fields -->
+          <div class="row mb-4">
+              <div class="col-lg-4">
+                  <label class="form-label">Price</label>
+                  <input type="number" id="editProductPrice" name="price" value="<%= product.price %>" class="form-control border" required>
+                  <div id="price-error" class="error-message"></div>
+              </div>
+      
+              <div class="col-lg-4">
+                  <label class="form-label">Stock</label>
+                  <input id="editProductQuantity" name="quantity" type="number" value="<%= product.quantity %>" class="form-control border" required>
+                  <div id="quantity-error" class="error-message"></div>
+              </div>
+      
+              <div class="col-lg-4">
                   <label class="form-label">Category</label>
-                  <select id="editProductCategory" class="form-select border" name="category">
-                    <% categories.forEach(category => { %>
-                        <option value="<%= category._id %>" 
-                            <%= category._id.toString() === selectedCategoryId?.toString() ? 'selected' : '' %>>
-                            <%= category.name %>
-                        </option>
-                    <% }) %>
-                </select>
-                  
+                  <select id="editProductCategory" class="form-select border" name="category" required>
+                      <% categories.forEach(category => { %>
+                          <option value="<%= category._id %>" 
+                              <%= category._id.toString() === product.Category?._id?.toString() ? 'selected' : '' %>>
+                              <%= category.name %>
+                          </option>
+                      <% }) %>
+                  </select>
                   <div id="category-error" class="error-message"></div>
               </div>
-              
-            
-              
-                <div class="col-lg-3">
-                  <label class="form-label">Status</label>
-                  <select class="form-select border" name="status">
-                   
-                    
-                      <option value="active" "<%= product.status === 'active' ? 'selected' : '' %>" >Active</option>
-                      <option value="inactive"  "<%= product.status === 'inactive' ? 'selected' : '' %>"   >Inactive</option>
-                  </select>
-                  <div id="status-error" class="error-message"></div>
+          </div>
+      
+          <!-- Status Field -->
+          <div class="mb-4">
+              <label class="form-label">Status</label>
+              <select class="form-select border" name="status" required>
+                  <option value="active" <%= product.status === 'active' ? 'selected' : '' %>>Active</option>
+                  <option value="inactive" <%= product.status === 'inactive' ? 'selected' : '' %>>Inactive</option>
+              </select>
+              <div id="status-error" class="error-message"></div>
+          </div>
+      
+          <!-- Image Upload Section -->
+          <div class="mb-4">
+              <label class="form-label">Product Images</label>
+              <div class="d-flex flex-wrap gap-3">
+                  <% product.productImage.forEach((image, index) => { %>
+                      <div class="d-flex flex-column align-items-center mb-3">
+                          <div class="image-upload-box" style="width: 200px; height: 200px; position: relative;">
+                              <img src="/uploads/<%= image %>" alt="Preview" id="preview-<%= index %>" style="max-width: 100%; max-height: 100%; object-fit: cover;">
+                              <input type="file" name="images" accept="image/*" onchange="previewImage(this, '<%= index %>')" style="position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+                          </div>
+                          <button type="button" class="btn btn-danger btn-sm mt-2" onclick="removeImage('<%= index %>')">Remove</button>
+                      </div>
+                  <% }) %>
               </div>
-            </div>
-    
-        
-            <div class="mb-4">
-                <label class="form-label">Product Images</label>
-                <div class="d-flex flex-wrap gap-3">
-                    <% product.productImage.forEach((image, index) => { %>
-                        <div class="d-flex flex-column align-items-center mb-3">
-                            <div class="image-upload-box" style="width: 480px; height: 450px; border: 2px dashed #ddd; position: relative;">
-                                <img src="/uploads/<%= image %>" alt="Preview" id="preview-<%= index %>" style="max-width: 100%; max-height: 100%; object-fit: cover;">
-                                <input type="file" name="images" accept="image/*" onchange="previewImage(this, '<%= index %>')" style="position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
-                            </div>
-                            <!-- <div class="mt-2">
-                                <button type="button" class="btn btn-primary btn-sm me-2" onclick="document.querySelector('#preview-<%= index %>').previousElementSibling.click()">Replace Image</button>
-                                <button type="button" class="btn btn-danger btn-sm" onclick="removeImage('<%= index %>')">Remove Image</button>
-                            </div> -->
-                        </div>
-                    <% }) %>
-                </div>
-                <div id="images-error" class="error-message"></div>
-            </div>
-    
-            <div>
-                <button class="btn btn-primary" type="submit">Update Product</button>
-            </div>
-        </form>
+          </div>
+      
+          <div>
+              <button class="btn btn-primary" type="submit">Update Product</button>
+          </div>
+      </form>
+      
     </div>
 
 
@@ -508,7 +498,23 @@ function removeImage(index) {
     document.querySelector(`input[name="images"]:nth-of-type(${index + 1})`).value = '';
 }
    
-    
+function previewImage(input, index) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            document.getElementById(`preview-${index}`).src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function removeImage(index) {
+    const preview = document.getElementById(`preview-${index}`);
+    preview.src = ""; // Clear preview
+    preview.closest(".image-upload-box").querySelector("input").value = ""; // Clear file input
+}
+
 </script>
 
       

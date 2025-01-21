@@ -116,13 +116,23 @@ const getEditProduct = async (req, res) => {
 const addProduct = async (req, res) => {
     try {
         const { productName, description, price, category, quantity, status } = req.body;
-
-
+        const croppedImages = req.body['croppedImages[]'] || [];
 
         const images = [];
-        if (req.files && req.files.length > 0) {
-            for (let i = 0; i < req.files.length; i++) {
-                images.push(req.files[i].filename);
+    
+        if (Array.isArray(croppedImages)) {
+            for (const dataUrl of croppedImages) {
+                if (dataUrl) {
+                   
+                    const base64Data = dataUrl.replace(/^data:image\/\w+;base64,/, '');
+                    const imageBuffer = Buffer.from(base64Data, 'base64');
+                 
+                    const filename = `product_${Date.now()}_${images.length}.jpg`;
+                    
+                 
+                    await fs.promises.writeFile(`public/uploads/${filename}`, imageBuffer);
+                    images.push(filename);
+                }
             }
         }
 
@@ -138,18 +148,13 @@ const addProduct = async (req, res) => {
         });
 
         await newProduct.save();
-      
-
-       
+        
         res.json({ success: true, message: 'Product added successfully!' });
-        res.redirect('/admin/product');
     } catch (error) {
         console.error("Error saving product", error);
         res.status(500).json({ error: "An error occurred while adding the product" });
     }
 };
-
-
 
 
 
@@ -169,12 +174,7 @@ const editProduct = async (req, res) => {
 
         const data = req.body;
 
-            // Log to verify category
-            console.log("Received category:", data.category);
-
-
-
-
+        // Check for existing product name
         const existingProduct = await Product.findOne({
             productName: data.productName,
             _id: { $ne: id }
@@ -184,36 +184,37 @@ const editProduct = async (req, res) => {
             return res.status(400).json({ success: false, message: "Product with the same name already exists" });
         }
 
-   
+        // Initialize updated fields
         let images = [...product.productImage];
 
-
+        // Handle image uploads
         if (req.files && req.files.length > 0) {
             req.files.forEach((file, index) => {
                 if (index < images.length) {
-                    images[index] = file.filename;
+                    images[index] = file.filename; // Replace existing images
                 } else {
-                    images.push(file.filename);
+                    images.push(file.filename); // Add new images
                 }
             });
         }
 
-
-
+        // Update product fields
         const updateFields = {
             productName: data.productName,
             productDescription: data.productDescription,
-            price: data.price,
-            quantity: data.quantity,
-           Category: data.category,
+            price: parseFloat(data.price),
+            quantity: parseInt(data.quantity),
+            Category: data.category,
             productImage: images,
-            status : data.status
+            status: data.status
         };
 
-
-
-
-        const updatedProduct = await Product.findByIdAndUpdate(id, { $set: updateFields }, { new: true });
+        // Save updated product
+        const updatedProduct = await Product.findByIdAndUpdate(
+            id,
+            { $set: updateFields },
+            { new: true }
+        );
 
         if (!updatedProduct) {
             return res.status(500).json({ success: false, message: "Failed to update product" });
@@ -221,10 +222,11 @@ const editProduct = async (req, res) => {
 
         res.json({ success: true, message: "Product updated successfully", product: updatedProduct });
     } catch (error) {
-        console.error('Error updating product:', error);
+        console.error("Error updating product:", error);
         return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
+
 
 
 

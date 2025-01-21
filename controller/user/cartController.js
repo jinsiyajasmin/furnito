@@ -102,7 +102,7 @@ const viewCart = async (req, res) => {
 
           return {
               ...item.toObject(),
-              discountedPrice,
+              discountedPrice,  
               offer: bestOffer
                   ? {
                       title: bestOffer.title,
