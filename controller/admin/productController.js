@@ -11,30 +11,32 @@ const getProductAddPage = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10; 
         const skip = (page - 1) * limit; 
 
-        
         const totalProducts = await Product.countDocuments();
-        const totalPages = Math.ceil(totalProducts / limit); 
+
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        
+        const products = await Product.find({})
+            .populate('Category') 
+            .skip(skip) 
+            .limit(limit); 
 
        
-        const products = await Product.find({})
-            .populate('Category')
-            .skip(skip)
-            .limit(limit);
-
         const categories = await Category.find({ isListed: true });
 
-        
+      
         res.render("product", {
-            categories: categories,
-            products: products,
+            categories: categories, 
+            products: products, 
             currentPage: page,
-            totalPages: totalPages
+            totalPages: totalPages 
         });
     } catch (error) {
         console.error(error);
-        res.redirect("/pageerror");
+        res.redirect("/pageerror"); // Handle errors gracefully
     }
 };
+
 
 
 

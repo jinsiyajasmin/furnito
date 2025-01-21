@@ -89,9 +89,9 @@ adminRouter.put("/api/categories/:id", adminAuth, Category.updateCategory);
 adminRouter.get("/product",adminAuth, Product.getProductAddPage);
 adminRouter.get("/get-products",adminAuth, Product.getProducts);
 adminRouter.get("/addProduct",adminAuth, Product.getAddProductPage);
-adminRouter.post("/addProduct", adminAuth, upload.array("images", 3), Product.addProduct);
+adminRouter.post("/addProduct", adminAuth, upload, Product.addProduct);
 adminRouter.get("/editProduct",adminAuth, Product.getEditProduct);
-adminRouter.post("/editProduct/:id", upload.array("images", 3), Product.editProduct);
+adminRouter.post("/editProduct/:id", upload, Product.editProduct);
 
 
 
