@@ -96,7 +96,7 @@ const loadCheckoutPage = async (req, res) => {
 
         const subtotal = items.reduce((total, item) => total + parseFloat(item.total), 0);
 
-        res.render('checkout', {
+        res.render('checkOut', {
             cart: cart,
             addresses: addresses || [],
             user,
