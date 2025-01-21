@@ -3,7 +3,7 @@ const userCrendtialsSchema = new mongoose.Schema({
     
     email_address: {
         type: String,
-        required: function() { return !this.googleId; }
+        required: function () { return !this.googleId; }
     },
     googleId: {
         type: String,
@@ -21,9 +21,9 @@ const userCrendtialsSchema = new mongoose.Schema({
         type:Boolean,
         required:true
     },
-    user_name: {
-        type:String,
-        required: function() { return !this.googleId; }
+    user_name: { 
+        type: String,
+        required: function () { return !this.googleId; } 
     },resetPasswordToken: String,
     resetPasswordExpires: Date
 });

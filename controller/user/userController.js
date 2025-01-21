@@ -22,7 +22,10 @@ const pageNotFound = async (req, res) => {
 
 const loadHome = async (req, res) => {
     try {
-        const products = await Product.find({ status: 'active' });
+        const products = await Product.find({ status: 'active' })
+        .sort({ createdAt: -1 }) 
+        .limit(15); 
+
         const categories = await Category.find({ isListed: 'true' });
         const offers = await Offer.find({ status: 'active' })
             .populate('products')
@@ -314,9 +317,13 @@ const getProductList = async (req, res) => {
         const message = req.query.message || '';
         const user = req.session.user;
         const searchQuery = req.query.q || '';
-        const selectedCategory = req.query.category || ''; // Get selected category
+        const selectedCategory = req.query.category || ''; 
 
-        // **Sorting Logic**
+        
+        const page = parseInt(req.query.page) || 1; 
+        const limit = 12; 
+        const skip = (page - 1) * limit; 
+
         let sortOption = {};
         const sortBy = req.query.sort || '';
 
@@ -337,7 +344,7 @@ const getProductList = async (req, res) => {
                 sortOption = {};
         }
 
-        // **Filter Products by Search and Category**
+       
         let filterOptions = { status: 'active' };
 
         if (searchQuery) {
@@ -348,11 +355,16 @@ const getProductList = async (req, res) => {
         }
 
         if (selectedCategory) {
-            filterOptions.Category = selectedCategory; // Filter by category
+            filterOptions.Category = selectedCategory;
         }
 
-        const products = await Product.find(filterOptions).sort(sortOption);
-
+       
+        const totalProducts = await Product.countDocuments(filterOptions); 
+        const products = await Product.find(filterOptions)
+            .sort(sortOption)
+            .skip(skip)
+            .limit(limit); 
+    
         const offers = await Offer.find({ status: 'active' })
             .populate('products')
             .populate('category');
@@ -401,13 +413,14 @@ const getProductList = async (req, res) => {
                     : null,
             };
         });
-        
 
+       
         let userData = null;
         if (user) {
             userData = await User.findById(user);
         }
 
+        
         res.render('productList', {
             products: productsWithOffers,
             categories,
@@ -415,13 +428,16 @@ const getProductList = async (req, res) => {
             user: userData,
             searchQuery,
             sortBy,
-            selectedCategory, 
+            selectedCategory,
+            totalPages: Math.ceil(totalProducts / limit), 
+            currentPage: page,
         });
     } catch (error) {
         console.error('Error fetching product list or categories:', error);
         res.status(500).send('Internal Server Error');
     }
 };
+
 
 
 

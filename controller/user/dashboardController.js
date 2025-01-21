@@ -1,5 +1,6 @@
 const User = require("../../models/user/userSchema");
 const env = require ('dotenv').config;
+const mongoose = require('mongoose');
 const PDFDocument = require('pdfkit');
 const Wallet = require('../../models/user/userWallet');
 const bcrypt = require('bcryptjs');
@@ -129,7 +130,6 @@ const updateProfile = async (req, res) => {
         try {
            
     
-            // Validate name: only alphabets and spaces allowed
             const namePattern = /^[A-Za-z\s]+$/;
             if (!namePattern.test(name)) {
                 return res.status(400).json({ success: false, message: 'Name must contain only letters and spaces' });
@@ -141,7 +141,6 @@ const updateProfile = async (req, res) => {
                 return res.status(400).json({ success: false, message: 'Phone number must start with 8, 9, or 6 and be 10 digits long' });
             }
     
-            // Validate pincode: must be a valid 6-digit number
             const pincodePattern = /^\d{6}$/;
             if (!pincodePattern.test(pincode)) {
                 return res.status(400).json({ success: false, message: 'Pincode must be a 6-digit number' });
@@ -151,6 +150,7 @@ const updateProfile = async (req, res) => {
             const pincodeNum = parseInt(pincode, 10);
             if (isNaN(pincodeNum)) {
                 return res.status(400).json({ success: false, message: 'Pincode must be a valid number' });
+
             }
     
         
@@ -294,7 +294,6 @@ const updateProfile = async (req, res) => {
                 return res.status(404).json({ success: false, message: 'Product not found in order' });
             }
     
-            // Mark product as cancelled
             productToCancel.status = 'Cancelled';
             productToCancel.cancellationReason = cancel_reason;
     
@@ -359,6 +358,7 @@ const updateProfile = async (req, res) => {
                 return res.status(400).json({ success: false, message: 'Invalid item or status for return' });
             }
     
+            // Create return request
             const returnRequest = new ReturnRequest({
                 item_id,
                 order_id,
@@ -370,10 +370,32 @@ const updateProfile = async (req, res) => {
     
             await returnRequest.save();
     
+            
             product.status = 'Return Requested';
             await order.save();
     
-            res.json({ success: true, message: 'Return request submitted successfully' });
+            const randomID = Math.floor(100000 + Math.random() * 900000)
+            const wallet = await Wallet.findOne({ user_id: req.session.user });
+            if (wallet) {
+               
+                const returnAmount = product.price;
+    
+               
+                wallet.balance += returnAmount;
+    
+               
+                wallet.history.push({
+                    transaction_id: `TRX-${randomID}`,
+                    date: new Date(),
+                    description: `Order return payment`,
+                    amount: returnAmount,
+                    transaction_type: 'Cancelled', 
+                });
+    
+                await wallet.save();
+            }
+    
+            res.json({ success: true, message: 'Return request submitted and wallet updated' });
         } catch (error) {
             console.error('Error processing return request:', error);
             res.status(500).json({ success: false, message: 'An error occurred. Please try again.' });

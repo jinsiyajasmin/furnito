@@ -7,18 +7,37 @@ const Order = require('../../models/user/userOrder');
 
 const getAdminOrders = async (req, res) => {
     try {
+        
+        const page = parseInt(req.query.page) || 1; 
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit; 
 
+       
+        const totalOrders = await Order.countDocuments();
+        const totalPages = Math.ceil(totalOrders / limit);
+
+       
         const orders = await Order.find()
             .populate('user', 'name')
-            .populate('items.product').populate("payment_type")
-            .sort({ createdAt: -1 });
+            .populate('items.product')
+            .populate('payment_type')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
 
-        res.render('adminOrders', { orders });
+       
+        res.render('adminOrders', {
+            orders,
+            currentPage: page,
+            totalPages: totalPages,
+        });
     } catch (error) {
         console.error('Error fetching orders:', error);
         res.render('adminOrders', {
             error: 'Unable to fetch orders. Please try again later.',
-            orders: []
+            orders: [],
+            currentPage: 1,
+            totalPages: 1
         });
     }
 };

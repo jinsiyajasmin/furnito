@@ -1209,7 +1209,7 @@
 
                                 case 'UPI PAYMENT':
                                     try {
-                                        // Step 1: Create Razorpay order
+                                       
                                         const orderDetailsResponse = await fetch('/create-razorpay-order', {
                                             method: 'POST',
                                             headers: {
@@ -1229,21 +1229,20 @@
                                             throw new Error(orderData.message);
                                         }
 
-                                        // Add selectedAddress and paymentType to orderData for later use
+                                       
                                         orderData.selectedAddress = selectedAddress.value;
                                         orderData.paymentType = paymentType;
 
-                                        // Step 2: Configure Razorpay options
+                                       
                                         const options = {
-                                            key: orderData.key, // Replace with your Razorpay key
+                                            key: orderData.key, 
                                             amount: orderData.amount,
                                             currency: orderData.currency,
                                             order_id: orderData.razorpayOrderId,
-                                            name: 'Your Store Name',
+                                            name: 'wood & wonder',
                                             description: 'Order Payment',
                                             handler: async function (response) {
-                                                // Step 3: Verify payment and handle success
-                                                // Pass selectedAddress and paymentType for success handler
+                                               
                                                 response.selectedAddress = selectedAddress.value;
                                                 response.paymentType = paymentType;
 
@@ -1251,7 +1250,6 @@
                                             },
                                             modal: {
                                                 ondismiss: function () {
-                                                    // Handle user canceling the payment
                                                     handlePaymentFailure('Payment cancelled by user.', orderData);
                                                 }
                                             },
@@ -1265,11 +1263,9 @@
                                             }
                                         };
 
-                                        // Step 4: Initialize Razorpay instance
                                         const razorpayInstance = new Razorpay(options);
 
                                         razorpayInstance.on('payment.failed', function (response) {
-                                            // Include selectedAddress and paymentType for failure handler
                                             handlePaymentFailure(
                                                 response.error.description || 'Payment failed. Please try again.',
                                                 { ...orderData, selectedAddress: selectedAddress.value, paymentType }
@@ -1355,7 +1351,6 @@
 
                         Swal.fire({
                             title: 'Order Placed Successfully!',
-
                             icon: 'success',
                             confirmButtonText: 'View Order',
                             showCancelButton: false,
@@ -1414,7 +1409,6 @@
                             console.error('Error saving failed order:', failedOrderData.error || 'Unknown error');
                         }
 
-                        // Redirect to payment failed page
                         const orderId = failedOrderData.orderId || 'unknown';
                         window.location.href = `/orderSummary/${orderId}`;
                     } catch (error) {
@@ -1430,88 +1424,158 @@
             </script>
             <script>
 
-                document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
+    const couponForm = document.getElementById('couponForm');
+    const couponInput = document.getElementById('couponCode');
+    const appliedCouponDiv = document.getElementById('appliedCoupon');
+    const appliedCouponCode = document.getElementById('appliedCouponCode');
+    const removeCouponBtn = document.getElementById('removeCoupon');
 
-                    const couponForm = document.getElementById('couponForm');
-                    const couponInput = document.getElementById('couponCode');
-                    const appliedCouponDiv = document.getElementById('appliedCoupon');
-                    const appliedCouponCode = document.getElementById('appliedCouponCode');
-                    const removeCouponBtn = document.getElementById('removeCoupon');
+    const validateCouponInput = (couponCode) => {
+        if (!couponCode || couponCode.trim().length === 0) {
+            throw new Error('Please enter a valid coupon code');
+        }
+        if (couponCode.length > 20) {
+            throw new Error('Coupon code is too long');
+        }
+        return couponCode.trim().toUpperCase();
+    };
 
-                    function displayCouponMessage(message, isSuccess) {
-                        const messageElement = document.getElementById('couponMessage');
-                        messageElement.innerHTML = `
-<p style="color: ${isSuccess ? 'green' : 'red'}; font-weight: bold;">${message}</p>
-`;
-                    }
+    const getSubtotal = () => {
+      
+        const subtotalValue = 
+           
+            document.querySelector('[data-subtotal]')?.dataset.subtotal ||
+         
+            document.getElementById('cart-subtotal')?.dataset.value ||
+            document.getElementById('cart-subtotal')?.textContent?.replace('₹', '') ||
+          
+            window.cartSubtotal ||
+            '<%= subtotal %>';  
 
-                    function showAppliedCoupon(couponCode) {
-                        appliedCouponCode.textContent = `Applied Coupon: ${ couponCode }`;
-                        appliedCouponDiv.style.display = 'block';
-                        couponInput.disabled = true;
-                    }
+        const subtotal = parseFloat(subtotalValue);
+        
+        if (isNaN(subtotal) || subtotal <= 0) {
+            throw new Error('Unable to determine cart total. Please refresh the page or contact support.');
+        }
+        
+        return subtotal;
+    };
 
-                    function hideAppliedCoupon() {
-                        appliedCouponDiv.style.display = 'none';
-                        couponInput.disabled = false;
-                        couponInput.value = '';
-                    }
-                    if (couponForm) {
-                        couponForm.addEventListener('submit', function (e) {
-                            e.preventDefault();
+    const displayCouponMessage = (message, isSuccess) => {
+        const messageElement = document.getElementById('couponMessage');
+        if (!messageElement) return;
+        
+        messageElement.innerHTML = `
+            <p class="${isSuccess ? 'text-success' : 'text-danger'} font-weight-bold">
+                ${message}
+            </p>
+        `;
+    };
 
-                            const couponCode = document.getElementById('couponCode').value;
-                            const subtotal = parseFloat('<%= subtotal %>');
+    const showAppliedCoupon = (couponCode) => {
+        if (!appliedCouponCode || !appliedCouponDiv || !couponInput) return;
+        
+        appliedCouponCode.textContent = `Applied Coupon: ${couponCode}`;
+        appliedCouponDiv.style.display = 'block';
+        couponInput.disabled = true;
+    };
 
-                            console.log('Submitting coupon:', couponCode, 'Subtotal:', subtotal);
+    const hideAppliedCoupon = () => {
+        if (!appliedCouponDiv || !couponInput) return;
+        
+        appliedCouponDiv.style.display = 'none';
+        couponInput.disabled = false;
+        couponInput.value = '';
+    };
 
-                            fetch('/applyCoupon', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({ couponCode, subtotal })
-                            })
-                                .then(response => response.json())
-                                .then(data => {
-                                    console.log('Server response:', data);
+    const updateItemPrices = (items, subtotal, discountAmount) => {
+        items.forEach(item => {
+            const itemPrice = parseFloat(item.dataset.price);
+            const itemQuantity = parseInt(item.dataset.quantity);
+            
+            if (isNaN(itemPrice) || isNaN(itemQuantity)) return;
+            
+            const itemTotal = itemPrice * itemQuantity;
+            const itemDiscount = (itemTotal / subtotal) * discountAmount;
+            const discountedPrice = (itemPrice - (itemDiscount / itemQuantity)).toFixed(2);
+            
+            const priceElement = item.querySelector('.item-price');
+            if (priceElement) {
+                priceElement.innerHTML = `
+                    <span class="original-price text-muted"><s>₹${itemPrice.toFixed(2)}</s></span>
+                    <span class="discounted-price">₹${discountedPrice}</span>
+                `;
+            }
+        });
+    };
 
-                                    if (data.success) {
-                                        console.log(data.discountPercent);
+    const updateTotals = (data) => {
+        const elements = {
+            discountRow: document.getElementById('couponDiscountRow'),
+            discountAmount: document.getElementById('couponDiscount'),
+            discountPercent: document.getElementById('couponPercent'),
+            cartTotal: document.getElementById('cart-total')
+        };
 
-                                        const discountRow = document.getElementById('couponDiscountRow');
-                                        const discountAmountElem = document.getElementById('couponDiscount');
-                                        const discountPercentElem = document.getElementById('couponPercent');
-                                        const cartTotalElem = document.getElementById('cart-total');
+        if (elements.discountRow) elements.discountRow.style.display = 'table-row';
+        if (elements.discountAmount) elements.discountAmount.textContent = data.discountAmount.toFixed(2);
+        if (elements.discountPercent) elements.discountPercent.textContent = data.discountPercent;
+        if (elements.cartTotal) elements.cartTotal.textContent = `₹${data.newTotal.toFixed(2)}`;
+    };
 
-                                        if (discountRow) discountRow.style.display = 'table-row';
-                                        if (discountAmountElem) discountAmountElem.textContent = data.discountAmount.toFixed(2);
-                                        if (discountPercentElem) discountPercentElem.textContent = data.discountPercent;
-                                        if (cartTotalElem) cartTotalElem.textContent = `₹${ data.newTotal.toFixed(2) }`; // Update the subtotal dynamically
+    if (couponForm) {
+        couponForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
 
-                                        displayCouponMessage(data.message, true);
-                                        showAppliedCoupon(couponCode);
-                                    } else {
-                                        displayCouponMessage(data.message, false);
-                                    }
+            try {
+                const couponCode = validateCouponInput(couponInput.value);
+                const subtotal = getSubtotal();
 
-                                })
-                                .catch(error => {
-                                    console.error('Error applying coupon:', error);
-                                    displayCouponMessage('An error occurred while applying the coupon', false);
-                                });
+                console.log('Submitting coupon:', couponCode, 'Subtotal:', subtotal); // Debug log
 
-                            return false;
-                        });
-                    } else {
-                        console.error('Coupon form not found');
-                    }
+                const response = await fetch('/applyCoupon', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ couponCode, subtotal })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to apply coupon');
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const items = document.querySelectorAll('.cart-item');
+                    updateItemPrices(items, subtotal, data.discountAmount);
+                    updateTotals(data);
+                    displayCouponMessage(data.message, true);
+                    showAppliedCoupon(couponCode);
+                } else {
+                    displayCouponMessage(data.message, false);
+                }
+            } catch (error) {
+                console.error('Error applying coupon:', error);
+                displayCouponMessage(error.message || 'An error occurred while applying the coupon', false);
+            }
+        });
+
+        if (removeCouponBtn) {
+            removeCouponBtn.addEventListener('click', hideAppliedCoupon);
+        }
+    }
+
+
 
 
                     removeCouponBtn.addEventListener('click', function (e) {
                         e.preventDefault();
 
-                        // Ensure subtotal is correctly parsed
+                 
                         const subtotal = parseFloat('<%= subtotal %>');
 
                         fetch('/removeCoupon', {
@@ -1524,20 +1588,19 @@
                             .then(response => response.json())
                             .then(data => {
                                 if (data.success) {
-                                    // Check and update elements safely
+                                  
                                     const discountRow = document.getElementById('couponDiscountRow');
                                     const cartTotalElem = document.getElementById('cart-total');
 
                                     if (discountRow) discountRow.style.display = 'none';
                                     if (cartTotalElem) cartTotalElem.textContent = `₹${ data.newTotal.toFixed(2) }`;
 
-                                    // Display success message
+                               
                                     displayCouponMessage('Coupon removed successfully', true);
 
-                                    // Hide applied coupon UI if necessary
                                     hideAppliedCoupon();
                                 } else {
-                                    // Display error message
+                                
                                     displayCouponMessage(data.message, false);
                                 }
                             })

@@ -31,8 +31,9 @@ userRouter.use(session({
 userRouter.use(nocache());
 userRouter.use('/assets', express.static(path.join(__dirname, "../public/assets")));
 
-
-userRouter.get("/pageNotFound", user.pageNotFound);
+userRouter.get("/pageNotFound", (req, res) => {
+    res.status(404).render("page-404");
+});
 
 // User Authentication and Signup
 userRouter.get('/', user.loadHome);
@@ -75,7 +76,7 @@ userRouter.post('/verify-payment', checkout.verifyPayment);
 
 userRouter.post('/check-wallet-balance', checkout.checkWalletBalance);
 userRouter.post('/save-failed-order',checkout.failedOrder)
-
+ 
 
 
 // User Dashboard

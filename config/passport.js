@@ -1,6 +1,6 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const Users = require("../models/user/userCredentials");
+const User = require("../models/user/userCredentials");
 const dotenv = require("dotenv");
 
 
@@ -16,14 +16,14 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        let user = await Users.findOne({ googleId: profile.id });
+        let user = await User.findOne({ googleId: profile.id });
 
         if (user) {
           console.log("User found:", user);
           return done(null, user);
         } else {
           console.log("Creating new user");
-          const newUser = new Users({
+          const newUser = new User({
             user_name: profile.displayName,
             email_address: profile.emails[0].value,
             googleId: profile.id,

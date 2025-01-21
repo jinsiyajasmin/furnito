@@ -385,12 +385,11 @@
                 <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
             </div><!-- End .social-icons -->
         </div><!-- End .mobile-menu-wrapper -->
-    </div><!-- End .footer -->
-    </div><!-- End .page-wrapper -->
+    </div>
     <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
 
-    <!-- Mobile Menu -->
-    <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
+   
+    <div class="mobile-menu-overlay"></div>
 
     <div class="mobile-menu-container">
         <div class="mobile-menu-wrapper">
@@ -398,21 +397,17 @@
 
           
             
-            <!-- End .mobile-nav -->
 
             <div class="social-icons">
                 <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
                 <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
                 <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
                 <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
-            </div><!-- End .social-icons -->
-        </div><!-- End .mobile-menu-wrapper -->
-    </div><!-- End .mobile-menu-container -->
+            </div>
+        </div>
+    </div>
 
-    <!-- Sign in / Register Modal -->
-    <!-- End .modal -->
-
-    <!-- Plugins JS File -->
+    
    
 
 
@@ -431,7 +426,7 @@
 
             if (isNaN(quantity) || quantity < 1) {
                 console.error('Invalid quantity:', quantity);
-                this.value = 1; // Default to 1 if invalid quantity
+                this.value = 1; 
                 return;
             }
 
@@ -466,7 +461,7 @@
         .catch(error => {
             console.error('Error updating quantity:', error);
             alert('There was a problem updating the quantity: ' + (error.message || 'Unknown error'));
-            // Revert the input to the previous value if needed
+         
         });
     }
 

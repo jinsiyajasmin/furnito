@@ -7,17 +7,35 @@ const sharp = require("sharp");
 
 const getProductAddPage = async (req, res) => {
     try {
-        const products = await Product.find({}).populate('Category');
+        const page = parseInt(req.query.page) || 1; 
+        const limit = parseInt(req.query.limit) || 10; 
+        const skip = (page - 1) * limit; 
+
+        
+        const totalProducts = await Product.countDocuments();
+        const totalPages = Math.ceil(totalProducts / limit); 
+
+       
+        const products = await Product.find({})
+            .populate('Category')
+            .skip(skip)
+            .limit(limit);
+
         const categories = await Category.find({ isListed: true });
+
+        
         res.render("product", {
             categories: categories,
-            products: products
+            products: products,
+            currentPage: page,
+            totalPages: totalPages
         });
     } catch (error) {
         console.error(error);
         res.redirect("/pageerror");
     }
-}
+};
+
 
 
 const getProducts = async (req, res) => {
@@ -25,6 +43,8 @@ const getProducts = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
+
+
 
         const totalProducts = await Product.countDocuments();
         const totalPages = Math.ceil(totalProducts / limit);
@@ -90,6 +110,8 @@ const getEditProduct = async (req, res) => {
 const addProduct = async (req, res) => {
     try {
         const { productName, description, price, category, quantity, status } = req.body;
+
+
 
         const images = [];
         if (req.files && req.files.length > 0) {
