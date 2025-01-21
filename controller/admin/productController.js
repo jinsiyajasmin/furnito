@@ -12,19 +12,15 @@ const getProductAddPage = async (req, res) => {
         const skip = (page - 1) * limit; 
 
         const totalProducts = await Product.countDocuments();
-
         const totalPages = Math.ceil(totalProducts / limit);
 
-        
         const products = await Product.find({})
             .populate('Category') 
             .skip(skip) 
             .limit(limit); 
 
-       
         const categories = await Category.find({ isListed: true });
 
-      
         res.render("product", {
             categories: categories, 
             products: products, 
@@ -32,10 +28,18 @@ const getProductAddPage = async (req, res) => {
             totalPages: totalPages 
         });
     } catch (error) {
-        console.error(error);
-        res.redirect("/pageerror"); // Handle errors gracefully
+        console.error("Error fetching products:", error);
+
+        res.render("product", {
+            categories: [],
+            products: [],
+            currentPage: 1,
+            totalPages: 1,
+            error: "Unable to load products. Please try again later."
+        });
     }
 };
+
 
 
 

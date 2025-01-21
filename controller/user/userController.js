@@ -319,7 +319,6 @@ const getProductList = async (req, res) => {
         const searchQuery = req.query.q || '';
         const selectedCategory = req.query.category || ''; 
 
-        
         const page = parseInt(req.query.page) || 1; 
         const limit = 12; 
         const skip = (page - 1) * limit; 
@@ -344,7 +343,6 @@ const getProductList = async (req, res) => {
                 sortOption = {};
         }
 
-       
         let filterOptions = { status: 'active' };
 
         if (searchQuery) {
@@ -358,13 +356,12 @@ const getProductList = async (req, res) => {
             filterOptions.Category = selectedCategory;
         }
 
-       
         const totalProducts = await Product.countDocuments(filterOptions); 
         const products = await Product.find(filterOptions)
             .sort(sortOption)
             .skip(skip)
             .limit(limit); 
-    
+
         const offers = await Offer.find({ status: 'active' })
             .populate('products')
             .populate('category');
@@ -414,13 +411,13 @@ const getProductList = async (req, res) => {
             };
         });
 
-       
         let userData = null;
         if (user) {
             userData = await User.findById(user);
         }
 
-        
+        const totalPages = Math.ceil(totalProducts / limit); // Calculate total pages
+
         res.render('productList', {
             products: productsWithOffers,
             categories,
@@ -429,7 +426,7 @@ const getProductList = async (req, res) => {
             searchQuery,
             sortBy,
             selectedCategory,
-            totalPages: Math.ceil(totalProducts / limit), 
+            totalPages: totalPages, // Pass totalPages to the view
             currentPage: page,
         });
     } catch (error) {
@@ -437,6 +434,7 @@ const getProductList = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
 
 
 
