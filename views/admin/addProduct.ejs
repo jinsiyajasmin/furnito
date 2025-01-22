@@ -562,11 +562,11 @@ function handleImageSelect(input) {
         cropper.destroy();
       }
       cropper = new Cropper(cropperImage, {
-        aspectRatio: 1, // 1:1 aspect ratio
+        aspectRatio: 2, 
         viewMode: 2,
-        aspectRatio: 1,
-                        viewMode: 1,
-                        minContainerWidth: 800,
+       
+                      
+                        minContainerWidth: 500,
                         minContainerHeight: 600,
         responsive: true,
         background: false,

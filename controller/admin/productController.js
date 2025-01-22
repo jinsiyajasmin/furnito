@@ -165,68 +165,86 @@ const addProduct = async (req, res) => {
 const editProduct = async (req, res) => {
     try {
         const id = req.params.id;
-        const categories = await Category.find();
-        const product = await Product.findById(id).populate('Category');
-
-        if (!product) {
-            return res.status(404).json({ success: false, message: "Product not found" });
-        }
-
         const data = req.body;
-
-        // Check for existing product name
+        
         const existingProduct = await Product.findOne({
             productName: data.productName,
             _id: { $ne: id }
         });
 
         if (existingProduct) {
-            return res.status(400).json({ success: false, message: "Product with the same name already exists" });
+            return res.status(400).json({ 
+                success: false, 
+                message: "Product with the same name already exists" 
+            });
         }
 
-        // Initialize updated fields
-        let images = [...product.productImage];
+        // Get current product to preserve unmodified images
+        const currentProduct = await Product.findById(id);
+        let images = [...currentProduct.productImage];
 
-        // Handle image uploads
+        // Handle cropped images
         if (req.files && req.files.length > 0) {
             req.files.forEach((file, index) => {
                 if (index < images.length) {
-                    images[index] = file.filename; // Replace existing images
+                    // Replace existing image
+                    images[index] = file.filename;
                 } else {
-                    images.push(file.filename); // Add new images
+                    // Add new image
+                    images.push(file.filename);
                 }
             });
         }
 
-        // Update product fields
+        // Handle existing images that weren't changed
+        if (req.body.existingImages) {
+            const existingImages = Array.isArray(req.body.existingImages) 
+                ? req.body.existingImages 
+                : [req.body.existingImages];
+
+            existingImages.forEach((image, index) => {
+                if (!req.files || !req.files[index]) {
+                    images[index] = image;
+                }
+            });
+        }
+
         const updateFields = {
             productName: data.productName,
             productDescription: data.productDescription,
-            price: parseFloat(data.price),
-            quantity: parseInt(data.quantity),
+            price: data.price,
+            quantity: data.quantity,
             Category: data.category,
             productImage: images,
             status: data.status
         };
 
-        // Save updated product
         const updatedProduct = await Product.findByIdAndUpdate(
-            id,
-            { $set: updateFields },
+            id, 
+            { $set: updateFields }, 
             { new: true }
         );
 
         if (!updatedProduct) {
-            return res.status(500).json({ success: false, message: "Failed to update product" });
+            return res.status(500).json({ 
+                success: false, 
+                message: "Failed to update product" 
+            });
         }
 
-        res.json({ success: true, message: "Product updated successfully", product: updatedProduct });
+        res.json({ 
+            success: true, 
+            message: "Product updated successfully", 
+            product: updatedProduct 
+        });
     } catch (error) {
-        console.error("Error updating product:", error);
-        return res.status(500).json({ success: false, message: "Internal Server Error" });
+        console.error('Error updating product:', error);
+        return res.status(500).json({ 
+            success: false, 
+            message: "Internal Server Error" 
+        });
     }
 };
-
 
 
 
